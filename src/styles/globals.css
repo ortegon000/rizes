@@ -6,14 +6,14 @@ body {
   min-height: 50000px;
 }
 
-#hero-container {
+/* #hero-key-container {
   mask-image: radial-gradient(
     circle at 50% 50%,
     black 50%,
     transparent 100%
   );
-}
-#logo-mask {
+} */
+#hero-key-logo-mask {
   mask-image: url("/images/logo-stack.svg");
   mask-position: center 16%;
   mask-repeat: no-repeat;

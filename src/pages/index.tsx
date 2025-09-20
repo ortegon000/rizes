@@ -35,7 +35,7 @@ export default function Home() {
         "<",
       )
       .to(
-        "#logo-mask",
+        "#hero-key-logo-mask",
         {
           ease: "power1.inOut",
           maskSize: "clamp(150px, 25vw, 700px)",
@@ -48,10 +48,10 @@ export default function Home() {
           opacity: 0,
           duration: 0.3,
         },
-        ">-0.3",
+        ">-0.2",
       )
       .to(
-        "#logo-mask",
+        "#hero-key-logo-mask",
         {
           opacity: 0,
         },
@@ -76,25 +76,25 @@ export default function Home() {
 
   return (
     <>
-      <div ref={logoMaskRef} id="logo-mask" className="fixed z-10 top-0 w-full h-screen bg-white">
-        <section>
-          <picture
-            id="hero-key"
-            className="h-screen scale-125 w-full block overflow-hidden fixed"
-          >
-            <HeroKeyLogo id="hero-key-logo" className="absolute inset-0 m-auto w-80 h-auto object-cover text-white" />
+      <section ref={logoMaskRef} id="hero-key-logo-mask" className="fixed z-10 top-0 w-full h-screen bg-white">
 
-            <Image
-              alt=""
-              id="hero-key-background"
-              src={HeroKeyBackground.src}
-              width={1920}
-              height={1080}
-              className="w-full h-full object-cover"
-            />
-          </picture>
-        </section>
-      </div>
+        <picture
+          id="hero-key"
+          className="h-screen scale-125 w-full block overflow-hidden fixed"
+        >
+          <HeroKeyLogo id="hero-key-logo" className="absolute inset-0 m-auto w-80 h-auto object-cover text-white" />
+
+          <Image
+            alt=""
+            id="hero-key-background"
+            src={HeroKeyBackground.src}
+            width={1920}
+            height={1080}
+            className="w-full h-full object-cover"
+          />
+        </picture>
+
+      </section>
     </>
   );
 }
