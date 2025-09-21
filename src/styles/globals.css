@@ -29,3 +29,16 @@ body {
   mask-repeat: no-repeat;
   mask-size: 100% 100%;
 }
+
+.exit {
+        width: 100vw;
+        height: 100vh;
+        z-index: 9999;
+        background: #1d1b22;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }

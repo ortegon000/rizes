@@ -21,26 +21,30 @@ export default function Intro() {
         tl.to(
             "#hero-key-text-container",
             {
-                duration: 1,
+                duration: 2,
                 ease: "power1.in",
                 maskImage:
                     "radial-gradient(circle at 50% 0vh, black 30%, transparent 100%)",
             },
             0,
-        );
-        // .fromTo(
-        //     ".exit",
-        //     {
-        //         maskImage:
-        //             "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)",
-        //         maskPosition: "center center",
-        //     },
-        //     {
-        //         maskImage:
-        //             "radial-gradient(circle at 50% -100%, transparent 0%, black 0%)",
-        //         maskPosition: "center center",
-        //     },
-        // );
+        )
+            .to("#hero-intro-logo", {
+                duration: 1,
+                opacity: 1,
+            }, "<-1")
+            .fromTo(
+                ".exit",
+                {
+                    maskImage:
+                        "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)",
+                    maskPosition: "center center",
+                },
+                {
+                    maskImage:
+                        "radial-gradient(circle at 50% -100%, transparent 0%, black 0%)",
+                    maskPosition: "center center",
+                },
+            );
 
 
         ScrollTrigger.create({
@@ -59,20 +63,23 @@ export default function Intro() {
     }, []);
 
     return (
-        <div
-            ref={TextContainerRef}
-            id="hero-key-text-container"
-            className="fixed inset-0 w-full h-full flex items-center justify-center"
-        >
-            <div>
-                <HeroKeyLogo className="absolute w-[200px] mx-auto inset-0 top-[122px] text-white" />
-                <p
-                    id="hero-key-text"
-                    className="text-7xl font-bold m-auto h-auto bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent text-center"
-                >
-                    BIENVENIDOS A LA <br /> EXPERIENCIA RIZES
-                </p>
+        <>
+            <div className="exit"></div>
+            <div
+                ref={TextContainerRef}
+                id="hero-key-text-container"
+                className="fixed inset-0 w-full h-full flex items-center justify-center"
+            >
+                <div>
+                    <HeroKeyLogo id="hero-intro-logo" className="absolute w-[200px] mx-auto inset-0 top-[122px] text-white opacity-0" />
+                    <p
+                        id="hero-key-text"
+                        className="text-7xl font-bold m-auto h-auto bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent text-center"
+                    >
+                        BIENVENIDOS A LA <br /> EXPERIENCIA RIZES
+                    </p>
+                </div>
             </div>
-        </div>
+        </>
     )
 }
