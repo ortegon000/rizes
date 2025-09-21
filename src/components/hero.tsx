@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { HeroKeyLogo } from "@svg/heroKeyLogo";
+import { Logo } from "@assets/svg/Logo";
 import HeroKeyBackground from "@images/hero-key-background.webp";
 import { useRef } from "react";
 import { gsap } from "gsap";
@@ -83,7 +83,7 @@ export default function Hero() {
                 id="hero-key"
                 className="h-screen scale-125 w-full block overflow-hidden fixed"
             >
-                <HeroKeyLogo id="hero-key-logo" className="absolute inset-0 m-auto w-80 h-auto object-cover text-white" />
+                <Logo id="hero-key-logo" className="absolute inset-0 m-auto w-80 h-auto object-cover text-white" />
 
                 <Image
                     alt=""

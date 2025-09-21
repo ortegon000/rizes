@@ -1,11 +1,11 @@
 import React from 'react';
 
-interface HeroKeyLogoProps {
+interface Logo {
     id?: string;
     className?: string;
 }
 
-export const HeroKeyLogo: React.FC<HeroKeyLogoProps> = ({ className = "", id = "" }) => {
+export const Logo: React.FC<Logo> = ({ className = "", id = "" }) => {
     return (
         <svg
             id={id}

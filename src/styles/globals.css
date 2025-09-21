@@ -6,29 +6,19 @@ body {
   min-height: 5000px;
 }
 
-/* #hero-key-container {
+#hero-key-container {
   mask-image: radial-gradient(
     circle at 50% 50%,
     black 50%,
     transparent 100%
   );
-} */
+}
 
 #hero-key-logo-mask {
   mask-image: url("/images/logo-stack.svg");
   mask-position: center 16%;
   mask-repeat: no-repeat;
   mask-size: clamp(15000px, 2500vw, 70000px);
-}
-
-#hero-key-text-container {
-  mask-image: radial-gradient(
-    circle at 50% 100vh,
-    black 0%,
-    transparent 0%
-  );
-  mask-repeat: no-repeat;
-  mask-size: 100% 100%;
 }
 
 .exit {
@@ -39,7 +29,22 @@ body {
   position: fixed;
   top: 0;
   left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+}
+
+.entrance {
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: #1d1b22;
+  position: fixed;
+  top: 0;
+  left: 0;
+  mask-image: radial-gradient(
+    circle at 50% 100vh,
+    black 0%,
+    transparent 0%
+  );
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+  background: red;
 }
