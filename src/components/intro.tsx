@@ -75,7 +75,7 @@ export default function Intro() {
                 className="fixed inset-0 w-full h-full flex items-center justify-center"
             >
                 <div>
-                    <HeroKeyLogo id="hero-intro-logo" className="absolute w-[200px] mx-auto inset-0 top-[122px] text-white opacity-0" />
+                    <HeroKeyLogo id="hero-intro-logo" className="absolute w-[200px] mx-auto inset-0 top-[12.9%] text-white opacity-0" />
                     <p
                         id="hero-key-text"
                         className="text-7xl font-bold m-auto h-auto bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent text-center"
