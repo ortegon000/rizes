@@ -1,17 +1,18 @@
 import { HeroKeyLogo } from "@svg/heroKeyLogo";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 
 export default function Intro() {
 
     const TextContainerRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
+    useGSAP(() => {
         const textContainer = TextContainerRef.current;
-
-        gsap.registerPlugin(ScrollTrigger);
 
         const tl = gsap.timeline({
             paused: true,
@@ -40,10 +41,13 @@ export default function Intro() {
                     maskPosition: "center center",
                 },
                 {
+                    duration: 2,
+                    ease: "power1.in",
                     maskImage:
                         "radial-gradient(circle at 50% -100%, transparent 0%, black 0%)",
                     maskPosition: "center center",
                 },
+                '>1'
             );
 
 

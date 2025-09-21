@@ -1,18 +1,19 @@
 import Image from "next/image";
 import { HeroKeyLogo } from "@svg/heroKeyLogo";
 import HeroKeyBackground from "@images/hero-key-background.webp";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { useGSAP } from "@gsap/react";
+
+gsap.registerPlugin(useGSAP, ScrollTrigger);
 
 export default function Hero() {
 
     const logoMaskRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
+    useGSAP(() => {
         const logoMask = logoMaskRef.current;
-
-        gsap.registerPlugin(ScrollTrigger);
 
         const tl = gsap.timeline({
             paused: true,
