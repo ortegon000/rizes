@@ -19,3 +19,13 @@ body {
   mask-repeat: no-repeat;
   mask-size: clamp(15000px, 2500vw, 70000px);
 }
+
+#hero-key-text-container {
+  mask-image: radial-gradient(
+    circle at 50% 100vh,
+    black 0%,
+    transparent 0%
+  );
+  mask-repeat: no-repeat;
+  mask-size: 100% 100%;
+}
