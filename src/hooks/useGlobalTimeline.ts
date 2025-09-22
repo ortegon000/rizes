@@ -1,138 +1,153 @@
-// hooks/useGlobalTimeline.ts
 import { useRef, useLayoutEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-/**
- * Crea la animación del Hero y la añade a un timeline.
- */
+// --- Funciones de Animación Modulares ---
+
 function createHeroAnimation(
     tl: gsap.core.Timeline,
-    selector: (query: string) => any,
+    selector: (query: string) => Element[],
 ) {
-    tl.to(
-        selector("#hero-key"),
-        {
-            scale: 1,
-            duration: 1,
-        },
-        0,
+    tl.to(selector("#hero-key"), { scale: 1, duration: 1 }, 0)
+        .to(selector("#hero-key-logo"), { opacity: 0, scale: 0.5, duration: 1 }, "<")
+        .to(selector("#hero-key-logo-mask"), { maskSize: "200px", duration: 1 }, "<")
+        .to(selector("#hero-key"), { opacity: 0, duration: 0.3 }, ">-0.2")
+        .to(selector("#hero-key-logo-mask"), { opacity: 0, duration: 0.5 }, ">");
+}
+
+function createIntroAnimation(
+    tl: gsap.core.Timeline,
+    selector: (query: string) => Element[],
+) {
+    tl.fromTo(
+        selector(`#hero-intro-entrance`),
+        { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
+        { duration: 1.5, maskImage: "radial-gradient(circle at 50% -100%, black 50%, transparent 50%)" },
+        "<-0.3",
+    )
+        .to(selector(`#hero-intro-logo`), { duration: 1, opacity: 1 }, "<-1")
+        .fromTo(
+            selector(`#hero-intro-exit`),
+            { maskImage: "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)" },
+            { duration: 1.5, maskImage: "radial-gradient(circle at 50% -150%, transparent 50%, black 50%)" },
+            "<2",
+        )
+        .to(selector(`#hero-intro`), { duration: 0.5, opacity: 0 }, ">");
+}
+
+function createDescriptionAnimation(
+    tl: gsap.core.Timeline,
+    selector: (query: string) => Element[],
+) {
+    tl.fromTo(
+        selector(`#hero-description-entrance`),
+        { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
+        { duration: 1.5, maskImage: "radial-gradient(circle at 50% -150%, black 50%, transparent 50%)" },
+        "<-0.3",
     )
         .to(
-            selector("#hero-key-logo"),
+            selector(`#hero-description-exit`),
             {
-                opacity: 0,
-                scale: 0.5,
-                duration: 1,
+                duration: 1.5,
             },
-            "<",
+            "<2",
         )
-        .to(
-            selector("#hero-key-logo-mask"),
-            {
-                maskSize: "200px",
-                duration: 1,
-            },
-            "<",
-        )
-        .to(
-            selector("#hero-key"),
-            {
-                opacity: 0,
-                duration: 0.3,
-            },
-            ">-0.2",
-        )
-        .to(
-            selector("#hero-key-logo-mask"),
-            {
-                opacity: 0,
-                duration: 0.5,
-            },
-            ">",
-        );
+        .to(selector(`#hero-description`), { duration: 0.5, opacity: 0 }, ">");
 }
 
 /**
- * Crea una animación de Intro genérica y la añade a un timeline.
+ * NUEVA FUNCIÓN: Crea la animación de video scrubbing.
  */
-function createIntroAnimation(
-    tl: gsap.core.Timeline,
-    selector: (query: string) => any,
-    id: string,
-) {
-    tl.fromTo(
-        selector(`#${id}-entrance`),
-        {
-            maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)",
-        },
-        {
-            duration: 1.5,
-            maskImage: "radial-gradient(circle at 50% -100%, black 50%, transparent 50%)",
-        },
-        ">-0.65", // Se superpone 0.5s con la animación anterior
+function createVideoScrubAnimation(tl: gsap.core.Timeline, videoElement: HTMLVideoElement) {
+    const videoScrubber = { frame: 0 };
+
+    // Da a la animación del video una "duración" dentro del timeline maestro.
+    // Esto significa que tardará el equivalente a 2 segundos del timeline en completarse.
+    tl.to('#video-1', {
+        opacity: 1,
+        duration: 2,
+        filter: "blur(0px)",
+    },
+        ">-2"
     )
         .to(
-            selector(`#${id}-logo`),
+            videoScrubber,
             {
-                duration: 1,
-                opacity: 1,
+                frame: videoElement.duration,
+                duration: 4,
+                ease: "none",
+                onUpdate: () => {
+                    videoElement.currentTime = videoScrubber.frame;
+                },
             },
-            "<-1",
-        )
-        .fromTo(
-            selector(`#${id}-exit`),
-            {
-                maskImage: "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)",
-            },
-            {
-                duration: 1.5,
-                maskImage: "radial-gradient(circle at 50% -100%, transparent 50%, black 50%)",
-            },
-            "<3",
-        )
-        .to(
-            selector(`#${id}`),
-            {
-                duration: 0.5,
-                opacity: 0,
-            },
-            ">",
+            ">-1", // Superponer con la animación anterior para una transición suave
         );
 }
 
-// --- Main Hook ---
+
+// --- El Hook Principal (Ahora asíncrono) ---
+
+
 export function useGlobalTimeline() {
     const containerRef = useRef<HTMLDivElement>(null);
 
+    const initialized = useRef(false); // <--- AÑADIR ESTA LÍNEA
+
     useLayoutEffect(() => {
-        const ctx = gsap.context((self) => {
+        // Evita la doble inicialización en React 18 Strict Mode
+        if (initialized.current) return; // <--- AÑADIR ESTA LÍNEA
+        initialized.current = true; // <--- AÑADIR ESTA LÍNEA
 
-            const masterTL = gsap.timeline({
-                paused: true,
-                ease: "power2.inOut",
+        let ctx: gsap.Context;
+
+        const initTimeline = async () => {
+            const container = containerRef.current;
+            if (!container) return;
+
+            const videoEl = container.querySelector<HTMLVideoElement>("#video-1 video");
+            if (!videoEl) {
+                console.error("Elemento de video #video-1 no encontrado.");
+                return;
+            }
+
+            // 1. Esperar a que el video esté listo para reproducir
+            await new Promise<void>((resolve) => {
+                if (videoEl.readyState >= 2) {
+                    resolve();
+                } else {
+                    videoEl.onloadedmetadata = () => resolve();
+                }
             });
 
+            // 2. Crear el contexto y el timeline maestro
+            ctx = gsap.context(() => {
+                const masterTL = gsap.timeline({ paused: true, ease: "power2.inOut" });
+                const selector = gsap.utils.selector(container);
 
-            createHeroAnimation(masterTL, self.selector as (query: string) => any);
-            createIntroAnimation(masterTL, self.selector as (query: string) => any, "hero-text-intro");
-            createIntroAnimation(masterTL, self.selector as (query: string) => any, "hero-text-description");
+                // Componer la secuencia de animaciones
+                createHeroAnimation(masterTL, selector);
+                createIntroAnimation(masterTL, selector);
+                createDescriptionAnimation(masterTL, selector);
 
-            // next animation
+                // ¡Aquí se integra la animación del video!
+                createVideoScrubAnimation(masterTL, videoEl);
 
-            ScrollTrigger.create({
-                trigger: containerRef.current,
-                start: "top top",
-                end: "bottom top", // Ajusta la duración del scroll si es necesario
-                animation: masterTL,
-                scrub: 1,
-                markers: true,
-            });
-        }, containerRef);
+                ScrollTrigger.create({
+                    trigger: container,
+                    start: "top top",
+                    end: "bottom bottom",
+                    animation: masterTL,
+                    scrub: 1,
+                    markers: true, // Quitar en producción
+                });
+            }, container);
+        };
 
-        return () => ctx.revert();
+        initTimeline();
+
+        return () => ctx && ctx.revert();
     }, []);
 
     return containerRef;

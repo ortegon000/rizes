@@ -1,40 +1,36 @@
 // pages/index.tsx
 'use client';
+import { useGlobalTimeline } from "@hooks/useGlobalTimeline";
+
 import Hero from "@components/hero";
 import Intro from "@components/intro";
-import { useGlobalTimeline } from "@hooks/useGlobalTimeline";
-import { Logo } from "@assets/svg/Logo";
+import Description from "@components/description";
+import ScrollVideo from "@components/scrollVideo";
 
 export default function Home() {
   const timelineRef = useGlobalTimeline();
 
   return (
     <div ref={timelineRef}>
+      {/* 
+        ¡IMPORTANTE! Este div genera el scroll. 
+        Su altura determina cuánto scroll necesitas para ver todas las animaciones.
+        Una buena regla es ~200vh por cada animación principal.
+        Hero + Intro1 + Intro2 + Video = 4 animaciones -> 800vh
+      */}
+      <div className="h-[1000vh] w-full"></div>
 
       {/* Hero */}
       <Hero zIndex={1000} />
 
       {/* Intro 1 */}
-      <Intro id="hero-text-intro" zIndex={990}>
-        <div className="flex justify-center items-center w-full h-full">
-          <div className="translate-y-[-20px]">
-            <Logo className="w-[200px] h-auto object-contain text-white mx-auto" />
-            <p className="text-7xl font-bold text-center bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">Bienvenido a la <br /> Experiencia Rizes</p>
-            <p className="text-white text-3xl text-center">Vibra, sueña, explota.</p>
-          </div>
-        </div>
-      </Intro>
+      {/* <Intro zIndex={990} /> */}
 
       {/* Intro 2 */}
-      <Intro id="hero-text-description" zIndex={90}>
-        <div className="flex justify-center items-center w-full h-full">
-          <div className="translate-y-[-20px]">
-            <p className="text-7xl font-bold text-center bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
-              Cumplimos 30 años <br /> creando  emociones <br /> que dejan huella.
-            </p>
-          </div>
-        </div>
-      </Intro>
+      <Description zIndex={980} />
+
+      {/* First Scroll Video */}
+      <ScrollVideo src='/videos/output_scroll.mp4' id="video-1" zIndex={970} />
     </div>
   );
 }
