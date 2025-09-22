@@ -20,31 +20,3 @@ body {
   mask-repeat: no-repeat;
   mask-size: clamp(15000px, 2500vw, 70000px);
 }
-
-.exit {
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  background: #1d1b22;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.entrance {
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  background: #1d1b22;
-  position: fixed;
-  top: 0;
-  left: 0;
-  mask-image: radial-gradient(
-    circle at 50% 100vh,
-    black 0%,
-    transparent 0%
-  );
-  mask-repeat: no-repeat;
-  mask-size: 100% 100%;
-  background: red;
-}
