@@ -1,100 +1,39 @@
 import Image from "next/image";
 import { Logo } from "@assets/svg/Logo";
 import HeroKeyBackground from "@images/hero-key-background.webp";
-import { useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger);
+type HeroProps = {
+    zIndex?: number;
+}
 
-export default function Hero() {
-
-    const logoMaskRef = useRef<HTMLDivElement>(null);
-
-    useGSAP(() => {
-        const logoMask = logoMaskRef.current;
-
-        const tl = gsap.timeline({
-            paused: true,
-            ease: "power2.Out",
-        });
-
-        tl
-            .to(
-                "#hero-key",
-                {
-                    scale: 1,
-                },
-                0,
-            )
-            .to(
-                "#hero-key-logo",
-                {
-                    opacity: 0,
-                    scale: 0.5,
-                },
-                "<",
-            )
-            .to(
-                "#hero-key-logo-mask",
-                {
-                    ease: "power1.inOut",
-                    maskSize: "200px",
-
-                },
-                "<",
-            )
-            .to(
-                "#hero-key",
-                {
-                    opacity: 0,
-                    duration: 0.3,
-                },
-                ">-0.2",
-            )
-            .to(
-                "#hero-key-logo-mask",
-                {
-                    opacity: 0,
-                },
-                ">",
-            );
-
-        ScrollTrigger.create({
-            trigger: logoMask,
-            start: "top top",
-            end: "bottom top",
-            animation: tl,
-            scrub: 1,
-            markers: true,
-        });
-
-        // Cleanup
-        return () => {
-            ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-        };
-    }, []);
+export default function Hero({ zIndex = 20 }: HeroProps) {
 
     return (
-        <section ref={logoMaskRef} id="hero-key-logo-mask" className="fixed z-10 top-0 w-full h-screen bg-white">
+        <>
+            <div className="h-screen w-full"></div>
 
-            <picture
-                id="hero-key"
-                className="h-screen scale-125 w-full block overflow-hidden fixed"
+            <section
+                id="hero-key-logo-mask"
+                className="fixed top-0 w-full h-screen bg-white" style={{ zIndex }}
             >
-                <Logo id="hero-key-logo" className="absolute inset-0 m-auto w-80 h-auto object-cover text-white" />
-
-                <Image
-                    alt=""
-                    id="hero-key-background"
-                    src={HeroKeyBackground.src}
-                    width={1920}
-                    height={1080}
-                    className="w-full h-full object-cover"
-                />
-            </picture>
-
-        </section>
+                <picture
+                    id="hero-key"
+                    className="h-screen scale-125 w-full block overflow-hidden fixed"
+                >
+                    <Logo
+                        id="hero-key-logo"
+                        className="absolute inset-0 m-auto w-80 h-auto object-cover text-white"
+                    />
+                    <Image
+                        alt=""
+                        id="hero-key-background"
+                        src={HeroKeyBackground.src}
+                        width={1920}
+                        height={1080}
+                        className="w-full h-full object-cover"
+                    />
+                </picture>
+            </section>
+        </>
     )
 }
