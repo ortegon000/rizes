@@ -1,4 +1,3 @@
-// pages/index.tsx
 'use client';
 import { useAnimationOrchestrator } from "@hooks/useAnimationOrchestrator";
 import Hero from "@components/hero";
