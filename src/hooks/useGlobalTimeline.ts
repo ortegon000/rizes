@@ -4,8 +4,6 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// --- Funciones de Animación Modulares ---
-
 function createHeroAnimation(
     tl: gsap.core.Timeline,
     selector: (query: string) => Element[],
@@ -57,10 +55,24 @@ function createDescriptionAnimation(
         .to(selector(`#hero-description`), { duration: 0.5, opacity: 0 }, ">");
 }
 
-/**
- * NUEVA FUNCIÓN: Crea la animación de video scrubbing.
- */
-function createVideoScrubAnimation(tl: gsap.core.Timeline, videoElement: HTMLVideoElement) {
+async function createVideoScrubAnimation(tl: gsap.core.Timeline, container: Element) {
+
+    const videoEl = container.querySelector<HTMLVideoElement>("#video-1 video");
+    if (!videoEl) {
+        console.error("Elemento de video #video-1 no encontrado.");
+        return;
+    }
+
+
+    await new Promise<void>((resolve) => {
+        if (videoEl.readyState >= 2) {
+            resolve();
+        } else {
+            videoEl.onloadedmetadata = () => resolve();
+        }
+    });
+
+
     const videoScrubber = { frame: 0 };
 
     // Da a la animación del video una "duración" dentro del timeline maestro.
@@ -75,11 +87,11 @@ function createVideoScrubAnimation(tl: gsap.core.Timeline, videoElement: HTMLVid
         .to(
             videoScrubber,
             {
-                frame: videoElement.duration,
+                frame: videoEl.duration,
                 duration: 4,
                 ease: "none",
                 onUpdate: () => {
-                    videoElement.currentTime = videoScrubber.frame;
+                    videoEl.currentTime = videoScrubber.frame;
                 },
             },
             ">-1", // Superponer con la animación anterior para una transición suave
@@ -87,18 +99,15 @@ function createVideoScrubAnimation(tl: gsap.core.Timeline, videoElement: HTMLVid
 }
 
 
-// --- El Hook Principal (Ahora asíncrono) ---
-
-
+// --- Main Hook ---
 export function useGlobalTimeline() {
     const containerRef = useRef<HTMLDivElement>(null);
-
-    const initialized = useRef(false); // <--- AÑADIR ESTA LÍNEA
+    const initialized = useRef(false);
 
     useLayoutEffect(() => {
         // Evita la doble inicialización en React 18 Strict Mode
-        if (initialized.current) return; // <--- AÑADIR ESTA LÍNEA
-        initialized.current = true; // <--- AÑADIR ESTA LÍNEA
+        if (initialized.current) return;
+        initialized.current = true;
 
         let ctx: gsap.Context;
 
@@ -106,33 +115,15 @@ export function useGlobalTimeline() {
             const container = containerRef.current;
             if (!container) return;
 
-            const videoEl = container.querySelector<HTMLVideoElement>("#video-1 video");
-            if (!videoEl) {
-                console.error("Elemento de video #video-1 no encontrado.");
-                return;
-            }
-
-            // 1. Esperar a que el video esté listo para reproducir
-            await new Promise<void>((resolve) => {
-                if (videoEl.readyState >= 2) {
-                    resolve();
-                } else {
-                    videoEl.onloadedmetadata = () => resolve();
-                }
-            });
-
-            // 2. Crear el contexto y el timeline maestro
             ctx = gsap.context(() => {
                 const masterTL = gsap.timeline({ paused: true, ease: "power2.inOut" });
                 const selector = gsap.utils.selector(container);
 
-                // Componer la secuencia de animaciones
+                // animations
                 createHeroAnimation(masterTL, selector);
-                createIntroAnimation(masterTL, selector);
-                createDescriptionAnimation(masterTL, selector);
-
-                // ¡Aquí se integra la animación del video!
-                createVideoScrubAnimation(masterTL, videoEl);
+                // createIntroAnimation(masterTL, selector);
+                // createDescriptionAnimation(masterTL, selector);
+                // awaitcreateVideoScrubAnimation(masterTL, container);
 
                 ScrollTrigger.create({
                     trigger: container,
@@ -140,7 +131,7 @@ export function useGlobalTimeline() {
                     end: "bottom bottom",
                     animation: masterTL,
                     scrub: 1,
-                    markers: true, // Quitar en producción
+                    markers: true,
                 });
             }, container);
         };
@@ -148,6 +139,10 @@ export function useGlobalTimeline() {
         initTimeline();
 
         return () => ctx && ctx.revert();
+        // return () => {
+        //     ctx && ctx.revert();
+        //     initialized.current = false;
+        // };
     }, []);
 
     return containerRef;
