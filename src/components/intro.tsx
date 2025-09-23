@@ -49,7 +49,7 @@ export default function Intro({ zIndex = 20 }: IntroProps) {
         <section
             ref={sectionRef}
             id="hero-intro"
-            className="relative inset-0 w-full h-screen"
+            className="absolute inset-0 w-full h-screen"
             style={{ zIndex }}
         >
             <div id={`hero-intro-entrance`} className="w-full h-full bg-[#1d1b22] absolute z-50 top-0 left-0"></div>

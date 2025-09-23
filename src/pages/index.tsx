@@ -11,13 +11,14 @@ export default function Home() {
 
   return (
     <div ref={containerRef} className="relative w-full">
-      {/* ================================================================ */}
-      {/* TIPO 1: Secciones Pinned Autocontenidas (usando el store) */}
-      {/* ================================================================ */}
-      <Hero zIndex={1000} />
-      <Intro zIndex={990} />
-      <Description zIndex={980} />
-      <ScrollVideo id="video-1" src="/videos/output_scroll.mp4" zIndex={970} />
+
+      {/* Contenedor de secciones superpuestas */}
+      <div className="relative h-screen w-full">
+        <Hero zIndex={1000} />
+        <Intro zIndex={990} />
+        <Description zIndex={980} />
+        <ScrollVideo id="video-1" src="/videos/output_scroll.mp4" zIndex={970} />
+      </div>
 
       {/* ================================================================ */}
       {/* TIPO 2: Escena de Scrollytelling (usando data-attributes) */}

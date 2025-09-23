@@ -39,7 +39,7 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
 
         <section
             ref={sectionRef}
-            className="relative h-screen w-full"
+            className="absolute inset-0 h-screen w-full"
             style={{ zIndex }}
         >
             <div

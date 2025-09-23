@@ -70,7 +70,7 @@ export default function ScrollVideo({ src, id, zIndex = 10 }: ScrollVideoProps) 
         <section
             ref={sectionRef}
             id={id}
-            className="relative h-screen w-full opacity-0 blur-xl" // Clases para el estado inicial
+            className="absolute inset-0 h-screen w-full opacity-0 blur-xl" // Clases para el estado inicial
             style={{ zIndex }}
         >
             <video
