@@ -25,7 +25,7 @@ export default function Intro({ zIndex = 20 }: IntroProps) {
                     </div>
                 </div>
 
-                <div id={`hero-intro-exit`} className="w-full h-full bg-[#1d1b22] bg-blue-500 absolute z-50 top-0 left-0"></div>
+                <div id={`hero-intro-exit`} className="w-full h-full bg-[#1d1b22] absolute z-50 top-0 left-0"></div>
             </section>
         </div>
     )

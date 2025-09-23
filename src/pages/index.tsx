@@ -24,7 +24,7 @@ export default function Home() {
       <Hero zIndex={1000} />
 
       {/* Intro 1 */}
-      {/* <Intro zIndex={990} /> */}
+      <Intro zIndex={990} />
 
       {/* Intro 2 */}
       <Description zIndex={980} />
