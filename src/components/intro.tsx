@@ -37,7 +37,10 @@ export default function Intro({ zIndex = 20 }: IntroProps) {
         registerAnimation({
             target: section,
             animation: tl,
-            config: { end: "+=150%" }
+            config: {
+                start: "top top",
+                end: "+=150%"
+            }
         });
     }, [registerAnimation]);
 

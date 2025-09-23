@@ -25,7 +25,7 @@ export function useAnimationOrchestrator() {
                         trigger: target,
                         animation: animation,
                         pin: true, // Estos componentes se fijan a sí mismos
-                        start: "top top",
+                        start: config?.start || "top top",
                         end: config?.end || "+=200%",
                         scrub: 1,
                         markers: true, // Marcadores verdes para estos

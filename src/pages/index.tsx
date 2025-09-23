@@ -11,7 +11,7 @@ export default function Home() {
   const containerRef = useAnimationOrchestrator();
 
   return (
-    <div ref={containerRef}>
+    <div ref={containerRef} className="relative w-full">
       {/* ================================================================ */}
       {/* TIPO 1: Secciones Pinned Autocontenidas (usando el store) */}
       {/* ================================================================ */}
@@ -23,33 +23,34 @@ export default function Home() {
       {/* ================================================================ */}
       {/* TIPO 2: Escena de Scrollytelling (usando data-attributes) */}
       {/* ================================================================ */}
-      {/* <div className="relative h-[300vh] w-full bg-black"> Contenedor de la Escena */}
+      {/* Contenedor de la Escena */}
+      {/* <div className="relative h-[300vh] w-full bg-black"> */}
 
       {/* Capa de Fondo - Se fijará con 'data-pin-target' */}
       {/* <div data-pin-target className="sticky top-0 h-screen w-full" style={{ zIndex: 20 }}>
-          <video src="/videos/1.mp4" className="h-full w-full object-cover" muted loop playsInline />
-        </div> */}
+            <video src="/videos/1.mp4" className="h-full w-full object-cover" muted loop playsInline />
+          </div> */}
 
       {/* Capa de Contenido - Hará scroll con 'data-scroll-target' */}
       {/* <div className="absolute top-0 left-0 w-full" style={{ zIndex: 30 }}>
-          <ScrollingText>
-            <p>Este es el primer texto.</p>
-          </ScrollingText>
-          <ScrollingText>
-            <p>Un segundo párrafo aparece.</p>
-          </ScrollingText>
-          <ScrollingText>
-            <p>Y finalmente, el tercero.</p>
-          </ScrollingText>
-        </div> */}
+            <ScrollingText>
+              <p>Este es el primer texto.</p>
+            </ScrollingText>
+            <ScrollingText>
+              <p>Un segundo párrafo aparece.</p>
+            </ScrollingText>
+            <ScrollingText>
+              <p>Y finalmente, el tercero.</p>
+            </ScrollingText>
+          </div> */}
       {/* </div> */}
 
       {/* ================================================================ */}
       {/* Puedes tener más secciones de cualquier tipo después */}
       {/* ================================================================ */}
       {/* <div className="relative h-screen bg-gray-900 flex items-center justify-center">
-        <h2 className="text-5xl text-white">Fin de la Experiencia</h2>
-      </div> */}
+          <h2 className="text-5xl text-white">Fin de la Experiencia</h2>
+        </div> */}
     </div>
   );
 }

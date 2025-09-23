@@ -7,6 +7,7 @@ export type AnimationRegistration = {
     target: HTMLElement;
     animation: gsap.core.Timeline;
     config?: {
+        start?: string;
         end?: string;
     };
 };
