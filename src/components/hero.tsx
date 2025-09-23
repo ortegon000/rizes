@@ -31,7 +31,7 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
         registerAnimation({
             target: section,
             animation: tl,
-            config: { end: "+=150%" }
+            config: { end: "+=200%" }
         });
     }, [registerAnimation]);
 
