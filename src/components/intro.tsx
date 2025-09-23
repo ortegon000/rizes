@@ -38,7 +38,7 @@ export default function Intro({ zIndex = 20 }: IntroProps) {
             target: section,
             animation: tl,
             config: {
-                start: "top top",
+                startOffset: "-50%",
                 end: "+=150%"
             }
         });

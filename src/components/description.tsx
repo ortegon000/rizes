@@ -36,7 +36,10 @@ export default function Description({ zIndex = 20 }: DescriptionProps) {
         registerAnimation({
             target: section,
             animation: tl,
-            config: { end: "+=150%" }
+            config: {
+                startOffset: "-50%",
+                end: "+=150%"
+            }
         });
     }, [registerAnimation]);
 

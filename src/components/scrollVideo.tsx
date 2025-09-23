@@ -1,4 +1,3 @@
-// components/ScrollVideo.tsx
 import { useRef, useLayoutEffect } from 'react';
 import { gsap } from 'gsap';
 import { useAnimationStore } from '@store/animationStore';
@@ -58,7 +57,10 @@ export default function ScrollVideo({ src, id, zIndex = 10 }: ScrollVideoProps) 
         registerAnimation({
             target: section,
             animation: tl,
-            config: { end: "+=400%" } // Damos más espacio de scroll para el video
+            config: {
+                startOffset: "-50%",
+                end: "+=400%"
+            } // Damos más espacio de scroll para el video
         });
 
     }, [registerAnimation]);

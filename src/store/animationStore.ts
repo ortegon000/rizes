@@ -9,6 +9,7 @@ export type AnimationRegistration = {
     config?: {
         start?: string;
         end?: string;
+        startOffset?: string;
     };
 };
 
