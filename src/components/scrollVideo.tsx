@@ -2,13 +2,16 @@
 // import { gsap } from 'gsap';
 // import { useAnimationStore } from '@store/animationStore';
 
+import { forwardRef } from 'react';
+
 type ScrollVideoProps = {
     src: string;
     id: string;
     zIndex?: number;
 };
 
-export default function ScrollVideo({ src, id, zIndex = 10 }: ScrollVideoProps) {
+const ScrollVideo = forwardRef<HTMLVideoElement, ScrollVideoProps>(({ src, id, zIndex = 10 }, ref) => {
+
     // const sectionRef = useRef<HTMLElement>(null);
     // const videoRef = useRef<HTMLVideoElement>(null); // Ref específico para el video
     // const registerAnimation = useAnimationStore((state) => state.registerAnimation);
@@ -75,6 +78,7 @@ export default function ScrollVideo({ src, id, zIndex = 10 }: ScrollVideoProps) 
         >
             <video
                 // ref={videoRef} // Asignamos el ref al video
+                ref={ref}
                 src={src}
                 className="w-full h-full object-cover"
                 preload="auto"
@@ -84,4 +88,8 @@ export default function ScrollVideo({ src, id, zIndex = 10 }: ScrollVideoProps) 
             />
         </section>
     );
-}
+});
+
+ScrollVideo.displayName = 'ScrollVideo';
+
+export default ScrollVideo;

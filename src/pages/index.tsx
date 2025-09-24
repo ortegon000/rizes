@@ -24,8 +24,8 @@ export default function Home() {
   useGSAP(
     () => {
 
-      // NUEVO: Obtener la referencia al elemento de video
-      const videoEl = gsap.utils.selector(container)("#video-1 video")[0] as HTMLVideoElement;
+      // CAMBIO: Usamos la ref directamente, es más seguro que un selector
+      const videoEl = videoRef.current;
 
       // Si por alguna razón el video no existe, salimos para evitar errores.
       if (!videoEl) return;
@@ -43,7 +43,6 @@ export default function Home() {
         const videoScrubber = { frame: 0 };
 
         const tl = gsap.timeline({
-          ease: "none",
           scrollTrigger: {
             trigger: container.current,
             start: "top top",
@@ -94,31 +93,37 @@ export default function Home() {
           .to("#hero-description", { backgroundColor: "transparent" }, ">")
           .to("#hero-description", { opacity: 0 }, ">0.5")
 
-        // --- Animación del video scroll (Lógica corregida) ---
-        tl
-          .to(
-            "#video-1",
-            {
-              filter: "blur(0px)",
-              ease: "power2.inOut",
-            },
-            "<-0.5"
-          )
+        // --- Animación del video scroll ---
+        tl.to(
+          "#video-1",
+          {
+            filter: "blur(0px)",
+            ease: "power2.inOut",
+          },
+          "<-0.5"
+        )
           .to(
             videoScrubber,
             {
-              frame: () => videoEl.duration,
+              frame: videoEl.duration, // ¡Perfecto!
               ease: "none",
-              duration: 2,
+              // CAMBIO: ¡Elimina esta línea! Con scrub, la duración
+              // la define el espacio que ocupa en la timeline,
+              // no un valor en segundos. Esto causa conflictos.
+              // duration: 2, 
               onUpdate: () => {
-                // Sincronizamos el video con nuestro objeto proxy
-                if (videoEl.duration > 0) {
+                if (videoEl.duration) {
                   videoEl.currentTime = videoScrubber.frame;
                 }
               },
             },
-            ">" // Empezar al mismo tiempo que el fade-in
+            "<" // Sincronizado con el blur
           );
+
+        // CAMBIO MÁS IMPORTANTE: Forzar la actualización de ScrollTrigger
+        // Le dice a ScrollTrigger: "Oye, ya todo está en su sitio (incluyendo Lenis),
+        // vuelve a calcular todas tus posiciones AHORA".
+        ScrollTrigger.refresh();
       };
 
       // --- El punto CLAVE ---
@@ -149,7 +154,15 @@ export default function Home() {
       <Hero zIndex={1000} />
       <Intro zIndex={990} />
       <Description zIndex={980} />
-      <ScrollVideo id="video-1" src="/videos/output_scroll.mp4" zIndex={970} />
+      <Description zIndex={980} />
+
+      {/* CAMBIO: Pasamos la ref al componente */}
+      <ScrollVideo
+        ref={videoRef}
+        id="video-1"
+        src="/videos/output_scroll.mp4"
+        zIndex={970}
+      />
     </div>
 
     // </div>
