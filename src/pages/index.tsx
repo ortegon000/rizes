@@ -10,6 +10,8 @@ import Intro from "@components/intro";
 import Description from "@components/description";
 import ScrollVideo from "@components/scrollVideo";
 
+import Image from "next/image";
+
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
@@ -38,7 +40,12 @@ export default function Home() {
             scrub: 1,
             pin: true,
             anticipatePin: 1,
-            markers: true,
+            markers: {
+              startColor: "green",
+              endColor: "red",
+              fontSize: "25px",
+              indent: 30,
+            },
           },
         });
 
@@ -82,14 +89,14 @@ export default function Home() {
 
           // video scroll 1
           .to(
-            "#video-1",
+            "#video-scroll-1",
             {
               opacity: 1,
             },
             "<-0.35"
           )
           .to(
-            "#video-1",
+            "#video-scroll-1",
             {
               filter: "blur(0px)",
               ease: "power2.inOut",
@@ -108,7 +115,19 @@ export default function Home() {
               },
             },
             ">"
-          );
+          )
+
+          // text images 1
+          .to("#text-images-1", {
+            y: "-150dvh",
+            duration: 1.25,
+          }, ">-0.35")
+          .to("#text-images-1-right", {
+            y: -300,
+            duration: 1.25,
+          }, "<0.1")
+
+          ;
 
         ScrollTrigger.refresh();
       };
@@ -134,14 +153,49 @@ export default function Home() {
       <Hero zIndex={1000} />
       <Intro zIndex={990} />
       <Description zIndex={980} />
-      <Description zIndex={980} />
-
       <ScrollVideo
         ref={videoRef}
-        id="video-1"
+        id="video-scroll-1"
         src="/videos/output_scroll.mp4"
         zIndex={970}
       />
+
+      <section id="text-images-1" className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex: 980 }}>
+        <div className="">
+          <p className="text-6xl max-w-md mr-0 ml-auto text-shadow-md">
+            <strong>Somos una empresa 100% mexicana</strong> que combina <strong>precisión, pasión y visión estratégica.</strong>
+          </p>
+          <p className="mt-12 text-6xl max-w-md mr-0 ml-auto text-shadow-md">
+            Ejecución impecable, <strong>control presupuestal inteligente</strong> y atención a cada detalle.
+          </p>
+          <Image
+            alt=""
+            src="/images/text-image-1/1.webp"
+            width={500}
+            height={500}
+            className="mt-12 max-w-md mr-0 ml-auto h-[400px] object-cover"
+          />
+        </div>
+
+        <div className="" id="text-images-1-right">
+          <Image
+            alt=""
+            src="/images/text-image-1/2.webp"
+            width={500}
+            height={500}
+            className="w-full ml-0 mt-[200px] mr-auto h-[600px] object-cover"
+          />
+
+          <Image
+            alt=""
+            src="/images/text-image-1/3.webp"
+            width={500}
+            height={500}
+            className="mt-8 max-w-md h-[400px] object-cover"
+          />
+        </div>
+
+      </section>
     </div>
   );
 }

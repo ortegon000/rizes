@@ -11,7 +11,7 @@ const ScrollVideo = forwardRef<HTMLVideoElement, ScrollVideoProps>(({ src, id, z
     return (
         <section
             id={id}
-            className="absolute inset-0 h-screen w-full blur-xl opacity-0"
+            className="absolute inset-0 h-dvh w-full blur-xl opacity-0"
             style={{ zIndex }}
         >
             <video

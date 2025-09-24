@@ -7,7 +7,7 @@ export default function Description({ zIndex = 20 }: DescriptionProps) {
     return (
         <section
             id="hero-description"
-            className="absolute inset-0 w-full h-screen"
+            className="absolute inset-0 w-full h-dvh"
             style={{ zIndex }}
         >
             <div id={`hero-description-entrance`} className="w-full h-full bg-[#1d1b22] absolute z-50 top-0 left-0"></div>

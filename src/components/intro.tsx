@@ -8,7 +8,7 @@ export default function Intro({ zIndex = 20 }: IntroProps) {
 
         <section
             id="hero-intro"
-            className="absolute inset-0 w-full h-screen bg-[#1d1b22]"
+            className="absolute inset-0 w-full h-dvh bg-[#1d1b22]"
             style={{ zIndex }}
         >
             <div id="hero-intro-entrance" className="w-full h-full bg-[#1d1b22] absolute z-50 top-0 left-0"></div>
