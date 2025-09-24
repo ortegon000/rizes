@@ -15,46 +15,75 @@ export function useAnimationOrchestrator() {
         if (!container) return;
 
         const ctx = gsap.context(() => {
-            const registeredAnimations = useAnimationStore.getState().animations;
+            let registeredAnimations = useAnimationStore.getState().animations;
+
+            // Ordenar animaciones por prioridad si está definida
+            registeredAnimations = registeredAnimations.sort((a, b) => {
+                const priorityA = a.config?.priority ?? 0;
+                const priorityB = b.config?.priority ?? 0;
+                return priorityA - priorityB;
+            });
+
+            // DEBUG: Verificar cuántas animaciones se registraron
+            console.log('Registered animations:', registeredAnimations.length);
+            registeredAnimations.forEach((reg, index) => {
+                console.log(`Animation ${index}:`, {
+                    target: reg.target.id || reg.target.tagName,
+                    config: reg.config
+                });
+            });
 
             if (registeredAnimations.length > 0) {
-                // Crear el master timeline
                 const masterTimeline = gsap.timeline();
                 let cumulativeHeight = 0;
+                let previousHeightMultiplier = 0;
 
                 registeredAnimations.forEach((registration, index) => {
-                    const { animation, config } = registration; // Removemos 'target' si no lo usamos
+                    const { animation, config } = registration;
 
-                    // Calcular la duración en viewport heights
                     const endValue = config?.end || "+=200%";
                     const heightMultiplier = parseFloat(endValue.replace(/[+=]|%/g, '')) / 100;
 
-                    // Offset de inicio
-                    const startOffset = config?.startOffset || "0%";
-                    const offsetValue = parseFloat(startOffset.replace(/[+-]|%/g, '')) / 100;
-                    const isNegativeOffset = startOffset.includes('-');
-
-                    // Calcular posición en el master timeline
                     let timelinePosition;
+
                     if (index === 0) {
                         timelinePosition = 0;
                     } else {
-                        if (isNegativeOffset) {
-                            timelinePosition = cumulativeHeight - offsetValue;
+                        // Manejar superposición (overlap)
+                        const overlap = config?.overlap || 0;
+                        // El overlap se calcula sobre la duración de la animación ANTERIOR
+                        const overlapOffset = previousHeightMultiplier * (overlap / 100);
+
+                        // Manejar startOffset manual
+                        const startOffset = config?.startOffset || "0%";
+                        const offsetValue = parseFloat(startOffset.replace(/[+-]|%/g, '')) / 100;
+                        const isNegativeOffset = startOffset.includes('-');
+
+                        if (config?.overlap !== undefined) {
+                            // Usar sistema de overlap
+                            timelinePosition = cumulativeHeight - overlapOffset;
+                        } else if (startOffset !== "0%") {
+                            // Usar sistema de startOffset (compatibilidad hacia atrás)
+                            if (isNegativeOffset) {
+                                timelinePosition = cumulativeHeight - offsetValue;
+                            } else {
+                                timelinePosition = cumulativeHeight + offsetValue;
+                            }
                         } else {
-                            timelinePosition = cumulativeHeight + offsetValue;
+                            // Sin superposición
+                            timelinePosition = cumulativeHeight;
                         }
                     }
 
-                    // Añadir la animación al master timeline
+                    console.log(`Adding animation ${index} at position:`, timelinePosition, `(overlap: ${config?.overlap || 0}%)`);
                     masterTimeline.add(animation, timelinePosition);
 
-                    // Actualizar altura acumulativa
                     cumulativeHeight += heightMultiplier;
+                    previousHeightMultiplier = heightMultiplier; // Guardar el valor actual para la siguiente iteración
                 });
 
-                // Crear UN SOLO ScrollTrigger para todo el master timeline
-                // Este ScrollTrigger va a "pin" todo el container y controlar el scrubbing
+                console.log('Total height:', cumulativeHeight);
+
                 ScrollTrigger.create({
                     trigger: container,
                     animation: masterTimeline,
@@ -64,42 +93,9 @@ export function useAnimationOrchestrator() {
                     scrub: 1,
                     markers: true,
                     pinSpacing: false,
+                    onUpdate: (self) => console.log("progress:", self.progress),
                 });
             }
-
-            // Resto de lógica para data-attributes...
-            const pinTarget = container.querySelector<HTMLElement>('[data-pin-target]');
-            if (pinTarget) {
-                const pinTrigger = pinTarget.parentElement;
-                if (pinTrigger) {
-                    ScrollTrigger.create({
-                        trigger: pinTrigger,
-                        pin: pinTarget,
-                        start: "top top",
-                        end: "bottom bottom",
-                        markers: { startColor: "blue", endColor: "blue" },
-                    });
-                }
-            }
-
-            const scrollTargets = gsap.utils.toArray<HTMLElement>('[data-scroll-target]');
-            scrollTargets.forEach(target => {
-                gsap.fromTo(target,
-                    { opacity: 0, y: 50 },
-                    {
-                        opacity: 1,
-                        y: 0,
-                        scrollTrigger: {
-                            trigger: target,
-                            start: "top 75%",
-                            end: "bottom 60%",
-                            scrub: true,
-                            markers: { startColor: "purple", endColor: "purple" },
-                        }
-                    }
-                );
-            });
-
         }, container);
 
         return () => {

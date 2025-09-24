@@ -4,8 +4,8 @@ import SmoothScroll from "@components/smoothScroll";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <SmoothScroll>
-      <Component {...pageProps} />
-    </SmoothScroll>
+    // <SmoothScroll>
+    <Component {...pageProps} />
+    // </SmoothScroll>
   );
 }

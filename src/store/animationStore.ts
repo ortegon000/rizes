@@ -1,6 +1,5 @@
 // store/animationStore.ts
 import { create } from 'zustand';
-import type { gsap } from 'gsap'; // ¡Perfecto! Solo importa los tipos.
 
 // Define la "forma" de los datos que guardaremos.
 export type AnimationRegistration = {
@@ -10,6 +9,9 @@ export type AnimationRegistration = {
         start?: string;
         end?: string;
         startOffset?: string;
+        // Nueva propiedad para controlar superposición
+        overlap?: number; // Porcentaje de superposición con la animación anterior (0-100)
+        priority?: number; // Orden de ejecución (menor número = mayor prioridad)
     };
 };
 

@@ -1,56 +1,157 @@
 'use client';
-import { useAnimationOrchestrator } from "@hooks/useAnimationOrchestrator";
+// import { useAnimationOrchestrator } from "@hooks/useAnimationOrchestrator";
+
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+
 import Hero from "@components/hero";
 import Intro from "@components/intro";
 import Description from "@components/description";
 import ScrollVideo from "@components/scrollVideo";
-// import ScrollingText from "@components/scrollingText";
+
+gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  const containerRef = useAnimationOrchestrator();
+  // const containerRef = useAnimationOrchestrator();
+
+  const container = useRef<HTMLDivElement>(null);
+  // NUEVO: Creamos una ref específica para el elemento video
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useGSAP(
+    () => {
+
+      // NUEVO: Obtener la referencia al elemento de video
+      const videoEl = gsap.utils.selector(container)("#video-1 video")[0] as HTMLVideoElement;
+
+      // Si por alguna razón el video no existe, salimos para evitar errores.
+      if (!videoEl) return;
+
+      // Creamos una función para encapsular toda la lógica de la animación.
+      // Así, podemos llamarla cuando estemos seguros de que el video está listo.
+      const setupAnimation = () => {
+        // Nos aseguramos de que el video esté pausado
+        videoEl.pause();
+        videoEl.currentTime = 0;
+
+        console.log("Video listo. Duración:", videoEl.duration);
+
+        // Creamos el objeto proxy para el scrubbing
+        const videoScrubber = { frame: 0 };
+
+        const tl = gsap.timeline({
+          ease: "none",
+          scrollTrigger: {
+            trigger: container.current,
+            start: "top top",
+            end: "+=10000",
+            scrub: 1,
+            pin: true,
+            anticipatePin: 1,
+            markers: true,
+          },
+        });
+
+        // hero
+        tl.to("#hero-key", { scale: 1 }, 0)
+          .to("#hero-key-logo", { opacity: 0, scale: 0.5 }, "<")
+          .to(
+            "#hero-key-logo-mask",
+            {
+              maskSize: "200px",
+              ease: "power2.out",
+            },
+            "<"
+          )
+          .to("#hero-key", { opacity: 0 }, ">-0.2")
+          .to("#hero-key-logo-mask", { opacity: 0 }, ">-0.5")
+
+          // intro
+          .fromTo(
+            "#hero-intro-entrance",
+            { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
+            { maskImage: "radial-gradient(circle at 50% -100%, black 50%, transparent 50%)" },
+            '>-0.45'
+          )
+          .fromTo(
+            "#hero-intro-exit",
+            { maskImage: "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)" },
+            { maskImage: "radial-gradient(circle at 50% -150%, transparent 50%, black 50%)" },
+            ">-0.1",
+          )
+          .to("#hero-intro", { opacity: 0 }, "<")
+
+          // description
+          .fromTo(
+            "#hero-description-entrance",
+            { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
+            { maskImage: "radial-gradient(circle at 50% -150%, black 50%, transparent 50%)" },
+            ">"
+          )
+          .to("#hero-description", { backgroundColor: "transparent" }, ">")
+          .to("#hero-description", { opacity: 0 }, ">0.5")
+
+        // --- Animación del video scroll (Lógica corregida) ---
+        tl
+          .to(
+            "#video-1",
+            {
+              filter: "blur(0px)",
+              ease: "power2.inOut",
+            },
+            "<-0.5"
+          )
+          .to(
+            videoScrubber,
+            {
+              frame: () => videoEl.duration,
+              ease: "none",
+              duration: 2,
+              onUpdate: () => {
+                // Sincronizamos el video con nuestro objeto proxy
+                if (videoEl.duration > 0) {
+                  videoEl.currentTime = videoScrubber.frame;
+                }
+              },
+            },
+            ">" // Empezar al mismo tiempo que el fade-in
+          );
+      };
+
+      // --- El punto CLAVE ---
+      // Verificamos si los metadatos ya están cargados.
+      // readyState > 0 significa que al menos los metadatos están listos.
+      if (videoEl.readyState > 0) {
+        console.log("El video ya estaba listo.");
+        setupAnimation();
+      } else {
+        // Si no, agregamos un listener para esperar.
+        console.log("Esperando a que el video cargue metadatos...");
+        videoEl.addEventListener("loadedmetadata", setupAnimation);
+      }
+
+      // Devolvemos una función de limpieza para remover el listener
+      // si el componente se desmonta antes de que el video cargue.
+      return () => {
+        videoEl.removeEventListener("loadedmetadata", setupAnimation);
+      }
+    },
+    { scope: container }
+  );
 
   return (
-    <div ref={containerRef} className="relative w-full">
+    // <div ref={containerRef} className="relative w-full">
 
-      {/* Contenedor de secciones superpuestas */}
-      <div className="relative h-screen w-full">
-        <Hero zIndex={1000} />
-        <Intro zIndex={990} />
-        <Description zIndex={980} />
-        <ScrollVideo id="video-1" src="/videos/output_scroll.mp4" zIndex={970} />
-      </div>
-
-      {/* ================================================================ */}
-      {/* TIPO 2: Escena de Scrollytelling (usando data-attributes) */}
-      {/* ================================================================ */}
-      {/* Contenedor de la Escena */}
-      {/* <div className="relative h-[300vh] w-full bg-black"> */}
-
-      {/* Capa de Fondo - Se fijará con 'data-pin-target' */}
-      {/* <div data-pin-target className="sticky top-0 h-screen w-full" style={{ zIndex: 20 }}>
-            <video src="/videos/1.mp4" className="h-full w-full object-cover" muted loop playsInline />
-          </div> */}
-
-      {/* Capa de Contenido - Hará scroll con 'data-scroll-target' */}
-      {/* <div className="absolute top-0 left-0 w-full" style={{ zIndex: 30 }}>
-            <ScrollingText>
-              <p>Este es el primer texto.</p>
-            </ScrollingText>
-            <ScrollingText>
-              <p>Un segundo párrafo aparece.</p>
-            </ScrollingText>
-            <ScrollingText>
-              <p>Y finalmente, el tercero.</p>
-            </ScrollingText>
-          </div> */}
-      {/* </div> */}
-
-      {/* ================================================================ */}
-      {/* Puedes tener más secciones de cualquier tipo después */}
-      {/* ================================================================ */}
-      {/* <div className="relative h-screen bg-gray-900 flex items-center justify-center">
-          <h2 className="text-5xl text-white">Fin de la Experiencia</h2>
-        </div> */}
+    <div className="relative h-screen w-full" ref={container}>
+      <Hero zIndex={1000} />
+      <Intro zIndex={990} />
+      <Description zIndex={980} />
+      <ScrollVideo id="video-1" src="/videos/output_scroll.mp4" zIndex={970} />
     </div>
+
+    // </div>
   );
 }
