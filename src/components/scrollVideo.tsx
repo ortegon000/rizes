@@ -14,6 +14,7 @@ const ScrollVideo = forwardRef<HTMLVideoElement, ScrollVideoProps>(({ src, id, z
             className="absolute inset-0 h-dvh w-full blur-xl opacity-0"
             style={{ zIndex }}
         >
+            <div className='absolute inset-0 h-full w-full bg-black/50'></div>
             <video
                 ref={ref}
                 src={src}

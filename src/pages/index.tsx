@@ -9,8 +9,7 @@ import Hero from "@components/hero";
 import Intro from "@components/intro";
 import Description from "@components/description";
 import ScrollVideo from "@components/scrollVideo";
-
-import Image from "next/image";
+import TextImages from "@components/textImages";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -114,19 +113,28 @@ export default function Home() {
                 }
               },
             },
-            ">"
+            ">-0.25"
           )
 
           // text images 1
           .to("#text-images-1", {
             y: "-150dvh",
             duration: 1.25,
-          }, ">-0.35")
+          }, ">-0.25")
           .to("#text-images-1-right", {
             y: -300,
             duration: 1.25,
           }, "<0.1")
 
+          .to(
+            "#video-scroll-1",
+            {
+              filter: "blur(20px)",
+              opacity: 0,
+              ease: "power2.inOut",
+            },
+            "<"
+          )
           ;
 
         ScrollTrigger.refresh();
@@ -159,43 +167,7 @@ export default function Home() {
         src="/videos/output_scroll.mp4"
         zIndex={970}
       />
-
-      <section id="text-images-1" className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex: 980 }}>
-        <div className="">
-          <p className="text-6xl max-w-md mr-0 ml-auto text-shadow-md">
-            <strong>Somos una empresa 100% mexicana</strong> que combina <strong>precisión, pasión y visión estratégica.</strong>
-          </p>
-          <p className="mt-12 text-6xl max-w-md mr-0 ml-auto text-shadow-md">
-            Ejecución impecable, <strong>control presupuestal inteligente</strong> y atención a cada detalle.
-          </p>
-          <Image
-            alt=""
-            src="/images/text-image-1/1.webp"
-            width={500}
-            height={500}
-            className="mt-12 max-w-md mr-0 ml-auto h-[400px] object-cover"
-          />
-        </div>
-
-        <div className="" id="text-images-1-right">
-          <Image
-            alt=""
-            src="/images/text-image-1/2.webp"
-            width={500}
-            height={500}
-            className="w-full ml-0 mt-[200px] mr-auto h-[600px] object-cover"
-          />
-
-          <Image
-            alt=""
-            src="/images/text-image-1/3.webp"
-            width={500}
-            height={500}
-            className="mt-8 max-w-md h-[400px] object-cover"
-          />
-        </div>
-
-      </section>
+      <TextImages zIndex={980} />
     </div>
   );
 }
