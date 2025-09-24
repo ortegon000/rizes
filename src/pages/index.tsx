@@ -88,20 +88,33 @@ export default function Home() {
             "#hero-description-entrance",
             { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
             { maskImage: "radial-gradient(circle at 50% -150%, black 50%, transparent 50%)" },
-            ">"
+            ">-0.25"
           )
-          .to("#hero-description", { backgroundColor: "transparent" }, ">")
-          .to("#hero-description", { opacity: 0 }, ">0.5")
+          .to("#hero-description", { opacity: 0 }, ">")
 
-        // --- Animación del video scroll ---
-        tl.to(
-          "#video-1",
-          {
-            filter: "blur(0px)",
-            ease: "power2.inOut",
-          },
-          "<-0.5"
-        )
+          // --- video scroll 1 ---
+          .to(
+            "#video-1",
+            {
+              opacity: 1,
+            },
+            "<-0.35"
+          )
+          .to(
+            "#video-1",
+            {
+              filter: "blur(0px)",
+              ease: "power2.inOut",
+            },
+            ">-0.25"
+          )
+          // .to(
+          //   "#video-1 video",
+          //   {
+          //     opacity: 1,
+          //   },
+          //   "<"
+          // )
           .to(
             videoScrubber,
             {
@@ -117,7 +130,7 @@ export default function Home() {
                 }
               },
             },
-            "<" // Sincronizado con el blur
+            ">" // Sincronizado con el blur
           );
 
         // CAMBIO MÁS IMPORTANTE: Forzar la actualización de ScrollTrigger
