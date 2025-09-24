@@ -1,54 +1,16 @@
-// components/Hero.tsx
 import Image from "next/image";
 import { Logo } from "@assets/svg/Logo";
 import HeroKeyBackground from "@images/hero-key-background.webp";
-
-// import { useRef, useLayoutEffect } from 'react';
-// import { gsap } from 'gsap';
-// import { useAnimationStore } from '@store/animationStore';
 
 type HeroProps = {
     zIndex?: number;
 };
 
 export default function Hero({ zIndex = 20 }: HeroProps) {
-    // const sectionRef = useRef<HTMLElement>(null);
-    // const registerAnimation = useAnimationStore((state) => state.registerAnimation);
-
-    // useLayoutEffect(() => {
-    //     const section = sectionRef.current;
-    //     if (!section) return;
-
-    //     const selector = gsap.utils.selector(section);
-    //     const tl = gsap.timeline();
-
-    //     tl.to(selector("#hero-key"), { scale: 1 }, 0)
-    //         .to(selector("#hero-key-logo"), { opacity: 0, scale: 0.5 }, "<")
-    //         .to(
-    //             selector("#hero-key-logo-mask"),
-    //             {
-    //                 maskPosition: "50% 200px",
-    //                 maskSize: "200px",
-    //             },
-    //             "<"
-    //         )
-    //         .to(selector("#hero-key"), { opacity: 0 }, ">")
-    //         .to(selector("#hero-key-logo-mask"), { opacity: 0 }, ">");
-
-    //     registerAnimation({
-    //         target: section,
-    //         animation: tl,
-    //         config: {
-    //             end: "+=200%",
-    //             priority: 1
-    //         }
-    //     });
-    // }, [registerAnimation]);
 
     return (
 
         <section
-            // ref={sectionRef}
             className="absolute inset-0 h-screen w-full"
             style={{ zIndex }}
         >
@@ -68,9 +30,9 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
                         alt=""
                         id="hero-key-background"
                         src={HeroKeyBackground.src}
-                        fill // 'fill' es mejor para imágenes de fondo en Next.js
+                        fill
                         className="object-cover"
-                        priority // Carga esta imagen primero ya que es LCP
+                        priority
                     />
                 </picture>
             </div>

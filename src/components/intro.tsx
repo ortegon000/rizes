@@ -1,56 +1,12 @@
-import { Logo } from "@assets/svg/Logo";
-// import { useRef, useLayoutEffect } from 'react';
-// import { gsap } from 'gsap';
-// import { useAnimationStore } from '@store/animationStore';
-
 type IntroProps = {
     zIndex?: number;
 }
 
 export default function Intro({ zIndex = 20 }: IntroProps) {
 
-    // const sectionRef = useRef<HTMLElement>(null);
-    // const registerAnimation = useAnimationStore((state) => state.registerAnimation);
-
-    // useLayoutEffect(() => {
-    //     const section = sectionRef.current;
-    //     if (!section) return;
-
-    //     const selector = gsap.utils.selector(section);
-
-    //     const tl = gsap.timeline();
-
-    //     tl.fromTo(
-    //         selector(`#hero-intro-entrance`),
-    //         { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
-    //         { maskImage: "radial-gradient(circle at 50% -100%, black 50%, transparent 50%)" },
-    //         0
-    //     )
-    //         .to(selector(`#hero-intro-logo`), { opacity: 1 }, "<")
-    //         .to(selector(`#hero-intro-exit`), { duration: 2 }, "<")
-    //         .fromTo(
-    //             selector(`#hero-intro-exit`),
-    //             { maskImage: "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)" },
-    //             { maskImage: "radial-gradient(circle at 50% -150%, transparent 50%, black 50%)" },
-    //             "<0.5",
-    //         )
-    //         .to(section, { opacity: 0, duration: 0.1 }, "<0.5");
-
-    //     registerAnimation({
-    //         target: section,
-    //         animation: tl,
-    //         config: {
-    //             end: "+=200%",
-    //             overlap: 70,
-    //             priority: 2
-    //         }
-    //     });
-    // }, [registerAnimation]);
-
     return (
 
         <section
-            // ref={sectionRef}
             id="hero-intro"
             className="absolute inset-0 w-full h-screen bg-[#1d1b22]"
             style={{ zIndex }}

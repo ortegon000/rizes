@@ -1,5 +1,4 @@
 'use client';
-// import { useAnimationOrchestrator } from "@hooks/useAnimationOrchestrator";
 
 import { useRef } from "react";
 import gsap from "gsap";
@@ -15,31 +14,20 @@ gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
-  // const containerRef = useAnimationOrchestrator();
 
   const container = useRef<HTMLDivElement>(null);
-  // NUEVO: Creamos una ref específica para el elemento video
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
 
-      // CAMBIO: Usamos la ref directamente, es más seguro que un selector
       const videoEl = videoRef.current;
-
-      // Si por alguna razón el video no existe, salimos para evitar errores.
       if (!videoEl) return;
 
-      // Creamos una función para encapsular toda la lógica de la animación.
-      // Así, podemos llamarla cuando estemos seguros de que el video está listo.
+
       const setupAnimation = () => {
-        // Nos aseguramos de que el video esté pausado
         videoEl.pause();
         videoEl.currentTime = 0;
-
-        console.log("Video listo. Duración:", videoEl.duration);
-
-        // Creamos el objeto proxy para el scrubbing
         const videoScrubber = { frame: 0 };
 
         const tl = gsap.timeline({
@@ -92,7 +80,7 @@ export default function Home() {
           )
           .to("#hero-description", { opacity: 0 }, ">")
 
-          // --- video scroll 1 ---
+          // video scroll 1
           .to(
             "#video-1",
             {
@@ -108,51 +96,31 @@ export default function Home() {
             },
             ">-0.25"
           )
-          // .to(
-          //   "#video-1 video",
-          //   {
-          //     opacity: 1,
-          //   },
-          //   "<"
-          // )
           .to(
             videoScrubber,
             {
-              frame: videoEl.duration, // ¡Perfecto!
+              frame: videoEl.duration,
               ease: "none",
-              // CAMBIO: ¡Elimina esta línea! Con scrub, la duración
-              // la define el espacio que ocupa en la timeline,
-              // no un valor en segundos. Esto causa conflictos.
-              // duration: 2, 
               onUpdate: () => {
                 if (videoEl.duration) {
                   videoEl.currentTime = videoScrubber.frame;
                 }
               },
             },
-            ">" // Sincronizado con el blur
+            ">"
           );
 
-        // CAMBIO MÁS IMPORTANTE: Forzar la actualización de ScrollTrigger
-        // Le dice a ScrollTrigger: "Oye, ya todo está en su sitio (incluyendo Lenis),
-        // vuelve a calcular todas tus posiciones AHORA".
         ScrollTrigger.refresh();
       };
 
-      // --- El punto CLAVE ---
-      // Verificamos si los metadatos ya están cargados.
-      // readyState > 0 significa que al menos los metadatos están listos.
+
       if (videoEl.readyState > 0) {
-        console.log("El video ya estaba listo.");
         setupAnimation();
       } else {
-        // Si no, agregamos un listener para esperar.
         console.log("Esperando a que el video cargue metadatos...");
         videoEl.addEventListener("loadedmetadata", setupAnimation);
       }
 
-      // Devolvemos una función de limpieza para remover el listener
-      // si el componente se desmonta antes de que el video cargue.
       return () => {
         videoEl.removeEventListener("loadedmetadata", setupAnimation);
       }
@@ -161,7 +129,6 @@ export default function Home() {
   );
 
   return (
-    // <div ref={containerRef} className="relative w-full">
 
     <div className="relative h-screen w-full" ref={container}>
       <Hero zIndex={1000} />
@@ -169,7 +136,6 @@ export default function Home() {
       <Description zIndex={980} />
       <Description zIndex={980} />
 
-      {/* CAMBIO: Pasamos la ref al componente */}
       <ScrollVideo
         ref={videoRef}
         id="video-1"
@@ -177,7 +143,5 @@ export default function Home() {
         zIndex={970}
       />
     </div>
-
-    // </div>
   );
 }
