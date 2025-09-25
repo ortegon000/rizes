@@ -18,24 +18,35 @@ export default function Home() {
 
   const container = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const videoRef2 = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
 
       const videoEl = videoRef.current;
-      if (!videoEl) return;
+      const videoEl2 = videoRef2.current;
+      if (!videoEl || !videoEl2) return;
+
+      const eventListeners: {
+        el: HTMLElement;
+        enter: () => void;
+        leave: () => void;
+      }[] = [];
 
 
       const setupAnimation = () => {
         videoEl.pause();
         videoEl.currentTime = 0;
+        videoEl2.pause();
+        videoEl2.currentTime = 0;
         const videoScrubber = { frame: 0 };
+        const videoScrubber2 = { frame: 0 };
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container.current,
             start: "top top",
-            end: "+=10000",
+            end: "+=15000",
             scrub: 1,
             pin: true,
             anticipatePin: 1,
@@ -126,6 +137,7 @@ export default function Home() {
             duration: 1.25,
           }, "<0.1")
 
+          // video scroll 1 out
           .to(
             "#video-scroll-1",
             {
@@ -135,11 +147,84 @@ export default function Home() {
             },
             "<"
           )
+
+          // video scroll 2
+          .to(
+            "#video-scroll-2",
+            {
+              opacity: 1,
+            },
+            ">-0.15"
+          )
+          .to(
+            "#video-scroll-2",
+            {
+              filter: "blur(0px)",
+              ease: "power2.inOut",
+            },
+            ">-0.25"
+          )
+          .to(
+            videoScrubber2,
+            {
+              frame: videoEl2.duration,
+              ease: "none",
+              onUpdate: () => {
+                if (videoEl2.duration) {
+                  videoEl2.currentTime = videoScrubber2.frame;
+                }
+              },
+            },
+            ">-0.25"
+          )
+          // video scroll 2 out
+          .to(
+            "#video-scroll-2",
+            {
+              filter: "blur(20px)",
+              opacity: 0,
+              ease: "power2.inOut",
+            },
+            "<0.25"
+          )
           ;
+
+        const images = gsap.utils.toArray(".text-image");
+
+        images.forEach((image) => {
+          const el = image as HTMLElement;
+
+          const handleMouseEnter = () => {
+            gsap.to(el, {
+              borderWidth: "4px",
+              duration: 0.3,
+              ease: "power2.out",
+              overwrite: "auto",
+            });
+          };
+
+          const handleMouseLeave = () => {
+            gsap.to(el, {
+              borderWidth: "1px",
+              duration: 0.3,
+              ease: "power2.inOut",
+              overwrite: "auto",
+            });
+          };
+
+          // el.addEventListener("mouseenter", handleMouseEnter);
+          // el.addEventListener("mouseleave", handleMouseLeave);
+
+          // Guardamos una referencia para la limpieza
+          eventListeners.push({
+            el,
+            enter: handleMouseEnter,
+            leave: handleMouseLeave,
+          });
+        });
 
         ScrollTrigger.refresh();
       };
-
 
       if (videoEl.readyState > 0) {
         setupAnimation();
@@ -164,10 +249,16 @@ export default function Home() {
       <ScrollVideo
         ref={videoRef}
         id="video-scroll-1"
-        src="/videos/output_scroll.mp4"
+        src="/videos/output_scroll_1.mp4"
         zIndex={970}
       />
-      <TextImages zIndex={980} />
+      <TextImages zIndex={1010} />
+      <ScrollVideo
+        ref={videoRef2}
+        id="video-scroll-2"
+        src="/videos/output_scroll_2_new.mp4"
+        zIndex={1020}
+      />
     </div>
   );
 }
