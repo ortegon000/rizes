@@ -11,6 +11,7 @@ import Description from "@components/description";
 import ScrollVideo from "@components/scrollVideo";
 import TextImages from "@components/textImages";
 import TextImages2 from "@components/textImages2";
+import TextImages3 from "@components/textImages3";
 
 import Image1_1 from "@images/text-image-1/1.webp";
 import Image1_2 from "@images/text-image-1/2.webp";
@@ -23,6 +24,9 @@ import Image2_3 from "@images/text-image-2/3.webp";
 import Image3_1 from "@images/text-image-3/1.webp";
 import Image3_2 from "@images/text-image-3/2.webp";
 import Image3_3 from "@images/text-image-3/3.webp";
+
+import Image4_1 from "@images/text-image-4/1.webp";
+import Image4_2 from "@images/text-image-4/2.webp";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -246,7 +250,7 @@ export default function Home() {
 
           // text images 3
           .to("#text-images-3", {
-            y: "-155dvh",
+            y: "-200dvh",
             duration: 1.25,
           }, ">-0.25")
           .to("#text-images-3-left", {
@@ -297,14 +301,14 @@ export default function Home() {
           )
 
           // text images 4
-          // .to("#text-images-4", {
-          //   y: "-150dvh",
-          //   duration: 1.25,
-          // }, ">-0.25")
-          // .to("#text-images-4-left", {
-          //   y: -300,
-          //   duration: 1.25,
-          // }, "<0.1")
+          .to("#text-images-4", {
+            y: "-150dvh",
+            duration: 1.25,
+          }, ">-0.25")
+          .to("#text-images-4-right", {
+            y: -300,
+            duration: 1.25,
+          }, "<0.1")
 
           // video scroll 3 out
           .to(
@@ -339,14 +343,18 @@ export default function Home() {
 
     <div className="relative h-screen w-full" ref={container}>
       <Hero zIndex={1000} />
+
       <Intro zIndex={990} />
+
       <Description zIndex={980} />
+
       <ScrollVideo
         ref={videoRef}
         id="video-scroll-1"
         src="/videos/output_scroll_1.mp4"
         zIndex={970}
       />
+
       <TextImages
         id="text-images-1"
         title={
@@ -368,12 +376,14 @@ export default function Home() {
         image3={Image1_3}
         zIndex={1010}
       />
+
       <ScrollVideo
         ref={videoRef2}
         id="video-scroll-2"
         src="/videos/output_scroll_2_test.mp4"
         zIndex={1020}
       />
+
       <TextImages
         id="text-images-2"
         title={
@@ -396,12 +406,14 @@ export default function Home() {
         image3={Image2_3}
         zIndex={1030}
       />
+
       <ScrollVideo
         ref={videoRef3}
         id="video-scroll-3"
         src="/videos/output_scroll_3.mp4"
         zIndex={1040}
       />
+
       <TextImages2
         id="text-images-3"
         title={
@@ -430,11 +442,40 @@ export default function Home() {
         image3={Image3_3}
         zIndex={1050}
       />
+
       <ScrollVideo
         ref={videoRef4}
         id="video-scroll-4"
         src="/videos/output_scroll_4.mp4"
         zIndex={1060}
+      />
+
+      <TextImages3
+        id="text-images-4"
+        title={
+          <>
+            <p className="text-5xl w-full max-w-screen-lg mx-auto font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+              La tecnología está de nuestro lado para que tus ideas le den la vuelta al mundo en <span className="font-normal text-3xl">segundos con el impacto que estás buscando.</span>
+            </p>
+          </>
+        }
+        subtitle={
+          <>
+            <p className="mt-12 text-3xl max-w-md mr-12 ml-auto text-white font-bold">
+              El significado de “conexión” cambiará cuando notes el impacto que puedes generar con nuestros eventos digitales e híbridos.
+            </p>
+          </>
+        }
+        description={
+          <>
+            <p className="mt-12 text-3xl max-w-md text-white font-bold">
+              Ejecución impecable, <strong>control presupuestal inteligente</strong> y atención a cada detalle.
+            </p>
+          </>
+        }
+        image1={Image4_1}
+        image2={Image4_2}
+        zIndex={1070}
       />
     </div>
   );
