@@ -10,6 +10,19 @@ import Intro from "@components/intro";
 import Description from "@components/description";
 import ScrollVideo from "@components/scrollVideo";
 import TextImages from "@components/textImages";
+import TextImages2 from "@components/textImages2";
+
+import Image1_1 from "@images/text-image-1/1.webp";
+import Image1_2 from "@images/text-image-1/2.webp";
+import Image1_3 from "@images/text-image-1/3.webp";
+
+import Image2_1 from "@images/text-image-2/1.webp";
+import Image2_2 from "@images/text-image-2/2.webp";
+import Image2_3 from "@images/text-image-2/3.webp";
+
+import Image3_1 from "@images/text-image-3/1.webp";
+import Image3_2 from "@images/text-image-3/2.webp";
+import Image3_3 from "@images/text-image-3/3.webp";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -19,19 +32,17 @@ export default function Home() {
   const container = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoRef2 = useRef<HTMLVideoElement>(null);
+  const videoRef3 = useRef<HTMLVideoElement>(null);
+  const videoRef4 = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
 
       const videoEl = videoRef.current;
       const videoEl2 = videoRef2.current;
-      if (!videoEl || !videoEl2) return;
-
-      const eventListeners: {
-        el: HTMLElement;
-        enter: () => void;
-        leave: () => void;
-      }[] = [];
+      const videoEl3 = videoRef3.current;
+      const videoEl4 = videoRef4.current;
+      if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4) return;
 
 
       const setupAnimation = () => {
@@ -39,14 +50,21 @@ export default function Home() {
         videoEl.currentTime = 0;
         videoEl2.pause();
         videoEl2.currentTime = 0;
+        videoEl3.pause();
+        videoEl3.currentTime = 0;
+        videoEl4.pause();
+        videoEl4.currentTime = 0;
+
         const videoScrubber = { frame: 0 };
         const videoScrubber2 = { frame: 0 };
+        const videoScrubber3 = { frame: 0 };
+        const videoScrubber4 = { frame: 0 };
 
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: container.current,
             start: "top top",
-            end: "+=15000",
+            end: "+=20000",
             scrub: 1,
             pin: true,
             anticipatePin: 1,
@@ -177,6 +195,15 @@ export default function Home() {
             },
             ">-0.25"
           )
+          // text images 2
+          .to("#text-images-2", {
+            y: "-150dvh",
+            duration: 1.25,
+          }, ">-0.25")
+          .to("#text-images-2-right", {
+            y: -300,
+            duration: 1.25,
+          }, "<0.1")
           // video scroll 2 out
           .to(
             "#video-scroll-2",
@@ -185,43 +212,111 @@ export default function Home() {
               opacity: 0,
               ease: "power2.inOut",
             },
-            "<0.25"
+            "<"
+          )
+          // video scroll 3
+          .to(
+            "#video-scroll-3",
+            {
+              opacity: 1,
+            },
+            ">-0.15"
+          )
+          .to(
+            "#video-scroll-3",
+            {
+              filter: "blur(0px)",
+              ease: "power2.inOut",
+            },
+            ">-0.5"
+          )
+          .to(
+            videoScrubber3,
+            {
+              frame: videoEl3.duration,
+              ease: "none",
+              onUpdate: () => {
+                if (videoEl3.duration) {
+                  videoEl3.currentTime = videoScrubber3.frame;
+                }
+              },
+            },
+            ">-0.5"
+          )
+
+          // text images 3
+          .to("#text-images-3", {
+            y: "-155dvh",
+            duration: 1.25,
+          }, ">-0.25")
+          .to("#text-images-3-left", {
+            y: -300,
+            duration: 1.25,
+          }, "<0.1")
+
+          // video scroll 3 out
+          .to(
+            "#video-scroll-3",
+            {
+              filter: "blur(20px)",
+              opacity: 0,
+              ease: "power2.inOut",
+            },
+            "<0.5"
+          )
+
+
+          // video scroll 4
+          .to(
+            "#video-scroll-4",
+            {
+              opacity: 1,
+            },
+            ">-0.15"
+          )
+          .to(
+            "#video-scroll-4",
+            {
+              filter: "blur(0px)",
+              ease: "power2.inOut",
+            },
+            ">-0.5"
+          )
+          .to(
+            videoScrubber4,
+            {
+              frame: videoEl4.duration,
+              ease: "none",
+              onUpdate: () => {
+                if (videoEl4.duration) {
+                  videoEl4.currentTime = videoScrubber4.frame;
+                }
+              },
+            },
+            ">-0.5"
+          )
+
+          // text images 4
+          // .to("#text-images-4", {
+          //   y: "-150dvh",
+          //   duration: 1.25,
+          // }, ">-0.25")
+          // .to("#text-images-4-left", {
+          //   y: -300,
+          //   duration: 1.25,
+          // }, "<0.1")
+
+          // video scroll 3 out
+          .to(
+            "#video-scroll-4",
+            {
+              filter: "blur(20px)",
+              opacity: 0,
+              ease: "power2.inOut",
+            },
+            "<0.5"
           )
           ;
-
-        const images = gsap.utils.toArray(".text-image");
-
-        images.forEach((image) => {
-          const el = image as HTMLElement;
-
-          const handleMouseEnter = () => {
-            gsap.to(el, {
-              borderWidth: "4px",
-              duration: 0.3,
-              ease: "power2.out",
-              overwrite: "auto",
-            });
-          };
-
-          const handleMouseLeave = () => {
-            gsap.to(el, {
-              borderWidth: "1px",
-              duration: 0.3,
-              ease: "power2.inOut",
-              overwrite: "auto",
-            });
-          };
-
-          // el.addEventListener("mouseenter", handleMouseEnter);
-          // el.addEventListener("mouseleave", handleMouseLeave);
-
-          // Guardamos una referencia para la limpieza
-          eventListeners.push({
-            el,
-            enter: handleMouseEnter,
-            leave: handleMouseLeave,
-          });
-        });
 
         ScrollTrigger.refresh();
       };
@@ -252,12 +347,94 @@ export default function Home() {
         src="/videos/output_scroll_1.mp4"
         zIndex={970}
       />
-      <TextImages zIndex={1010} />
+      <TextImages
+        id="text-images-1"
+        title={
+          <>
+            <p className="text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+              <strong>Somos una empresa 100% mexicana</strong> que combina <strong>precisión, pasión y visión estratégica.</strong>
+            </p>
+          </>
+        }
+        subtitle={
+          <>
+            <p className="mt-12 text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+              Ejecución impecable, <strong>control presupuestal inteligente</strong> y atención a cada detalle.
+            </p>
+          </>
+        }
+        image1={Image1_1}
+        image2={Image1_2}
+        image3={Image1_3}
+        zIndex={1010}
+      />
       <ScrollVideo
         ref={videoRef2}
         id="video-scroll-2"
-        src="/videos/output_scroll_2_new.mp4"
+        src="/videos/output_scroll_2_test.mp4"
         zIndex={1020}
+      />
+      <TextImages
+        id="text-images-2"
+        title={
+          <>
+            <p className="text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r font-black from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+              <span className="text-2xl tracking-normal leading-10 block font-medium">Con Rizes las fronteras no son más que una palabra...</span>
+              ¡Conoce el verdadero significado de romper las fronteras!
+            </p>
+          </>
+        }
+        subtitle={
+          <>
+            <p className="mt-12 text-3xl max-w-md mr-0 ml-auto text-white">
+              Que los planes se lleven a cabo tal y como los sueñas, ya sean en una playa, en otro país, desde el polo norte o al polo sur...
+            </p>
+          </>
+        }
+        image1={Image2_1}
+        image2={Image2_2}
+        image3={Image2_3}
+        zIndex={1030}
+      />
+      <ScrollVideo
+        ref={videoRef3}
+        id="video-scroll-3"
+        src="/videos/output_scroll_3.mp4"
+        zIndex={1040}
+      />
+      <TextImages2
+        id="text-images-3"
+        title={
+          <>
+            <p className="text-3xl max-w-md text-white">
+              Contamos con la capacidad, el equipo y la visión para ejecutar eventos en cualquier rincón del mundo, sin comprometer lo que nos define:
+            </p>
+          </>
+        }
+        subtitle={
+          <>
+            <p className="mt-12 text-5xl max-w-md text-white font-black">
+              excelencia, detalle y una calidad que se siente en cada momento.
+            </p>
+          </>
+        }
+        description={
+          <>
+            <p className="mt-12 text-3xl max-w-md text-white font-black">
+              Globalmente <br /> impecable. <br /> Emocionalmente <br /> perfecta.
+            </p>
+          </>
+        }
+        image1={Image3_1}
+        image2={Image3_2}
+        image3={Image3_3}
+        zIndex={1050}
+      />
+      <ScrollVideo
+        ref={videoRef4}
+        id="video-scroll-4"
+        src="/videos/output_scroll_4.mp4"
+        zIndex={1060}
       />
     </div>
   );
