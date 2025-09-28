@@ -4,6 +4,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import Image from "next/image";
 
 import Hero from "@components/hero";
 import Intro from "@components/intro";
@@ -27,6 +28,8 @@ import Image3_3 from "@images/text-image-3/3.webp";
 
 import Image4_1 from "@images/text-image-4/1.webp";
 import Image4_2 from "@images/text-image-4/2.webp";
+
+import Banner1 from "@images/banner-1.jpg";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -357,15 +360,11 @@ export default function Home() {
             ">-0.5"
           )
 
-          // text images 4
-          // .to("#text-images-4", {
-          //   y: "-150dvh",
-          //   duration: 1.25,
-          // }, ">-0.25")
-          // .to("#text-images-4-right", {
-          //   y: -300,
-          //   duration: 1.25,
-          // }, "<0.1")
+          // services
+          .to("#services", {
+            y: "-150dvh",
+            duration: 1.25,
+          }, ">-0.25")
 
           // video scroll 5 out
           .to(
@@ -377,6 +376,12 @@ export default function Home() {
             },
             "<0.5"
           )
+
+          // banner 1
+          .to("#banner-1", {
+            y: "-150dvh",
+            duration: 1.25,
+          }, ">-0.25")
           ;
 
         ScrollTrigger.refresh();
@@ -541,6 +546,29 @@ export default function Home() {
         src="/videos/output_scroll_5.mp4"
         zIndex={1080}
       />
+
+      <section id="services" className="absolute inset-0 h-dvh w-full translate-y-[220dvh] flex flex-col items-center justify-cente" style={{ zIndex: 1090 }}>
+        <ul className="text-4xl md:text-5xl lg:text-6xl text-center text-white font-black leading-10 md:leading-12 lg:leading-14 space-y-6 md:space-y-8 lg:space-y-10 [&>li]:bg-gradient-to-r [&>li]:from-red-500 [&>li]:to-blue-500 [&>li]:bg-clip-text [&>li]:text-transparent">
+          <li>Lanzamientos ATL</li>
+          <li>Convenciones</li>
+          <li>Turismo</li>
+          <li>Logística</li>
+          <li>Transporte</li>
+          <li>Creatividad</li>
+          <li>Eventos</li>
+          <li>Streaming</li>
+          <li>Catering</li>
+          <li>BTL</li>
+          <li>Shows</li>
+          <li>PR Alimentos</li>
+        </ul>
+      </section>
+
+      <section id="banner-1" className="absolute bottom-0 left-0 w-full h-[80dvh] translate-y-[220dvh]" style={{ zIndex: 1090 }}>
+        <Image src={Banner1} alt="Rizes Banner" fill className="object-cover object-center" />
+      </section>
+
+
     </div>
   );
 }
