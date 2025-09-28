@@ -77,7 +77,7 @@ export default function Home() {
           scrollTrigger: {
             trigger: container.current,
             start: "top top",
-            end: "+=20000",
+            end: "+=30000",
             scrub: 1,
             pin: true,
             anticipatePin: 1,
@@ -363,7 +363,7 @@ export default function Home() {
 
           // services
           .to("#services", {
-            y: "-150dvh",
+            y: "-160dvh",
             duration: 1.25,
           }, ">-0.25")
 
@@ -378,11 +378,12 @@ export default function Home() {
             "<0.5"
           )
 
+
           // banner 1
           .to("#banner-1", {
-            y: "-150dvh",
-            duration: 1.25,
-          }, "<-0.5")
+            y: "-120dvh",
+            duration: 1.5,
+          }, "<")
           ;
 
         ScrollTrigger.refresh();
@@ -550,12 +551,16 @@ export default function Home() {
 
       <Services zIndex={1090} />
 
-      <div>
+      <>
         <div className="h-dvh"></div>
-        <section id="banner-1" className="absolutee bottom-0 left-0 w-full aspect-[16/9] translate-y-[20dvh]" style={{ zIndex: 1090 }}>
+        <section id="banner-1" className="absolute inset-0 w-full h-dvh translate-y-[220dvh]" style={{ zIndex: 1100 }}>
+          {/* <div> */}
           <Image src={Banner1} alt="Rizes Banner" fill className="object-cover object-center" />
+          {/* </div> */}
         </section>
-      </div>
+      </>
+
+
     </div>
   );
 }

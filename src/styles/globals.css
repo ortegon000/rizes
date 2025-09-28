@@ -4,7 +4,7 @@
 body {
   background-color: #1d1b22;
   font-family: Arial, Helvetica, sans-serif;
-  min-height: 20000px;
+  min-height: 30000px;
 }
 
 #hero-key-container {
@@ -28,16 +28,5 @@ body {
     black 100%,
     transparent 100%
   ); */
-  aspect-ratio: 16 / 9;
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4vw), 0 100%);
-}
-
-.custom-shape-divider-top-1759025677 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-    background: ##1d1b22;
 }
