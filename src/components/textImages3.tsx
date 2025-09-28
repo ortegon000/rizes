@@ -15,6 +15,8 @@ type TextImagesProps = {
 export default function TextImages({ id, title, subtitle, description, image1, image2, image3, zIndex = 20 }: TextImagesProps) {
     return (
         <>
+            <div className="h-dvh"></div>
+
             <section id={id} className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex }}>
                 <div className="col-span-2" id={`${id}-title`}>
                     {title}

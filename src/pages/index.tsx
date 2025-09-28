@@ -13,6 +13,7 @@ import ScrollVideo from "@components/scrollVideo";
 import TextImages from "@components/textImages";
 import TextImages2 from "@components/textImages2";
 import TextImages3 from "@components/textImages3";
+import Services from "@components/services";
 
 import Image1_1 from "@images/text-image-1/1.webp";
 import Image1_2 from "@images/text-image-1/2.webp";
@@ -381,7 +382,7 @@ export default function Home() {
           .to("#banner-1", {
             y: "-150dvh",
             duration: 1.25,
-          }, ">-0.25")
+          }, "<-0.5")
           ;
 
         ScrollTrigger.refresh();
@@ -547,28 +548,14 @@ export default function Home() {
         zIndex={1080}
       />
 
-      <section id="services" className="absolute inset-0 h-dvh w-full translate-y-[220dvh] flex flex-col items-center justify-cente" style={{ zIndex: 1090 }}>
-        <ul className="text-4xl md:text-5xl lg:text-6xl text-center text-white font-black leading-10 md:leading-12 lg:leading-14 space-y-6 md:space-y-8 lg:space-y-10 [&>li]:bg-gradient-to-r [&>li]:from-red-500 [&>li]:to-blue-500 [&>li]:bg-clip-text [&>li]:text-transparent">
-          <li>Lanzamientos ATL</li>
-          <li>Convenciones</li>
-          <li>Turismo</li>
-          <li>Logística</li>
-          <li>Transporte</li>
-          <li>Creatividad</li>
-          <li>Eventos</li>
-          <li>Streaming</li>
-          <li>Catering</li>
-          <li>BTL</li>
-          <li>Shows</li>
-          <li>PR Alimentos</li>
-        </ul>
-      </section>
+      <Services zIndex={1090} />
 
-      <section id="banner-1" className="absolute bottom-0 left-0 w-full h-[80dvh] translate-y-[220dvh]" style={{ zIndex: 1090 }}>
-        <Image src={Banner1} alt="Rizes Banner" fill className="object-cover object-center" />
-      </section>
-
-
+      <div>
+        <div className="h-dvh"></div>
+        <section id="banner-1" className="absolutee bottom-0 left-0 w-full aspect-[16/9] translate-y-[20dvh]" style={{ zIndex: 1090 }}>
+          <Image src={Banner1} alt="Rizes Banner" fill className="object-cover object-center" />
+        </section>
+      </div>
     </div>
   );
 }

@@ -10,32 +10,35 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
 
     return (
 
-        <section
-            className="absolute inset-0 h-dvh w-full"
-            style={{ zIndex }}
-        >
-            <div
-                id="hero-key-logo-mask"
-                className="w-full h-full bg-white"
+        <>
+            <div className="h-dvh"></div>
+            <section
+                className="absolute inset-0 h-dvh w-full"
+                style={{ zIndex }}
             >
-                <picture
-                    id="hero-key"
-                    className="relative h-full w-full block scale-125 overflow-hidden"
+                <div
+                    id="hero-key-logo-mask"
+                    className="w-full h-full bg-white"
                 >
-                    <Logo
-                        id="hero-key-logo"
-                        className="absolute inset-0 m-auto w-80 h-auto text-white z-10"
-                    />
-                    <Image
-                        alt=""
-                        id="hero-key-background"
-                        src={HeroKeyBackground.src}
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                </picture>
-            </div>
-        </section>
+                    <picture
+                        id="hero-key"
+                        className="relative h-full w-full block scale-125 overflow-hidden"
+                    >
+                        <Logo
+                            id="hero-key-logo"
+                            className="absolute inset-0 m-auto w-80 h-auto text-white z-10"
+                        />
+                        <Image
+                            alt=""
+                            id="hero-key-background"
+                            src={HeroKeyBackground.src}
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                    </picture>
+                </div>
+            </section>
+        </>
     );
 }

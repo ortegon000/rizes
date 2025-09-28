@@ -21,3 +21,23 @@ body {
   mask-repeat: no-repeat;
   mask-size: clamp(2000vw, 5000vh, 5000vw);
 }
+
+#banner-1 {
+  /* mask-image: radial-gradient(
+    circle at 50% 50%,
+    black 100%,
+    transparent 100%
+  ); */
+  aspect-ratio: 16 / 9;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4vw), 0 100%);
+}
+
+.custom-shape-divider-top-1759025677 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+    background: ##1d1b22;
+}

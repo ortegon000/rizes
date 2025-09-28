@@ -13,42 +13,45 @@ type TextImagesProps = {
 
 export default function TextImages({ id, title, subtitle, image1, image2, image3, zIndex = 20 }: TextImagesProps) {
     return (
-        <section id={id} className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex }}>
+        <>
+            <div className="h-dvh"></div>
+            <section id={id} className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex }}>
 
-            <div className="">
+                <div className="">
 
-                {title}
+                    {title}
 
-                {subtitle}
+                    {subtitle}
 
-                <Image
-                    alt=""
-                    src={image1}
-                    width={500}
-                    height={500}
-                    className="w-full max-w-md mt-12 mr-0 ml-auto h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
-                />
-            </div>
+                    <Image
+                        alt=""
+                        src={image1}
+                        width={500}
+                        height={500}
+                        className="w-full max-w-md mt-12 mr-0 ml-auto h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                    />
+                </div>
 
-            <div className="" id={`${id}-right`}>
+                <div className="" id={`${id}-right`}>
 
-                <Image
-                    alt=""
-                    src={image2}
-                    width={500}
-                    height={500}
-                    className="w-full ml-0 mt-[200px] mr-auto h-[600px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
-                />
-                <Image
-                    alt=""
-                    src={image3}
-                    width={500}
-                    height={500}
-                    className="w-full mt-8 max-w-md h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
-                />
+                    <Image
+                        alt=""
+                        src={image2}
+                        width={500}
+                        height={500}
+                        className="w-full ml-0 mt-[200px] mr-auto h-[600px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                    />
+                    <Image
+                        alt=""
+                        src={image3}
+                        width={500}
+                        height={500}
+                        className="w-full mt-8 max-w-md h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                    />
 
-            </div>
+                </div>
 
-        </section>
+            </section>
+        </>
     );
 }
