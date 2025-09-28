@@ -38,6 +38,7 @@ export default function Home() {
   const videoRef2 = useRef<HTMLVideoElement>(null);
   const videoRef3 = useRef<HTMLVideoElement>(null);
   const videoRef4 = useRef<HTMLVideoElement>(null);
+  const videoRef5 = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
@@ -46,7 +47,8 @@ export default function Home() {
       const videoEl2 = videoRef2.current;
       const videoEl3 = videoRef3.current;
       const videoEl4 = videoRef4.current;
-      if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4) return;
+      const videoEl5 = videoRef5.current;
+      if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4 || !videoEl5) return;
 
 
       const setupAnimation = () => {
@@ -58,11 +60,14 @@ export default function Home() {
         videoEl3.currentTime = 0;
         videoEl4.pause();
         videoEl4.currentTime = 0;
+        videoEl5.pause();
+        videoEl5.currentTime = 0;
 
         const videoScrubber = { frame: 0 };
         const videoScrubber2 = { frame: 0 };
         const videoScrubber3 = { frame: 0 };
         const videoScrubber4 = { frame: 0 };
+        const videoScrubber5 = { frame: 0 };
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -151,7 +156,7 @@ export default function Home() {
 
           // text images 1
           .to("#text-images-1", {
-            y: "-150dvh",
+            y: "-160dvh",
             duration: 1.25,
           }, ">-0.25")
           .to("#text-images-1-right", {
@@ -201,7 +206,7 @@ export default function Home() {
           )
           // text images 2
           .to("#text-images-2", {
-            y: "-150dvh",
+            y: "-160dvh",
             duration: 1.25,
           }, ">-0.25")
           .to("#text-images-2-right", {
@@ -250,7 +255,7 @@ export default function Home() {
 
           // text images 3
           .to("#text-images-3", {
-            y: "-200dvh",
+            y: "-220dvh",
             duration: 1.25,
           }, ">-0.25")
           .to("#text-images-3-left", {
@@ -302,7 +307,7 @@ export default function Home() {
 
           // text images 4
           .to("#text-images-4", {
-            y: "-150dvh",
+            y: "-170dvh",
             duration: 1.25,
           }, ">-0.25")
           .to("#text-images-4-right", {
@@ -310,9 +315,61 @@ export default function Home() {
             duration: 1.25,
           }, "<0.1")
 
-          // video scroll 3 out
+          // video scroll 4 out
           .to(
             "#video-scroll-4",
+            {
+              filter: "blur(20px)",
+              opacity: 0,
+              ease: "power2.inOut",
+            },
+            "<0.5"
+          )
+
+
+          // video scroll 5
+          .to(
+            "#video-scroll-5",
+            {
+              opacity: 1,
+            },
+            ">-0.15"
+          )
+          .to(
+            "#video-scroll-5",
+            {
+              filter: "blur(0px)",
+              ease: "power2.inOut",
+            },
+            ">-0.5"
+          )
+          .to(
+            videoScrubber5,
+            {
+              frame: videoEl5.duration,
+              ease: "none",
+              onUpdate: () => {
+                if (videoEl5.duration) {
+                  videoEl5.currentTime = videoScrubber5.frame;
+                }
+              },
+            },
+            ">-0.5"
+          )
+
+          // text images 4
+          // .to("#text-images-4", {
+          //   y: "-150dvh",
+          //   duration: 1.25,
+          // }, ">-0.25")
+          // .to("#text-images-4-right", {
+          //   y: -300,
+          //   duration: 1.25,
+          // }, "<0.1")
+
+          // video scroll 5 out
+          .to(
+            "#video-scroll-5",
             {
               filter: "blur(20px)",
               opacity: 0,
@@ -476,6 +533,13 @@ export default function Home() {
         image1={Image4_1}
         image2={Image4_2}
         zIndex={1070}
+      />
+
+      <ScrollVideo
+        ref={videoRef5}
+        id="video-scroll-5"
+        src="/videos/output_scroll_5.mp4"
+        zIndex={1080}
       />
     </div>
   );

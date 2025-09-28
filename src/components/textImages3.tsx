@@ -29,7 +29,7 @@ export default function TextImages({ id, title, subtitle, description, image1, i
                         src={image1}
                         width={500}
                         height={500}
-                        className="w-full ml-0 mt-[200px] mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full ml-0 mt-12 mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
                 </div>
 
