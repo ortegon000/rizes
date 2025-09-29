@@ -616,21 +616,21 @@ export default function Home() {
         }
         description={
           <>
-            <p className="mt-32 text-3xl max-w-md ml-auto mr-0 text-white">
+            <p className="mt-32 text-3xl max-w-md ml-auto mr-12 text-white">
               ¡Deja que <span className="font-bold">los creativos hagan lo que saben para ti!</span>
             </p>
           </>
         }
         text1={
           <>
-            <p className="mt-12 text-2xl max-w-md ml-auto mr-12 text-white">
+            <p className="mt-12 text-2xl max-w-md text-white">
               Fusionamos innovación, tecnología y visión creativa para dar vida a convenciones, conferencias y viajes corporativos que inspiran.
             </p>
           </>
         }
         text2={
           <>
-            <p className="mt-12 text-2xl max-w-md ml-auto mr-12 text-white">
+            <p className="mt-12 text-2xl max-w-md text-white">
               Creamos momentos que hablan el idioma de tu marca y se quedan en la memoria de quienes los viven.
             </p>
           </>
