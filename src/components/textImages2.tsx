@@ -12,7 +12,7 @@ type TextImagesProps = {
     zIndex?: number;
 }
 
-export default function TextImages({ id, title, subtitle, description, image1, image2, image3, zIndex = 20 }: TextImagesProps) {
+export default function TextImages2({ id, title, subtitle, description, image1, image2, image3, zIndex = 20 }: TextImagesProps) {
     return (
         <>
             <div className="h-dvh"></div>

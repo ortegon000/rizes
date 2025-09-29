@@ -13,7 +13,9 @@ import ScrollVideo from "@components/scrollVideo";
 import TextImages from "@components/textImages";
 import TextImages2 from "@components/textImages2";
 import TextImages3 from "@components/textImages3";
+import TextImages4 from "@components/textImages4";
 import Services from "@components/services";
+import Banner1 from "@components/banner1";
 
 import Image1_1 from "@images/text-image-1/1.webp";
 import Image1_2 from "@images/text-image-1/2.webp";
@@ -30,7 +32,12 @@ import Image3_3 from "@images/text-image-3/3.webp";
 import Image4_1 from "@images/text-image-4/1.webp";
 import Image4_2 from "@images/text-image-4/2.webp";
 
-import Banner1 from "@images/banner-1.jpg";
+import Image5_1 from "@images/text-image-5/1.webp";
+import Image5_2 from "@images/text-image-5/2.webp";
+import Image5_3 from "@images/text-image-5/3.webp";
+import Image5_4 from "@images/text-image-5/4.webp";
+
+import Banner1Image from "@images/banner-1.webp";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -38,40 +45,47 @@ gsap.registerPlugin(ScrollTrigger);
 export default function Home() {
 
   const container = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
-  const videoRef3 = useRef<HTMLVideoElement>(null);
-  const videoRef4 = useRef<HTMLVideoElement>(null);
-  const videoRef5 = useRef<HTMLVideoElement>(null);
+
+  // const videoRef = useRef<HTMLVideoElement>(null);
+  // const videoRef2 = useRef<HTMLVideoElement>(null);
+  // const videoRef3 = useRef<HTMLVideoElement>(null);
+  // const videoRef4 = useRef<HTMLVideoElement>(null);
+  // const videoRef5 = useRef<HTMLVideoElement>(null);
+  const squareVideo1Ref = useRef<HTMLVideoElement>(null);
 
   useGSAP(
     () => {
 
-      const videoEl = videoRef.current;
-      const videoEl2 = videoRef2.current;
-      const videoEl3 = videoRef3.current;
-      const videoEl4 = videoRef4.current;
-      const videoEl5 = videoRef5.current;
-      if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4 || !videoEl5) return;
+      // const videoEl = videoRef.current;
+      // const videoEl2 = videoRef2.current;
+      // const videoEl3 = videoRef3.current;
+      // const videoEl4 = videoRef4.current;
+      // const videoEl5 = videoRef5.current;
+      const videoSquareEl1 = squareVideo1Ref.current;
+      if (!videoSquareEl1) return;
+      // if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4 || !videoEl5) return;
 
 
       const setupAnimation = () => {
-        videoEl.pause();
-        videoEl.currentTime = 0;
-        videoEl2.pause();
-        videoEl2.currentTime = 0;
-        videoEl3.pause();
-        videoEl3.currentTime = 0;
-        videoEl4.pause();
-        videoEl4.currentTime = 0;
-        videoEl5.pause();
-        videoEl5.currentTime = 0;
+        // videoEl.pause();
+        // videoEl.currentTime = 0;
+        // videoEl2.pause();
+        // videoEl2.currentTime = 0;
+        // videoEl3.pause();
+        // videoEl3.currentTime = 0;
+        // videoEl4.pause();
+        // videoEl4.currentTime = 0;
+        // videoEl5.pause();
+        // videoEl5.currentTime = 0;
+        videoSquareEl1.pause();
+        videoSquareEl1.currentTime = 0;
 
-        const videoScrubber = { frame: 0 };
-        const videoScrubber2 = { frame: 0 };
-        const videoScrubber3 = { frame: 0 };
-        const videoScrubber4 = { frame: 0 };
-        const videoScrubber5 = { frame: 0 };
+        // const videoScrubber = { frame: 0 };
+        // const videoScrubber2 = { frame: 0 };
+        // const videoScrubber3 = { frame: 0 };
+        // const videoScrubber4 = { frame: 0 };
+        // const videoScrubber5 = { frame: 0 };
+        const videoScrubberSquare1 = { frame: 0 };
 
         const tl = gsap.timeline({
           scrollTrigger: {
@@ -129,275 +143,305 @@ export default function Home() {
           .to("#hero-description", { opacity: 0 }, ">")
 
           // video scroll 1
-          .to(
-            "#video-scroll-1",
-            {
-              opacity: 1,
-            },
-            "<-0.35"
-          )
-          .to(
-            "#video-scroll-1",
-            {
-              filter: "blur(0px)",
-              ease: "power2.inOut",
-            },
-            ">-0.25"
-          )
-          .to(
-            videoScrubber,
-            {
-              frame: videoEl.duration,
-              ease: "none",
-              onUpdate: () => {
-                if (videoEl.duration) {
-                  videoEl.currentTime = videoScrubber.frame;
-                }
-              },
-            },
-            ">-0.25"
-          )
+          // .to(
+          //   "#video-scroll-1",
+          //   {
+          //     opacity: 1,
+          //   },
+          //   "<-0.35"
+          // )
+          // .to(
+          //   "#video-scroll-1",
+          //   {
+          //     filter: "blur(0px)",
+          //     ease: "power2.inOut",
+          //   },
+          //   ">-0.25"
+          // )
+          // .to(
+          //   videoScrubber,
+          //   {
+          //     frame: videoEl.duration,
+          //     ease: "none",
+          //     onUpdate: () => {
+          //       if (videoEl.duration) {
+          //         videoEl.currentTime = videoScrubber.frame;
+          //       }
+          //     },
+          //   },
+          //   ">-0.25"
+          // )
 
-          // text images 1
-          .to("#text-images-1", {
-            y: "-160dvh",
-            duration: 1.25,
-          }, ">-0.25")
-          .to("#text-images-1-right", {
-            y: -300,
-            duration: 1.25,
-          }, "<0.1")
+          // // text images 1
+          // .to("#text-images-1", {
+          //   y: "-160dvh",
+          //   duration: 1.25,
+          // }, ">-0.25")
+          // .to("#text-images-1-right", {
+          //   y: -300,
+          //   duration: 1.25,
+          // }, "<0.1")
 
-          // video scroll 1 out
-          .to(
-            "#video-scroll-1",
-            {
-              filter: "blur(20px)",
-              opacity: 0,
-              ease: "power2.inOut",
-            },
-            "<"
-          )
+          // // video scroll 1 out
+          // .to(
+          //   "#video-scroll-1",
+          //   {
+          //     filter: "blur(20px)",
+          //     opacity: 0,
+          //     ease: "power2.inOut",
+          //   },
+          //   "<"
+          // )
 
-          // video scroll 2
-          .to(
-            "#video-scroll-2",
-            {
-              opacity: 1,
-            },
-            ">-0.15"
-          )
-          .to(
-            "#video-scroll-2",
-            {
-              filter: "blur(0px)",
-              ease: "power2.inOut",
-            },
-            ">-0.25"
-          )
-          .to(
-            videoScrubber2,
-            {
-              frame: videoEl2.duration,
-              ease: "none",
-              onUpdate: () => {
-                if (videoEl2.duration) {
-                  videoEl2.currentTime = videoScrubber2.frame;
-                }
-              },
-            },
-            ">-0.25"
-          )
-          // text images 2
-          .to("#text-images-2", {
-            y: "-160dvh",
-            duration: 1.25,
-          }, ">-0.25")
-          .to("#text-images-2-right", {
-            y: -300,
-            duration: 1.25,
-          }, "<0.1")
-          // video scroll 2 out
-          .to(
-            "#video-scroll-2",
-            {
-              filter: "blur(20px)",
-              opacity: 0,
-              ease: "power2.inOut",
-            },
-            "<"
-          )
-          // video scroll 3
-          .to(
-            "#video-scroll-3",
-            {
-              opacity: 1,
-            },
-            ">-0.15"
-          )
-          .to(
-            "#video-scroll-3",
-            {
-              filter: "blur(0px)",
-              ease: "power2.inOut",
-            },
-            ">-0.5"
-          )
-          .to(
-            videoScrubber3,
-            {
-              frame: videoEl3.duration,
-              ease: "none",
-              onUpdate: () => {
-                if (videoEl3.duration) {
-                  videoEl3.currentTime = videoScrubber3.frame;
-                }
-              },
-            },
-            ">-0.5"
-          )
+          // // video scroll 2
+          // .to(
+          //   "#video-scroll-2",
+          //   {
+          //     opacity: 1,
+          //   },
+          //   ">-0.15"
+          // )
+          // .to(
+          //   "#video-scroll-2",
+          //   {
+          //     filter: "blur(0px)",
+          //     ease: "power2.inOut",
+          //   },
+          //   ">-0.25"
+          // )
+          // .to(
+          //   videoScrubber2,
+          //   {
+          //     frame: videoEl2.duration,
+          //     ease: "none",
+          //     onUpdate: () => {
+          //       if (videoEl2.duration) {
+          //         videoEl2.currentTime = videoScrubber2.frame;
+          //       }
+          //     },
+          //   },
+          //   ">-0.25"
+          // )
 
-          // text images 3
-          .to("#text-images-3", {
-            y: "-220dvh",
-            duration: 1.25,
-          }, ">-0.25")
-          .to("#text-images-3-left", {
-            y: -300,
-            duration: 1.25,
-          }, "<0.1")
+          // // text images 2
+          // .to("#text-images-2", {
+          //   y: "-160dvh",
+          //   duration: 1.25,
+          // }, ">-0.25")
+          // .to("#text-images-2-right", {
+          //   y: -300,
+          //   duration: 1.25,
+          // }, "<0.1")
 
-          // video scroll 3 out
-          .to(
-            "#video-scroll-3",
-            {
-              filter: "blur(20px)",
-              opacity: 0,
-              ease: "power2.inOut",
-            },
-            "<0.5"
-          )
+          // // video scroll 2 out
+          // .to(
+          //   "#video-scroll-2",
+          //   {
+          //     filter: "blur(20px)",
+          //     opacity: 0,
+          //     ease: "power2.inOut",
+          //   },
+          //   "<"
+          // )
 
+          // // video scroll 3
+          // .to(
+          //   "#video-scroll-3",
+          //   {
+          //     opacity: 1,
+          //   },
+          //   ">-0.15"
+          // )
+          // .to(
+          //   "#video-scroll-3",
+          //   {
+          //     filter: "blur(0px)",
+          //     ease: "power2.inOut",
+          //   },
+          //   ">-0.5"
+          // )
+          // .to(
+          //   videoScrubber3,
+          //   {
+          //     frame: videoEl3.duration,
+          //     ease: "none",
+          //     onUpdate: () => {
+          //       if (videoEl3.duration) {
+          //         videoEl3.currentTime = videoScrubber3.frame;
+          //       }
+          //     },
+          //   },
+          //   ">-0.5"
+          // )
 
-          // video scroll 4
-          .to(
-            "#video-scroll-4",
-            {
-              opacity: 1,
-            },
-            ">-0.15"
-          )
-          .to(
-            "#video-scroll-4",
-            {
-              filter: "blur(0px)",
-              ease: "power2.inOut",
-            },
-            ">-0.5"
-          )
-          .to(
-            videoScrubber4,
-            {
-              frame: videoEl4.duration,
-              ease: "none",
-              onUpdate: () => {
-                if (videoEl4.duration) {
-                  videoEl4.currentTime = videoScrubber4.frame;
-                }
-              },
-            },
-            ">-0.5"
-          )
+          // // text images 3
+          // .to("#text-images-3", {
+          //   y: "-220dvh",
+          //   duration: 1.25,
+          // }, ">-0.25")
+          // .to("#text-images-3-left", {
+          //   y: -300,
+          //   duration: 1.25,
+          // }, "<0.1")
 
-          // text images 4
-          .to("#text-images-4", {
-            y: "-170dvh",
-            duration: 1.25,
-          }, ">-0.25")
-          .to("#text-images-4-right", {
-            y: -300,
-            duration: 1.25,
-          }, "<0.1")
+          // // video scroll 3 out
+          // .to(
+          //   "#video-scroll-3",
+          //   {
+          //     filter: "blur(20px)",
+          //     opacity: 0,
+          //     ease: "power2.inOut",
+          //   },
+          //   "<0.5"
+          // )
 
-          // video scroll 4 out
-          .to(
-            "#video-scroll-4",
-            {
-              filter: "blur(20px)",
-              opacity: 0,
-              ease: "power2.inOut",
-            },
-            "<0.5"
-          )
+          // // video scroll 4
+          // .to(
+          //   "#video-scroll-4",
+          //   {
+          //     opacity: 1,
+          //   },
+          //   ">-0.15"
+          // )
+          // .to(
+          //   "#video-scroll-4",
+          //   {
+          //     filter: "blur(0px)",
+          //     ease: "power2.inOut",
+          //   },
+          //   ">-0.5"
+          // )
+          // .to(
+          //   videoScrubber4,
+          //   {
+          //     frame: videoEl4.duration,
+          //     ease: "none",
+          //     onUpdate: () => {
+          //       if (videoEl4.duration) {
+          //         videoEl4.currentTime = videoScrubber4.frame;
+          //       }
+          //     },
+          //   },
+          //   ">-0.5"
+          // )
 
+          // // text images 4
+          // .to("#text-images-4", {
+          //   y: "-170dvh",
+          //   duration: 1.25,
+          // }, ">-0.25")
+          // .to("#text-images-4-right", {
+          //   y: -300,
+          //   duration: 1.25,
+          // }, "<0.1")
 
-          // video scroll 5
-          .to(
-            "#video-scroll-5",
-            {
-              opacity: 1,
-            },
-            ">-0.15"
-          )
-          .to(
-            "#video-scroll-5",
-            {
-              filter: "blur(0px)",
-              ease: "power2.inOut",
-            },
-            ">-0.5"
-          )
-          .to(
-            videoScrubber5,
-            {
-              frame: videoEl5.duration,
-              ease: "none",
-              onUpdate: () => {
-                if (videoEl5.duration) {
-                  videoEl5.currentTime = videoScrubber5.frame;
-                }
-              },
-            },
-            ">-0.5"
-          )
+          // // video scroll 4 out
+          // .to(
+          //   "#video-scroll-4",
+          //   {
+          //     filter: "blur(20px)",
+          //     opacity: 0,
+          //     ease: "power2.inOut",
+          //   },
+          //   "<0.5"
+          // )
 
-          // services
-          .to("#services", {
-            y: "-160dvh",
-            duration: 1.25,
-          }, ">-0.25")
+          // // video scroll 5
+          // .to(
+          //   "#video-scroll-5",
+          //   {
+          //     opacity: 1,
+          //   },
+          //   ">-0.15"
+          // )
+          // .to(
+          //   "#video-scroll-5",
+          //   {
+          //     filter: "blur(0px)",
+          //     ease: "power2.inOut",
+          //   },
+          //   ">-0.5"
+          // )
+          // .to(
+          //   videoScrubber5,
+          //   {
+          //     frame: videoEl5.duration,
+          //     ease: "none",
+          //     onUpdate: () => {
+          //       if (videoEl5.duration) {
+          //         videoEl5.currentTime = videoScrubber5.frame;
+          //       }
+          //     },
+          //   },
+          //   ">-0.5"
+          // )
 
-          // video scroll 5 out
-          .to(
-            "#video-scroll-5",
-            {
-              filter: "blur(20px)",
-              opacity: 0,
-              ease: "power2.inOut",
-            },
-            "<0.5"
-          )
+          // // services
+          // .to("#services", {
+          //   y: "-160dvh",
+          //   duration: 1.25,
+          // }, ">-0.25")
 
+          // // video scroll 5 out
+          // .to(
+          //   "#video-scroll-5",
+          //   {
+          //     filter: "blur(20px)",
+          //     opacity: 0,
+          //     ease: "power2.inOut",
+          //   },
+          //   "<0.5"
+          // )
 
           // banner 1
           .to("#banner-1", {
             y: "-120dvh",
-            duration: 1.5,
+            duration: 1.3,
           }, "<")
+          .to("#banner-1", {
+            opacity: 0,
+            duration: 0,
+          }, ">")
+
+          // text images 5
+          .to("#text-images-5", {
+            y: "-350dvh",
+            duration: 1.25,
+          }, ">-0.5")
+          .to("#text-images-5-right", {
+            y: 500,
+            duration: 1.25,
+          }, "<0.1")
+
+
+          // text images 5 video
+          .to(
+            videoScrubberSquare1,
+            {
+              frame: videoSquareEl1.duration,
+              ease: "none",
+              onUpdate: () => {
+                if (videoSquareEl1.duration) {
+                  videoSquareEl1.currentTime = videoScrubberSquare1.frame;
+                }
+              },
+            },
+            "<"
+          )
           ;
 
         ScrollTrigger.refresh();
       };
 
-      if (videoEl.readyState > 0) {
+      if (videoSquareEl1.readyState > 0) {
         setupAnimation();
       } else {
         console.log("Esperando a que el video cargue metadatos...");
-        videoEl.addEventListener("loadedmetadata", setupAnimation);
+        videoSquareEl1.addEventListener("loadedmetadata", setupAnimation);
       }
 
       return () => {
-        videoEl.removeEventListener("loadedmetadata", setupAnimation);
+        videoSquareEl1.removeEventListener("loadedmetadata", setupAnimation);
       }
     },
     { scope: container }
@@ -412,7 +456,7 @@ export default function Home() {
 
       <Description zIndex={980} />
 
-      <ScrollVideo
+      {/* <ScrollVideo
         ref={videoRef}
         id="video-scroll-1"
         src="/videos/output_scroll_1.mp4"
@@ -549,18 +593,55 @@ export default function Home() {
         zIndex={1080}
       />
 
-      <Services zIndex={1090} />
+      <Services zIndex={1090} /> */}
 
-      <>
-        <div className="h-dvh"></div>
-        <section id="banner-1" className="absolute inset-0 w-full h-dvh translate-y-[220dvh]" style={{ zIndex: 1100 }}>
-          {/* <div> */}
-          <Image src={Banner1} alt="Rizes Banner" fill className="object-cover object-center" />
-          {/* </div> */}
-        </section>
-      </>
+      <Banner1 id="banner-1" image={Banner1Image} text="Sentirás tranquilidad gracias al profesionalismo de nuestro equipo en todo momento." zIndex={1100} />
 
-
+      <TextImages4
+        id="text-images-5"
+        ref={squareVideo1Ref}
+        title={
+          <>
+            <p className="text-5xl w-full max-w-md mt-8 mx-auto font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+              Lograrás ser el evento que marque tendencia.
+            </p>
+          </>
+        }
+        subtitle={
+          <>
+            <p className="mt-12 text-3xl max-w-md mr-12 ml-auto text-white">
+              Garantiza a tus invitados el mejor momento del año gracias a la <span className="font-bold text-4xl">personalización</span> de sus eventos.
+            </p>
+          </>
+        }
+        description={
+          <>
+            <p className="mt-32 text-3xl max-w-md ml-auto mr-0 text-white">
+              ¡Deja que <span className="font-bold">los creativos hagan lo que saben para ti!</span>
+            </p>
+          </>
+        }
+        text1={
+          <>
+            <p className="mt-12 text-2xl max-w-md ml-auto mr-12 text-white">
+              Fusionamos innovación, tecnología y visión creativa para dar vida a convenciones, conferencias y viajes corporativos que inspiran.
+            </p>
+          </>
+        }
+        text2={
+          <>
+            <p className="mt-12 text-2xl max-w-md ml-auto mr-12 text-white">
+              Creamos momentos que hablan el idioma de tu marca y se quedan en la memoria de quienes los viven.
+            </p>
+          </>
+        }
+        image1={Image5_1}
+        image2={Image5_2}
+        image3={Image5_3}
+        image4={Image5_4}
+        video="/videos/square_video_1_output.mp4"
+        zIndex={1110}
+      />
     </div>
   );
 }

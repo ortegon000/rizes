@@ -1,0 +1,113 @@
+import { forwardRef } from 'react';
+import Image, { type StaticImageData } from "next/image";
+import { type ReactNode } from "react";
+
+type TextImagesProps = {
+    id: string;
+    title: ReactNode;
+    subtitle: ReactNode;
+    description: ReactNode;
+    text1: ReactNode;
+    text2: ReactNode;
+    image1: StaticImageData;
+    image2: StaticImageData;
+    image3?: StaticImageData;
+    image4?: StaticImageData;
+    video?: string;
+    zIndex?: number;
+}
+
+const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
+    ({
+        id,
+        title,
+        subtitle,
+        description,
+        text1,
+        text2,
+        image1,
+        image2,
+        image3,
+        image4,
+        video,
+        zIndex = 20
+    }, ref) => {
+
+        return (
+            <>
+                <div className="h-dvh"></div>
+
+                <section id={id} className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex }}>
+
+                    <div id={`${id}-left`} className="">
+
+                        <Image
+                            alt=""
+                            src={image1}
+                            width={500}
+                            height={500}
+                            className="w-full mt-[200px] max-w-xl mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        />
+
+                        <div className="mt-12 aspect-square w-full">
+                            <video
+                                ref={ref}
+                                src={video}
+                                className="w-full h-full object-cover"
+                                preload="auto"
+                                playsInline
+                                muted
+                                loop
+                            />
+                        </div>
+
+                        <Image
+                            alt=""
+                            src={image2}
+                            width={500}
+                            height={500}
+                            className="w-full mt-12 max-w-lg mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        />
+
+                        {description}
+                    </div>
+
+                    <div className="" id={`${id}-right`}>
+
+                        <Image
+                            alt=""
+                            src={image3}
+                            width={500}
+                            height={500}
+                            className="w-full object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        />
+
+                        {subtitle}
+
+                        {title}
+
+
+                        {image4 && (
+                            <Image
+                                alt=""
+                                src={image4}
+                                width={500}
+                                height={500}
+                                className="w-full max-w-md mr-0 ml-auto mt-20 h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                            />
+                        )}
+
+                        {text1}
+
+                        {text2}
+                    </div>
+
+                </section>
+            </>
+        )
+
+    })
+
+TextImages4.displayName = 'TextImages4';
+
+export default TextImages4;
