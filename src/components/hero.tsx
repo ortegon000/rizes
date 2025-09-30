@@ -11,14 +11,14 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
     return (
 
         <>
-            <div className="h-dvh"></div>
             <section
-                className="absolute inset-0 h-dvh w-full"
+                id="hero-key-container"
+                className="fixed inset-0 h-dvh w-full"
                 style={{ zIndex }}
             >
                 <div
                     id="hero-key-logo-mask"
-                    className="w-full h-full bg-white"
+                    className="w-full h-full bg-white overflow-hidden"
                 >
                     <picture
                         id="hero-key"

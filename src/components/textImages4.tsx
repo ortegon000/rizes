@@ -14,7 +14,6 @@ type TextImagesProps = {
     image3?: StaticImageData;
     image4?: StaticImageData;
     video?: string;
-    zIndex?: number;
 }
 
 const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
@@ -30,14 +29,13 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
         image3,
         image4,
         video,
-        zIndex = 20
     }, ref) => {
 
         return (
             <>
                 <div className="h-dvh"></div>
 
-                <section id={id} className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex }}>
+                <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
 
                     <div id={`${id}-left`} className="">
 
@@ -53,7 +51,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                             <video
                                 ref={ref}
                                 src={video}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full object-cover pinned"
                                 preload="auto"
                                 playsInline
                                 muted
@@ -86,14 +84,13 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
 
                         {title}
 
-
                         {image4 && (
                             <Image
                                 alt=""
                                 src={image4}
                                 width={500}
                                 height={500}
-                                className="w-full max-w-md mr-0 ml-auto mt-20 h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                                className="w-full max-w-md mt-12 h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                             />
                         )}
 

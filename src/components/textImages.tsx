@@ -8,14 +8,13 @@ type TextImagesProps = {
     image1: StaticImageData;
     image2: StaticImageData;
     image3: StaticImageData;
-    zIndex?: number;
 }
 
-export default function TextImages({ id, title, subtitle, image1, image2, image3, zIndex = 20 }: TextImagesProps) {
+export default function TextImages({ id, title, subtitle, image1, image2, image3 }: TextImagesProps) {
     return (
         <>
-            <div className="h-dvh"></div>
-            <section id={id} className="absolute inset-0 h-dvh w-full translate-y-[110dvh] grid grid-cols-2 gap-8" style={{ zIndex }}>
+            {/* <div className="h-[100dvh]"></div> */}
+            <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
 
                 <div className="">
 
