@@ -14,7 +14,6 @@ type TextImagesProps = {
 export default function TextImages3({ id, title, subtitle, description, image1, image2, image3 }: TextImagesProps) {
     return (
         <>
-            <div className="h-dvh"></div>
 
             <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
                 <div className="col-span-2" id={`${id}-title`}>

@@ -11,8 +11,8 @@ type TextImagesProps = {
     text2: ReactNode;
     image1: StaticImageData;
     image2: StaticImageData;
-    image3?: StaticImageData;
-    image4?: StaticImageData;
+    image3: StaticImageData;
+    image4: StaticImageData;
     video?: string;
 }
 
@@ -33,8 +33,6 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
 
         return (
             <>
-                <div className="h-dvh"></div>
-
                 <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
 
                     <div id={`${id}-left`} className="">

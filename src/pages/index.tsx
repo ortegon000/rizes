@@ -160,28 +160,42 @@ export default function Home() {
           fadeOut: { trigger: "#text-images-1", start: "20% center", end: "45% center" },
         });
 
+        // video 2
+        setupVideoSectionV3({
+          video: videoEl2,
+          target: "#video-scroll-2",
+          scrub: { trigger: "#text-images-2", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-1", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#text-images-2", start: "20% center", end: "45% center" },
+        });
+
+        setupVideoSectionV3({
+          video: videoEl3,
+          target: "#video-scroll-3",
+          scrub: { trigger: "#text-images-3", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-2", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#text-images-3", start: "20% center", end: "45% center" },
+        });
+
+        setupVideoSectionV3({
+          video: videoEl4,
+          target: "#video-scroll-4",
+          scrub: { trigger: "#text-images-4", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-3", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#text-images-4", start: "20% center", end: "45% center" },
+        });
+
+        setupVideoSectionV3({
+          video: videoEl5,
+          target: "#video-scroll-5",
+          scrub: { trigger: "#services", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-4", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#services", start: "20% center", end: "45% center" },
+        });
+
         // more videos
 
         ScrollTrigger.refresh(); // tras montar todos los videos
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         const tl = gsap.timeline({
@@ -660,13 +674,13 @@ export default function Home() {
         <ScrollVideo
           ref={videoRef}
           id="video-scroll-1"
-          src="/videos/test.mp4"
+          src="/videos/output_scroll_1.mp4"
         />
 
         <ScrollVideo
           ref={videoRef2}
           id="video-scroll-2"
-          src="/videos/output_scroll_2_test.mp4"
+          src="/videos/output_scroll_2.mp4"
         />
 
         <ScrollVideo
@@ -711,7 +725,7 @@ export default function Home() {
           image3={Image1_3}
         />
 
-        <div className="mt-[100dvh]">
+        <div className="mt-[150dvh]">
           <TextImages
             id="text-images-2"
             title={
@@ -735,7 +749,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="mt-[100dvh]">
+        <div className="mt-[150dvh]">
           <TextImages2
             id="text-images-3"
             title={
@@ -765,7 +779,7 @@ export default function Home() {
           />
         </div>
 
-        <div className="mt-[100dvh]">
+        <div className="mt-[150dvh]">
           <TextImages3
             id="text-images-4"
             title={
@@ -798,11 +812,11 @@ export default function Home() {
           <Services />
         </div>
 
-        <div className="mt-[100dvh]">
+        <div className="mt-[10dvh]">
           <Banner1 id="banner-1" image={Banner1Image} text="Sentirás tranquilidad gracias al profesionalismo de nuestro equipo en todo momento." />
         </div>
 
-        <div className="mt-[100dvh]">
+        <div className="mt-[10dvh]">
           <TextImages4
             id="text-images-5"
             ref={squareVideo1Ref}
