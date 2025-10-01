@@ -141,12 +141,6 @@ export default function Home() {
             start: "top top",
             end: "+=4000",
             scrub: 1,
-            markers: {
-              startColor: "green",
-              endColor: "red",
-              fontSize: "25px",
-              indent: 30,
-            },
           },
         }).to("#hero-key", {
           scale: 1,
