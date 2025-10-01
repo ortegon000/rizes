@@ -15,6 +15,9 @@ import TextImages3 from "@components/textImages3";
 import TextImages4 from "@components/textImages4";
 import Services from "@components/services";
 import Banner1 from "@components/banner1";
+import SeerviceDetails from "@components/serviceDetails";
+import Team from "@components/team";
+import Customers from "@components/customers";
 
 import Image1_1 from "@images/text-image-1/1.webp";
 import Image1_2 from "@images/text-image-1/2.webp";
@@ -37,8 +40,10 @@ import Image5_3 from "@images/text-image-5/3.webp";
 import Image5_4 from "@images/text-image-5/4.webp";
 
 import Banner1Image from "@images/banner-1.webp";
-import ServicesDetailsImage from "@images/services-details.jpg";
+
 import Image from "next/image";
+
+import { Logo } from "@assets/svg/Logo";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -87,6 +92,7 @@ export default function Home() {
         end: scrub.end || "bottom top",
         scrub: true,
         pin: !!scrub.pin,
+        anticipatePin: !!scrub.pin ? 1 : 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           if (video.duration) video.currentTime = self.progress * video.duration;
@@ -338,6 +344,57 @@ export default function Home() {
           y: 600
         }, 0)
 
+
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#team",
+            start: "top bottom",
+            end: "bottom center",
+            scrub: 1,
+          }
+        })
+          .to("#team-image", {
+            maxWidth: "80%",
+            y: 200,
+            ease: "power1.inOut",
+          }, 0)
+          .to("#team-description", {
+            y: -200,
+            ease: "power1.inOut",
+          }, 0.2);
+
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#team-description",
+            start: "bottom center-=200",
+            end: "+=2000",
+            scrub: 1,
+          }
+        })
+          .to("#customers", {
+            opacity: 1,
+          }, 0)
+          .to("#customers", {
+            opacity: 0,
+          }, ">2")
+          .to("#lastLogo", {
+            opacity: 1,
+          }, ">-0.3")
+          .to("#lastLogoImage", {
+            scale: 1,
+            ease: "power1.inOut",
+          }, "<")
+          .to("#lastLogo", {
+            backgroundColor: "#1d1b22",
+          }, ">")
+          .to("#lastLogo", {
+            y: -100,
+          }, ">0.5")
+          .to("#footer", {
+            y: 0,
+          }, "<")
+          ;
+
         ScrollTrigger.refresh();
       };
 
@@ -386,9 +443,46 @@ export default function Home() {
           id="video-scroll-5"
           src="/videos/output_scroll_5.mp4"
         />
+
+        <Customers />
+
+        <>
+          <section id="lastLogo" className="fixed inset-0 min-h-dvh w-full opacity-0">
+
+            <div className="w-full h-dvh flex items-center justify-center">
+              <Logo id="lastLogoImage" className="w-[300px] h-auto scale-150 text-white" />
+            </div>
+          </section>
+        </>
+
+        <>
+          <section id="footer" className="fixed bottom-0 translate-y-[400px] h-[400px] w-full text-3xl font-black flex justify-center items-center bg-[#1d1b22] text-white" >
+            <div className="grid grid-cols-3 gap-20 max-w-screen-lg w-full mx-auto">
+
+              <div className="flex flex-col items-center">
+                Teléfono
+                <span className="text-xl font-normal mt-2">55 2331 8566 / 55 4810 4881</span>
+              </div>
+
+              <div className="flex flex-col items-center">
+                Dirección
+                <span className="text-xl font-normal mt-2 text-center">
+                  Blvd. Adolfo Ruiz Cortines 4302, Oficina 206, Col. Jardines del Pedregal de San Ángel, Coyoacán, 04500 Ciudad de México, CDMX
+                </span>
+              </div>
+
+              <div className="flex flex-col items-center">
+                Email
+                <span className="text-xl font-normal mt-2">contacto@rizes.com.mx</span>
+              </div>
+
+            </div>
+          </section>
+        </>
+
       </div>
 
-      <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[2000px]">
+      <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[3200px]">
 
         <TextImages
           id="text-images-1"
@@ -550,29 +644,15 @@ export default function Home() {
         </div>
 
         <div className="mt-[10dvh]">
-          <>
-            <section id="services-details" className="relative min-h-dvh w-full py-20">
-              <p className="text-6xl text-center font-black m-auto bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent tracking-wide leading-14">
-                Nuestros Servicios
-              </p>
+          <SeerviceDetails />
+        </div>
 
-              <div className="relative mt-20 max-w-screen-xl aspect-video m-auto border-16 border-white transition-all duration-500 shadow shadow-purple-500/50 hover:shadow-2xl hover:scale-105 hover:rotate-1 group">
-                <button className="cursor-pointer w-full h-full block relative">
-                  <Image
-                    alt=""
-                    src={ServicesDetailsImage}
-                    fill
-                    className="w-full h-full object-cover"
-                  />
-
-                  <span className="absolute py-2 px-6 rounded-full bottom-12 -translate-x-1/2 mx-auto bg-white text-black text-lg tracking-wider group-hover:bg-blue-200 transition-colors duration-500">Conócelos</span>
-                </button>
-              </div>
-            </section>
-          </>
+        <div className="mt-[20dvh]">
+          <Team />
         </div>
 
       </div>
     </div>
+
   );
 }
