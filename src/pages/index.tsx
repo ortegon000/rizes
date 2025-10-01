@@ -37,6 +37,8 @@ import Image5_3 from "@images/text-image-5/3.webp";
 import Image5_4 from "@images/text-image-5/4.webp";
 
 import Banner1Image from "@images/banner-1.webp";
+import ServicesDetailsImage from "@images/services-details.jpg";
+import Image from "next/image";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
@@ -133,7 +135,7 @@ export default function Home() {
           scrollTrigger: {
             trigger: container.current,
             start: "top top",
-            end: "+=5000",
+            end: "+=4000",
             scrub: 1,
             markers: {
               startColor: "green",
@@ -264,7 +266,7 @@ export default function Home() {
         handleScrollVideo({
           video: videoSquareEl1,
           target: "#text-images-5-video",
-          scrub: { trigger: "#text-images-5-video", start: "top top", end: "top -220%", pin: true },
+          scrub: { trigger: "#text-images-5-video", start: "top top", end: "top -100%", pin: true },
           fadeIn: { trigger: "#text-images-5-in", start: "-120% top", end: "130% top" },
           fadeOut: { trigger: "#text-images-5-out", start: "120% top", end: "130% top" },
         });
@@ -333,7 +335,7 @@ export default function Home() {
             scrub: 1,
           }
         }).to("#text-images-5-right", {
-          y: 300
+          y: 600
         }, 0)
 
         ScrollTrigger.refresh();
@@ -386,7 +388,7 @@ export default function Home() {
         />
       </div>
 
-      <div id="normalScrolling" className="relative z-[2000] py-[7000px]">
+      <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[2000px]">
 
         <TextImages
           id="text-images-1"
@@ -506,35 +508,35 @@ export default function Home() {
             ref={squareVideo1Ref}
             title={
               <>
-                <p className="text-5xl w-full max-w-md mt-8 font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+                <p className="text-6xl w-full max-w-md mt-[100px] font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
                   Lograrás ser el evento que marque tendencia.
                 </p>
               </>
             }
             subtitle={
               <>
-                <p className="mt-12 text-3xl max-w-md text-white">
+                <p className="mt-[100px] text-4xl max-w-md text-white">
                   Garantiza a tus invitados el mejor momento del año gracias a la <span className="font-bold text-4xl">personalización</span> de sus eventos.
                 </p>
               </>
             }
             description={
               <>
-                <p className="mt-32 text-3xl max-w-md ml-auto mr-12 text-white">
+                <p className="mt-[100px] relative z-20 text-4xl max-w-md ml-auto mr-12 text-white">
                   ¡Deja que <span className="font-bold">los creativos hagan lo que saben para ti!</span>
                 </p>
               </>
             }
             text1={
               <>
-                <p className="mt-12 text-2xl max-w-md text-white">
+                <p className="mt-[100px] text-4xl max-w-md text-white">
                   Fusionamos innovación, tecnología y visión creativa para dar vida a convenciones, conferencias y viajes corporativos que inspiran.
                 </p>
               </>
             }
             text2={
               <>
-                <p className="mt-12 text-2xl max-w-md text-white">
+                <p className="mt-[100px] text-4xl max-w-md text-white">
                   Creamos momentos que hablan el idioma de tu marca y se quedan en la memoria de quienes los viven.
                 </p>
               </>
@@ -545,6 +547,29 @@ export default function Home() {
             image4={Image5_4}
             video="/videos/square_video_1_output.mp4"
           />
+        </div>
+
+        <div className="mt-[10dvh]">
+          <>
+            <section id="services-details" className="relative min-h-dvh w-full py-20">
+              <p className="text-6xl text-center font-black m-auto bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent tracking-wide leading-14">
+                Nuestros Servicios
+              </p>
+
+              <div className="relative mt-20 max-w-screen-xl aspect-video m-auto border-16 border-white transition-all duration-500 shadow shadow-purple-500/50 hover:shadow-2xl hover:scale-105 hover:rotate-1 group">
+                <button className="cursor-pointer w-full h-full block relative">
+                  <Image
+                    alt=""
+                    src={ServicesDetailsImage}
+                    fill
+                    className="w-full h-full object-cover"
+                  />
+
+                  <span className="absolute py-2 px-6 rounded-full bottom-12 -translate-x-1/2 mx-auto bg-white text-black text-lg tracking-wider group-hover:bg-blue-200 transition-colors duration-500">Conócelos</span>
+                </button>
+              </div>
+            </section>
+          </>
         </div>
 
       </div>

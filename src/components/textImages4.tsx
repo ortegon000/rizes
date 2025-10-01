@@ -47,7 +47,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                             className="w-full mt-[200px] max-w-xl mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
-                        <div className="mt-12 aspect-square w-full">
+                        <div className="relative z-10 mt-12 h-dvh w-full">
                             <video
                                 id={`${id}-video`}
                                 ref={ref}
@@ -65,7 +65,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                             src={image2}
                             width={500}
                             height={500}
-                            className="w-full mt-12 max-w-lg mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                            className="w-full relative z-20 mt-[110dvh] max-w-lg mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
                         {description}
@@ -91,7 +91,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                                 src={image4}
                                 width={500}
                                 height={500}
-                                className="w-full max-w-md mt-12 h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                                className="w-full max-w-md mt-[100px] h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                             />
                         )}
 
