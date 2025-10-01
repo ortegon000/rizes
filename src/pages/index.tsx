@@ -52,14 +52,12 @@ export default function Home() {
   const videoRef5 = useRef<HTMLVideoElement>(null);
   const squareVideo1Ref = useRef<HTMLVideoElement>(null);
 
-
-
-  function setupVideoSectionV3({
+  function handleScrollVideo({
     video,
     target,
-    scrub,             // { trigger, start?, end?, pin? }
-    fadeIn,            // { trigger, start?, end? }
-    fadeOut,           // { trigger, start?, end? }
+    scrub,
+    fadeIn,
+    fadeOut,
   }: {
     video: HTMLVideoElement;
     target: string | Element;
@@ -69,21 +67,17 @@ export default function Home() {
   }) {
     const el = typeof target === "string" ? document.querySelector(target)! : target;
 
-    // capa estable para evitar parpadeos con filter/opacidad
     gsap.set(el, { opacity: 0, filter: "blur(20px)", willChange: "opacity,filter", transform: "translateZ(0)" });
     video.pause(); video.currentTime = 0;
 
-    // estado compartido
-    let inP = 0;   // progreso de entrada 0→1
-    let outP = 0;  // progreso de salida 0→1
+    let inP = 0;
+    let outP = 0;
 
-    // apply visual sin conflictos
     const apply = () => {
       const alpha = Math.max(0, Math.min(1, inP * (1 - outP)));
       gsap.set(el, { opacity: alpha, filter: `blur(${20 * (1 - alpha)}px)` });
     };
 
-    // SCRUB de video
     const initScrub = () => {
       ScrollTrigger.create({
         trigger: scrub.trigger,
@@ -95,13 +89,13 @@ export default function Home() {
         onUpdate: (self) => {
           if (video.duration) video.currentTime = self.progress * video.duration;
         },
-        onLeaveBack: () => { video.currentTime = 0; }, // no toques opacidad aquí
+        onLeaveBack: () => { video.currentTime = 0; },
       });
     };
     if (video.readyState >= 1) initScrub();
     else video.addEventListener("loadedmetadata", initScrub, { once: true });
 
-    // FADE IN (solo actualiza inP)
+    // FADE IN
     ScrollTrigger.create({
       trigger: fadeIn.trigger,
       start: fadeIn.start || "top center",
@@ -111,7 +105,7 @@ export default function Home() {
       onUpdate: (self) => { inP = self.progress; apply(); },
     });
 
-    // FADE OUT (solo actualiza outP)
+    // FADE OUT
     ScrollTrigger.create({
       trigger: fadeOut.trigger,
       start: fadeOut.start || "top center",
@@ -121,7 +115,6 @@ export default function Home() {
       onUpdate: (self) => { outP = self.progress; apply(); },
     });
   }
-
 
   useGSAP(
     () => {
@@ -135,70 +128,8 @@ export default function Home() {
 
       const setupAnimation = () => {
 
-        if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4 || !videoEl5 || !videoSquareEl1) return;
-
-        videoEl.pause();
-        videoEl.currentTime = 0;
-        videoEl2.pause();
-        videoEl2.currentTime = 0;
-        videoEl3.pause();
-        videoEl3.currentTime = 0;
-        videoEl4.pause();
-        videoEl4.currentTime = 0;
-        videoEl5.pause();
-        videoEl5.currentTime = 0;
-        videoSquareEl1.pause();
-        videoSquareEl1.currentTime = 0;
-
-
-        // video 1
-        setupVideoSectionV3({
-          video: videoEl,
-          target: "#video-scroll-1",
-          scrub: { trigger: "#text-images-1", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#hero-description", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-1", start: "20% center", end: "45% center" },
-        });
-
-        // video 2
-        setupVideoSectionV3({
-          video: videoEl2,
-          target: "#video-scroll-2",
-          scrub: { trigger: "#text-images-2", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-1", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-2", start: "20% center", end: "45% center" },
-        });
-
-        setupVideoSectionV3({
-          video: videoEl3,
-          target: "#video-scroll-3",
-          scrub: { trigger: "#text-images-3", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-2", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-3", start: "20% center", end: "45% center" },
-        });
-
-        setupVideoSectionV3({
-          video: videoEl4,
-          target: "#video-scroll-4",
-          scrub: { trigger: "#text-images-4", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-3", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-4", start: "20% center", end: "45% center" },
-        });
-
-        setupVideoSectionV3({
-          video: videoEl5,
-          target: "#video-scroll-5",
-          scrub: { trigger: "#services", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-4", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#services", start: "20% center", end: "45% center" },
-        });
-
-        // more videos
-
-        ScrollTrigger.refresh(); // tras montar todos los videos
-
-
-        const tl = gsap.timeline({
+        // hero animations
+        gsap.timeline({
           scrollTrigger: {
             trigger: container.current,
             start: "top top",
@@ -211,10 +142,7 @@ export default function Home() {
               indent: 30,
             },
           },
-        });
-
-        // hero
-        tl.to("#hero-key", {
+        }).to("#hero-key", {
           scale: 1,
         }, 0)
           .to("#hero-key-logo", {
@@ -277,385 +205,141 @@ export default function Home() {
             opacity: 0,
           }, ">0.25");
 
-        /*
+        // videos
+        if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4 || !videoEl5 || !videoSquareEl1) return;
 
-        // video scroll 1
-        .to(
-          "#video-scroll-1",
-          {
-            opacity: 1,
-          },
-          "<-0.35"
-        )
-        .to(
-          "#video-scroll-1",
-          {
-            filter: "blur(0px)",
-            ease: "power1.inOut",
-          },
-          ">-0.25"
-        )
-        .to(
-          videoScrubber,
-          {
-            frame: videoEl.duration,
-            ease: "none",
-            duration: 1,
-            onUpdate: () => {
-              if (videoEl.duration) {
-                videoEl.currentTime = videoScrubber.frame;
-              }
-            },
-          },
-          ">-0.25"
-        )
-        .to(
-          "#video-scroll-1",
-          {
-            filter: "blur(20px)",
-            opacity: 0,
-            ease: "power4.out",
-          },
-          ">0.5"
-        )
+        videoEl.pause();
+        videoEl.currentTime = 0;
+        videoEl2.pause();
+        videoEl2.currentTime = 0;
+        videoEl3.pause();
+        videoEl3.currentTime = 0;
+        videoEl4.pause();
+        videoEl4.currentTime = 0;
+        videoEl5.pause();
+        videoEl5.currentTime = 0;
+        videoSquareEl1.pause();
+        videoSquareEl1.currentTime = 0;
 
-        // text images 1
-        // .to("#text-images-1", {
-        //   y: "-160dvh",
-      
-        // }, ">-0.25")
-        .to("#text-images-1-right", {
-          y: -300,
-          duration: 1.5,
-        }, "<-0.5")
+        handleScrollVideo({
+          video: videoEl,
+          target: "#video-scroll-1",
+          scrub: { trigger: "#text-images-1", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#hero-description", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#text-images-1", start: "20% center", end: "45% center" },
+        });
 
-        // video scroll 2
-        .to(
-          "#video-scroll-2",
-          {
-            opacity: 1,
-          },
-          ">"
-        )
-        .to(
-          "#video-scroll-2",
-          {
-            filter: "blur(0px)",
-            ease: "power1.inOut",
-          },
-          "<0.15"
-        )
-        .to(
-          videoScrubber2,
-          {
-            frame: videoEl2.duration,
-            ease: "none",
-            onUpdate: () => {
-              if (videoEl2.duration) {
-                videoEl2.currentTime = videoScrubber2.frame;
-              }
-            },
-          },
-          ">-0.25"
-        )
-        .to(
-          "#video-scroll-2",
-          {
-            filter: "blur(20px)",
-            opacity: 0,
-            ease: "power4.out",
-          },
-          ">0.75"
-        )
+        handleScrollVideo({
+          video: videoEl2,
+          target: "#video-scroll-2",
+          scrub: { trigger: "#text-images-2", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-1", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#text-images-2", start: "20% center", end: "45% center" },
+        });
 
-        // // text images 2
-        // .to("#text-images-2", {
-        //   y: "-160dvh",
-        //   duration: 1.25,
-        // }, ">-0.25")
-        .to("#text-images-2-right", {
-          y: -300,
-          duration: 1.25,
-        }, "<0.1")
+        handleScrollVideo({
+          video: videoEl3,
+          target: "#video-scroll-3",
+          scrub: { trigger: "#text-images-3", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-2", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#text-images-3", start: "20% center", end: "45% center" },
+        });
+
+        handleScrollVideo({
+          video: videoEl4,
+          target: "#video-scroll-4",
+          scrub: { trigger: "#text-images-4", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-3", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#text-images-4", start: "20% center", end: "45% center" },
+        });
+
+        handleScrollVideo({
+          video: videoEl5,
+          target: "#video-scroll-5",
+          scrub: { trigger: "#services", start: "-120% bottom", end: "bottom top" },
+          fadeIn: { trigger: "#text-images-4", start: "65% top", end: "80% top" },
+          fadeOut: { trigger: "#services", start: "90% bottom", end: "90% top" },
+        });
+
+        handleScrollVideo({
+          video: videoSquareEl1,
+          target: "#text-images-5-video",
+          scrub: { trigger: "#text-images-5-video", start: "top top", end: "top -220%", pin: true },
+          fadeIn: { trigger: "#text-images-5-in", start: "-120% top", end: "130% top" },
+          fadeOut: { trigger: "#text-images-5-out", start: "120% top", end: "130% top" },
+        });
 
 
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#text-images-1",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          }
+        }).to("#text-images-1-right", {
+          y: -300
+        }, 0)
 
-        // video scroll 3
-        .to(
-          "#video-scroll-3",
-          {
-            opacity: 1,
-          },
-          ">-0.25"
-        )
-        .to(
-          "#video-scroll-3",
-          {
-            filter: "blur(0px)",
-            ease: "power2.inOut",
-          },
-          ">-0.25"
-        )
-        .to(
-          videoScrubber3,
-          {
-            frame: videoEl3.duration,
-            ease: "none",
-            onUpdate: () => {
-              if (videoEl3.duration) {
-                videoEl3.currentTime = videoScrubber3.frame;
-              }
-            },
-          },
-          ">0.5"
-        )
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#text-images-2",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          }
+        }).to("#text-images-2-right", {
+          y: -300
+        }, 0)
 
-        // // text images 3
-        // .to("#text-images-3", {
-        //   y: "-220dvh",
-        //   duration: 1.25,
-        // }, ">-0.25")
-        .to("#text-images-3-left", {
-          y: -300,
-          duration: 1.25,
-        }, "<0.1")
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#text-images-3",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          }
+        }).to("#text-images-3-left", {
+          y: -300
+        }, 0)
 
-        // video scroll 3 out
-        .to(
-          "#video-scroll-3",
-          {
-            filter: "blur(20px)",
-            opacity: 0,
-            ease: "power2.inOut",
-          },
-          ">1"
-        )
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#text-images-4",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          }
+        }).to("#text-images-4-right", {
+          y: -300
+        }, 0)
 
-        // video scroll 4
-        .to(
-          "#video-scroll-4",
-          {
-            opacity: 1,
-          },
-          ">0.75"
-        )
-        .to(
-          "#video-scroll-4",
-          {
-            filter: "blur(0px)",
-            ease: "power2.inOut",
-          },
-          ">-0.5"
-        )
-        .to(
-          videoScrubber4,
-          {
-            frame: videoEl4.duration,
-            ease: "none",
-            onUpdate: () => {
-              if (videoEl4.duration) {
-                videoEl4.currentTime = videoScrubber4.frame;
-              }
-            },
-          },
-          ">-0.5"
-        )
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#banner-1",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          }
+        }).to("#banner-1-image", {
+          y: -300
+        }, 0)
 
-        // // text images 4
-        // .to("#text-images-4", {
-        //   y: "-170dvh",
-        //   duration: 1.25,
-        // }, ">-0.25")
-        .to("#text-images-4-right", {
-          y: -300,
-          duration: 1.25,
-        }, "<0.1")
-
-        // video scroll 4 out
-        .to(
-          "#video-scroll-4",
-          {
-            filter: "blur(20px)",
-            opacity: 0,
-            ease: "power2.inOut",
-          },
-          "<0.5"
-        )
-
-        // video scroll 5
-        .to(
-          "#video-scroll-5",
-          {
-            opacity: 1,
-          },
-          ">0.25"
-        )
-        .to(
-          "#video-scroll-5",
-          {
-            filter: "blur(0px)",
-            ease: "power2.inOut",
-          },
-          ">-0.5"
-        )
-        .to(
-          videoScrubber5,
-          {
-            frame: videoEl5.duration,
-            ease: "none",
-            onUpdate: () => {
-              if (videoEl5.duration) {
-                videoEl5.currentTime = videoScrubber5.frame;
-              }
-            },
-          },
-          ">-0.5"
-        )
-
-        // // services
-        // .to("#services", {
-        //   y: "-160dvh",
-        //   duration: 1.25,
-        // }, ">-0.25")
-
-        // video scroll 5 out
-        .to(
-          "#video-scroll-5",
-          {
-            filter: "blur(20px)",
-            opacity: 0,
-            ease: "power2.inOut",
-          },
-          "<0.5"
-        )
-
-        // banner 1
-        // .to("#banner-1", {
-        //   y: "-120dvh",
-        //   duration: 1.3,
-        // }, "<")
-        // .to("#banner-1", {
-        //   opacity: 0,
-        //   duration: 0,
-        // }, ">")
-
-        // // text images 5
-
-        // .to('text-images-5', {
-        //   y: "-200dvh",
-        // }, "+=5")
-
-
-        // .to("#text-images-5", {
-        //   y: "-350dvh",
-        //   duration: 1.25,
-        // }, ">-0.5")
-        .to("#text-images-5-right", {
-          y: 500,
-          duration: 1.25,
-        }, "<0.1")
-
-
-        // text images 5 video
-        .to(
-          videoScrubberSquare1,
-          {
-            frame: videoSquareEl1.duration,
-            ease: "none",
-            onUpdate: () => {
-              if (videoSquareEl1.duration) {
-                videoSquareEl1.currentTime = videoScrubberSquare1.frame;
-              }
-            },
-          },
-          "<"
-        ) */
-        ;
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: "#text-images-5",
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1,
+          }
+        }).to("#text-images-5-right", {
+          y: 300
+        }, 0)
 
         ScrollTrigger.refresh();
       };
 
-      ;
-
-
-
-
-
-      // .to(
-      //   "#video-scroll-1",
-      //   {
-      //     opacity: 1,
-      //   },
-      //   "<-0.35"
-      // )
-      //   .to(
-      //     "#video-scroll-1",
-      //     {
-      //       filter: "blur(0px)",
-      //       ease: "power1.inOut",
-      //     },
-      //     ">-0.25"
-      //   )
-      //   .to(
-      //     videoScrubber,
-      //     {
-      //       frame: videoEl.duration,
-      //       ease: "none",
-      //       duration: 1,
-      //       onUpdate: () => {
-      //         if (videoEl.duration) {
-      //           videoEl.currentTime = videoScrubber.frame;
-      //         }
-      //       },
-      //     },
-      //     ">-0.25"
-      //   )
-      //   .to(
-      //     "#video-scroll-1",
-      //     {
-      //       filter: "blur(20px)",
-      //       opacity: 0,
-      //       ease: "power4.out",
-      //     },
-      //     ">0.5"
-      //   )
-
-
-
-
-
-
-
-
-
-
-
-      // if (
-      //   videoEl.readyState > 0
-      //   && videoEl2.readyState > 0
-      //   && videoEl3.readyState > 0
-      //   && videoEl4.readyState > 0
-      //   && videoEl5.readyState > 0
-      //   && videoSquareEl1.readyState > 0
-      // ) {
       setupAnimation();
-      // } else {
-      //   videoEl.addEventListener("loadedmetadata", setupAnimation);
-      //   videoEl2.addEventListener("loadedmetadata", setupAnimation);
-      //   videoEl3.addEventListener("loadedmetadata", setupAnimation);
-      //   videoEl4.addEventListener("loadedmetadata", setupAnimation);
-      //   videoEl5.addEventListener("loadedmetadata", setupAnimation);
-      //   videoSquareEl1.addEventListener("loadedmetadata", setupAnimation);
-      // }
-
-      // return () => {
-      //   videoEl.removeEventListener("loadedmetadata", setupAnimation);
-      //   videoEl2.removeEventListener("loadedmetadata", setupAnimation);
-      //   videoEl3.removeEventListener("loadedmetadata", setupAnimation);
-      //   videoEl4.removeEventListener("loadedmetadata", setupAnimation);
-      //   videoEl5.removeEventListener("loadedmetadata", setupAnimation);
-      //   videoSquareEl1.removeEventListener("loadedmetadata", setupAnimation);
-      // }
     },
     { scope: container }
   );
@@ -816,7 +500,7 @@ export default function Home() {
           <Banner1 id="banner-1" image={Banner1Image} text="Sentirás tranquilidad gracias al profesionalismo de nuestro equipo en todo momento." />
         </div>
 
-        <div className="mt-[10dvh]">
+        <div className="mt-[-10dvh]">
           <TextImages4
             id="text-images-5"
             ref={squareVideo1Ref}

@@ -4,7 +4,45 @@
 body {
   /* background: #020024; */
   
-  background-image: linear-gradient(to top, #30cfd0 0%, #330867 100%);
+  background-size: 220% 220%;
+  background-position: top center;
+  background: linear-gradient(
+    135deg,
+    hsl(215 60% 10%) 0%,
+    hsl(260 55% 12%) 3%,
+    hsl(355 60% 13%) 6%,
+    hsl(205 62% 12%) 9%,
+    hsl(275 58% 14%) 12%,
+    hsl(350 62% 15%) 15%,
+    hsl(210 60% 13%) 18%,
+    hsl(285 60% 16%) 21%,
+    hsl(0   62% 16%) 24%,
+    hsl(220 62% 14%) 27%,
+    hsl(295 58% 17%) 30%,
+    hsl(8   60% 17%) 33%,
+    hsl(205 60% 14%) 36%,
+    hsl(275 56% 16%) 39%,
+    hsl(355 62% 18%) 42%,
+    hsl(215 62% 15%) 45%,
+    hsl(265 58% 17%) 48%,
+    hsl(5   64% 18%) 51%,
+    hsl(208 62% 15%) 54%,
+    hsl(285 60% 18%) 57%,
+    hsl(358 64% 19%) 60%,
+    hsl(212 62% 16%) 63%,
+    hsl(272 58% 18%) 66%,
+    hsl(6   64% 19%) 69%,
+    hsl(218 62% 16%) 72%,
+    hsl(292 58% 18%) 75%,
+    hsl(356 64% 18%) 78%,
+    hsl(206 60% 15%) 81%,
+    hsl(268 56% 17%) 84%,
+    hsl(352 62% 18%) 87%,
+    hsl(214 60% 14%) 90%,
+    hsl(280 58% 17%) 93%,
+    hsl(359 64% 19%) 96%,
+    hsl(220 60% 12%) 100%
+  );
   
   background-repeat: none;
   font-family: Arial, Helvetica, sans-serif;

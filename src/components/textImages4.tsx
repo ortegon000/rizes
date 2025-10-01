@@ -33,6 +33,8 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
 
         return (
             <>
+                <div id={`${id}-in`}></div>
+
                 <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
 
                     <div id={`${id}-left`} className="">
@@ -47,6 +49,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
 
                         <div className="mt-12 aspect-square w-full">
                             <video
+                                id={`${id}-video`}
                                 ref={ref}
                                 src={video}
                                 className="w-full h-full object-cover pinned"
@@ -98,6 +101,8 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                     </div>
 
                 </section>
+
+                <div id={`${id}-out`}></div>
             </>
         )
 
