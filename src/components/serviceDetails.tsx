@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import HorizontalScrollView from "@components/horizontalScroll";
 import ServicesDetailsImage from "@images/services-details.jpg";
@@ -44,8 +45,9 @@ export default function ServiceDetails() {
                 </div>
             </section>
 
-            {showHorizontalScroll && (
-                <HorizontalScrollView onClose={handleClose} />
+            {showHorizontalScroll && typeof window !== 'undefined' && createPortal(
+                <HorizontalScrollView onClose={handleClose} />,
+                document.body
             )}
         </>
     );

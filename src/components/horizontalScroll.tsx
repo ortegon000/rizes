@@ -1,7 +1,10 @@
 "use client";
 import React, { useRef, useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const services = [
   {
@@ -64,42 +67,95 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
   onClose,
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const targetRef = useRef<HTMLDivElement | null>(null);
+  const sliderRef = useRef<HTMLDivElement | null>(null);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    container: containerRef,
-  });
-  
-  // Bloquear el scroll de Lenis cuando el componente se monta
+  // Usar GSAP ScrollTrigger para manejar el scroll horizontal
   useEffect(() => {
     lockScrollLenis();
     
-    // Asegurar que el contenedor pueda hacer scroll
-    if (containerRef.current) {
-      containerRef.current.scrollTop = 0;
-    }
+    const container = containerRef.current;
+    const slider = sliderRef.current;
+    const wrapper = wrapperRef.current;
     
-    // Restaurar el scroll de Lenis cuando se desmonta
+    if (!container || !slider || !wrapper) {
+      return;
+    }
+
+    // Permitir que el scroll funcione en este contenedor específico
+    const allowScroll = (e: Event) => {
+      e.stopPropagation();
+    };
+
+    container.addEventListener('wheel', allowScroll);
+    container.addEventListener('touchmove', allowScroll);
+
+    // Calcular el ancho total del slider
+    const totalWidth = slider.scrollWidth;
+    const maxTranslate = -(totalWidth - window.innerWidth);
+
+    // Crear la animación con GSAP
+    const tween = gsap.to(slider, {
+      x: maxTranslate,
+      ease: "none",
+      scrollTrigger: {
+        trigger: wrapper,
+        start: "top top",
+        end: () => `+=${window.innerHeight * services.length * 1.75}`,
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1,
+        invalidateOnRefresh: true,
+        scroller: container,
+      },
+    });
+
+    // Resetear scroll al inicio
+    container.scrollTop = 0;
+    
+    // Cleanup
     return () => {
+      container.removeEventListener('wheel', allowScroll);
+      container.removeEventListener('touchmove', allowScroll);
+      tween.scrollTrigger?.kill();
+      tween.kill();
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
       unlockScrollLenis();
     };
   }, []);
 
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${(services.length - 1) * 100}%`]);
+  const [isVisible, setIsVisible] = React.useState(false);
+
+  // Manejar animaciones de entrada y salida
+  React.useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
+  const handleClose = () => {
+    setIsVisible(false);
+    setTimeout(() => {
+      onClose();
+    }, 500);
+  };
 
   return (
-    <motion.div 
-      className="fixed inset-0 z-[9999999] bg-neutral-900"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.5 }}
+    <div 
+      className="fixed inset-0 bg-neutral-900 transition-opacity duration-500"
+      style={{ 
+        zIndex: 2147483647,
+        opacity: isVisible ? 1 : 0,
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+      }}
     >
       {/* Botón de cerrar */}
       <button 
-        onClick={onClose}
-        className="fixed top-8 right-8 z-[9999999] bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 text-2xl"
+        onClick={handleClose}
+        className="fixed top-8 right-8 bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 text-2xl"
+        style={{ zIndex: 99999999 }}
       >
         ✕
       </button>
@@ -114,12 +170,12 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
         }}
       >
         <div 
-          ref={targetRef} 
           className="relative bg-neutral-900"
-          style={{ height: `${services.length * 100}vh` }}
+          style={{ height: `${services.length * 175}vh` }}
         >
-          <div className="sticky top-0 flex h-screen items-center overflow-hidden w-full">
-            <motion.div style={{ x }} className="flex">
+          <div ref={wrapperRef} className="sticky top-0 h-screen overflow-hidden w-full">
+            <div className="flex h-screen items-center">
+              <div ref={sliderRef} className="flex will-change-transform">
               {services.map((service, index) => (
                 <div 
                   className="group relative flex-shrink-0 overflow-hidden bg-neutral-200" 
@@ -146,11 +202,12 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                   </div>
                 </div>
               ))}
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
