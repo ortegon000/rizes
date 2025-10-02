@@ -79,13 +79,49 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
       return;
     }
 
-    // Permitir que el scroll funcione en este contenedor específico
-    const allowScroll = (e: Event) => {
-      e.stopPropagation();
+    // Permitir scroll solo dentro del contenedor y evitar el scroll chaining al body
+    let touchStartY = 0;
+
+    const isAtTop = () => container.scrollTop <= 0;
+    const isAtBottom = () => {
+      const maxScrollTop = container.scrollHeight - container.clientHeight;
+      return container.scrollTop >= maxScrollTop - 1;
     };
 
-    container.addEventListener('wheel', allowScroll);
-    container.addEventListener('touchmove', allowScroll);
+    const handleWheel = (event: WheelEvent) => {
+      event.stopPropagation();
+
+      const scrollingUp = event.deltaY < 0;
+      const scrollingDown = event.deltaY > 0;
+
+      if ((scrollingUp && isAtTop()) || (scrollingDown && isAtBottom())) {
+        event.preventDefault();
+        return;
+      }
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartY = event.touches[0]?.clientY ?? 0;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      event.stopPropagation();
+
+      const currentY = event.touches[0]?.clientY ?? touchStartY;
+      const deltaY = touchStartY - currentY;
+
+      const scrollingUp = deltaY < 0;
+      const scrollingDown = deltaY > 0;
+
+      if ((scrollingUp && isAtTop()) || (scrollingDown && isAtBottom())) {
+        event.preventDefault();
+        return;
+      }
+    };
+
+    container.addEventListener('wheel', handleWheel, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: false });
 
     // Calcular el ancho total del slider
     const totalWidth = slider.scrollWidth;
@@ -148,8 +184,9 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
 
       // Pequeño delay para evitar conflictos durante la transición de salida
       setTimeout(() => {
-        container.removeEventListener('wheel', allowScroll);
-        container.removeEventListener('touchmove', allowScroll);
+        container.removeEventListener('wheel', handleWheel);
+        container.removeEventListener('touchstart', handleTouchStart);
+        container.removeEventListener('touchmove', handleTouchMove);
         container.removeEventListener('scroll', updateProgressAndScroll);
         // Ya no tenemos ScrollTrigger, solo limpiamos Lenis
         unlockScrollLenis();
@@ -217,11 +254,12 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
       
       <div 
         ref={containerRef}
-        className="w-full h-full overflow-y-scroll overflow-x-hidden"
+        className="w-full h-full overflow-y-scroll overflow-x-hidden overscroll-y-contain"
         style={{ 
           height: '100vh', 
           width: '100vw',
           position: 'relative',
+          overscrollBehavior: 'contain',
         }}
       >
         <div 
