@@ -15,6 +15,8 @@ type TextImagesProps = {
     image4: StaticImageData;
     video?: string;
     poster?: string;
+    loop?: boolean;
+    sources?: Array<{ src: string; type?: string; media?: string }>;
 }
 
 const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
@@ -31,6 +33,8 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
         image4,
         video,
         poster,
+        loop = true,
+        sources,
     }, ref) => {
 
         return (
@@ -53,14 +57,24 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                             <video
                                 id={`${id}-video`}
                                 ref={ref}
-                                src={video}
-                                className="w-full h-full object-cover"
-
-                                // poster={poster || "/images/video-placeholder.svg"}
+                                {...(!(sources && sources.length) ? { src: video } : {})}
+                                className="w-full h-full object-cover pinned"
+                                preload="metadata"
+                                poster={poster || "/images/video-placeholder.svg"}
                                 playsInline
                                 muted
-                                loop
-                            />
+                                loop={loop}
+                            >
+                                {sources?.map((source) => (
+                                    <source
+                                        key={`${id}-${source.src}`}
+                                        src={source.src}
+                                        type={source.type}
+                                        media={source.media}
+                                    />
+                                ))}
+                                {sources?.length ? <source src={video} type="video/mp4" /> : null}
+                            </video>
                         </div>
 
                         <Image

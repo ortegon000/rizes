@@ -71,18 +71,54 @@ export default function Home() {
     scrub: { trigger: string | Element; start?: string; end?: string; pin?: boolean };
     fadeIn: { trigger: string | Element; start?: string; end?: string };
     fadeOut: { trigger: string | Element; start?: string; end?: string };
-  }) {
-    const el = typeof target === "string" ? document.querySelector(target)! : target;
+    }) {
 
-    gsap.set(el, { opacity: 0, filter: "blur(20px)", willChange: "opacity,filter", transform: "translateZ(0)" });
-    video.pause(); video.currentTime = 0;
+    const elCandidate = typeof target === "string" ? document.querySelector(target) : target;
+    if (!elCandidate) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("handleScrollVideo: target not found", target);
+      }
+      return;
+    }
+    const el = elCandidate as Element;
+
+    gsap.set(el, {
+      opacity: 0,
+      filter: "blur(20px)",
+      transform: "translateZ(0)",
+    });
+    const overlay = el.querySelector('[data-role="video-overlay"]') as HTMLElement | null;
+    if (overlay) {
+      gsap.set(overlay, { opacity: 0 });
+    }
+    video.pause();
+    video.currentTime = 0;
+
+    const enforcePause = () => {
+      if (!video.paused) video.pause();
+    };
+
+    if (video.readyState >= 2) enforcePause();
+    else video.addEventListener("loadeddata", enforcePause, { once: true });
 
     let inP = 0;
     let outP = 0;
 
     const apply = () => {
       const alpha = Math.max(0, Math.min(1, inP * (1 - outP)));
-      gsap.set(el, { opacity: alpha, filter: `blur(${20 * (1 - alpha)}px)` });
+      const blurAmount = 20 * (1 - alpha);
+
+      gsap.set(el, {
+        opacity: alpha,
+        filter: blurAmount > 0.5 ? `blur(${blurAmount}px)` : "none",
+      });
+      if (overlay) {
+        gsap.set(overlay, { opacity: alpha });
+      }
+      gsap.set(video, {
+        filter: blurAmount > 0.5 ? `blur(${blurAmount * 0.5}px)` : "none",
+        willChange: alpha > 0 && alpha < 1 ? "filter, opacity" : "auto",
+      });
     };
 
     const initScrub = () => {
@@ -95,9 +131,22 @@ export default function Home() {
         anticipatePin: !!scrub.pin ? 1 : 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          if (video.duration) video.currentTime = self.progress * video.duration;
+          if (!video.duration) return;
+          // Directly set the time. Keep it simple.
+          const newTime = self.progress * video.duration;
+          if (Math.abs(video.currentTime - newTime) > 0.01) {
+            video.currentTime = newTime;
+          }
         },
-        onLeaveBack: () => { video.currentTime = 0; },
+        onLeaveBack: () => {
+          video.currentTime = 0;
+        },
+        onToggle: (self) => {
+          // When the trigger is not active, ensure the video is paused.
+          if (!self.isActive) {
+            video.pause();
+          }
+        },
       });
     };
     if (video.readyState >= 1) initScrub();
@@ -420,6 +469,10 @@ export default function Home() {
             id="video-scroll-1"
             src="/videos/output_scroll_1.mp4"
             poster={Image1_1.src}
+            sources={[
+              { src: "/videos/1.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
+              { src: "/videos/output_scroll_1.mp4", type: "video/mp4" },
+            ]}
           />
 
           <ScrollVideo
@@ -427,6 +480,10 @@ export default function Home() {
             id="video-scroll-2"
             src="/videos/output_scroll_2.mp4"
             poster={Image2_1.src}
+            sources={[
+              { src: "/videos/output_scroll_2_test.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
+              { src: "/videos/output_scroll_2.mp4", type: "video/mp4" },
+            ]}
           />
 
           <ScrollVideo
@@ -434,6 +491,10 @@ export default function Home() {
             id="video-scroll-3"
             src="/videos/output_scroll_3.mp4"
             poster={Image3_1.src}
+            sources={[
+              { src: "/videos/3.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
+              { src: "/videos/output_scroll_3.mp4", type: "video/mp4" },
+            ]}
           />
 
           <ScrollVideo
@@ -441,6 +502,10 @@ export default function Home() {
             id="video-scroll-4"
             src="/videos/output_scroll_4.mp4"
             poster={Image4_1.src}
+            sources={[
+              { src: "/videos/4.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
+              { src: "/videos/output_scroll_4.mp4", type: "video/mp4" },
+            ]}
           />
 
           <ScrollVideo
@@ -448,6 +513,10 @@ export default function Home() {
             id="video-scroll-5"
             src="/videos/output_scroll_5.mp4"
             poster={Image5_1.src}
+            sources={[
+              { src: "/videos/5.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
+              { src: "/videos/output_scroll_5.mp4", type: "video/mp4" },
+            ]}
           />
 
           <Customers />
@@ -617,6 +686,10 @@ export default function Home() {
               image4={Image5_4}
               video="/videos/square_video_1_output.mp4"
               poster={Image5_2.src}
+              sources={[
+                { src: "/videos/square_video_1.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
+                { src: "/videos/square_video_1_output.mp4", type: "video/mp4" },
+              ]}
             />
           </div>
 
