@@ -1,10 +1,7 @@
 "use client";
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
-import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const services = [
   {
@@ -68,17 +65,17 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sliderRef = useRef<HTMLDivElement | null>(null);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const progressBarRef = useRef<HTMLDivElement | null>(null);
   
-  // Usar GSAP ScrollTrigger para manejar el scroll horizontal
+  // Manejar scroll horizontal con interpolación suave
   useEffect(() => {
     lockScrollLenis();
     
     const container = containerRef.current;
     const slider = sliderRef.current;
-    const wrapper = wrapperRef.current;
+    const progressBar = progressBarRef.current;
     
-    if (!container || !slider || !wrapper) {
+    if (!container || !slider || !progressBar) {
       return;
     }
 
@@ -94,33 +91,69 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
     const totalWidth = slider.scrollWidth;
     const maxTranslate = -(totalWidth - window.innerWidth);
 
-    // Crear la animación con GSAP
-    const tween = gsap.to(slider, {
-      x: maxTranslate,
-      ease: "none",
-      scrollTrigger: {
-        trigger: wrapper,
-        start: "top top",
-        end: () => `+=${window.innerHeight * services.length * 1.75}`,
-        scrub: 1,
-        pin: true,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-        scroller: container,
-      },
-    });
+    // Variables para scroll suave
+    let currentX = 0;
+    let targetX = 0;
+    let animationId: number | null = null;
+
+    // Función para actualizar la barra de progreso Y el scroll horizontal CON SUAVIZADO
+    const updateProgressAndScroll = () => {
+      const scrollTop = container.scrollTop;
+      const scrollHeight = container.scrollHeight - container.clientHeight;
+      const progress = scrollHeight > 0 ? (scrollTop / scrollHeight) : 0;
+
+      // Actualizar barra de progreso
+      progressBar.style.width = `${Math.min(100, Math.max(0, progress * 100))}%`;
+
+      // Calcular posición objetivo
+      targetX = progress * maxTranslate;
+
+      // Solo iniciar animación si no está ya corriendo
+      if (!animationId) {
+        smoothScrollAnimation();
+      }
+    };
+
+    // Función de animación suave
+    const smoothScrollAnimation = () => {
+      // Interpolación suave hacia la posición objetivo
+      currentX += (targetX - currentX) * 0.15; // Factor de suavizado (0.1 = muy suave, 0.3 = más rápido)
+
+      // Aplicar la transformación
+      gsap.set(slider, { x: currentX });
+
+      // Continuar animando si no hemos llegado al objetivo
+      if (Math.abs(targetX - currentX) > 0.5) {
+        animationId = requestAnimationFrame(smoothScrollAnimation);
+      } else {
+        // Detener animación cuando llegamos al objetivo
+        gsap.set(slider, { x: targetX });
+        animationId = null;
+      }
+    };
+
+    // Listener para el scroll manual
+    container.addEventListener('scroll', updateProgressAndScroll);
 
     // Resetear scroll al inicio
     container.scrollTop = 0;
+    updateProgressAndScroll();
     
     // Cleanup
     return () => {
-      container.removeEventListener('wheel', allowScroll);
-      container.removeEventListener('touchmove', allowScroll);
-      tween.scrollTrigger?.kill();
-      tween.kill();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-      unlockScrollLenis();
+      // Cancelar animación pendiente
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+      }
+
+      // Pequeño delay para evitar conflictos durante la transición de salida
+      setTimeout(() => {
+        container.removeEventListener('wheel', allowScroll);
+        container.removeEventListener('touchmove', allowScroll);
+        container.removeEventListener('scroll', updateProgressAndScroll);
+        // Ya no tenemos ScrollTrigger, solo limpiamos Lenis
+        unlockScrollLenis();
+      }, 50);
     };
   }, []);
 
@@ -128,22 +161,25 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
 
   // Manejar animaciones de entrada y salida
   React.useEffect(() => {
+    // Entrada inmediata sin delay
     setIsVisible(true);
   }, []);
 
   const handleClose = () => {
     setIsVisible(false);
+
+    // Tiempo más corto y directo para el cierre
     setTimeout(() => {
       onClose();
-    }, 500);
+    }, 300);
   };
 
   return (
     <div 
-      className="fixed inset-0 bg-neutral-900 transition-opacity duration-500"
+      className={`fixed inset-0 transition-opacity duration-300 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'
+        }`}
       style={{ 
-        zIndex: 2147483647,
-        opacity: isVisible ? 1 : 0,
+        zIndex: 5000,
         position: 'fixed',
         top: 0,
         left: 0,
@@ -154,11 +190,30 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
       {/* Botón de cerrar */}
       <button 
         onClick={handleClose}
-        className="fixed top-8 right-8 bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-full font-semibold hover:bg-white/30 transition-all duration-300 text-2xl"
-        style={{ zIndex: 99999999 }}
+        className={`fixed top-8 left-8 bg-orange-800 backdrop-blur-md text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-900 transition-opacity duration-300 text-2xl flex gap-4 items-center cursor-pointer ${isVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+        style={{ zIndex: 1010 }}
       >
-        ✕
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+        </svg>
+
+        Atras
+
       </button>
+
+      {/* Barra de progreso horizontal */}
+      <div
+        className={`fixed bottom-8 left-1/2 -translate-x-1/2 w-80 h-2 bg-white/20 rounded-full backdrop-blur-md transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'
+          }`}
+        style={{ zIndex: 1010 }}
+      >
+        <div
+          ref={progressBarRef}
+          className="h-full bg-gradient-to-r from-red-500 to-blue-500 rounded-full transition-all duration-300"
+          style={{ width: '0%' }}
+        ></div>
+      </div>
       
       <div 
         ref={containerRef}
@@ -170,17 +225,21 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
         }}
       >
         <div 
-          className="relative bg-neutral-900"
+          className="relative bg-gradient-to-br from-[#020024] to-red-800"
           style={{ height: `${services.length * 175}vh` }}
         >
-          <div ref={wrapperRef} className="sticky top-0 h-screen overflow-hidden w-full">
+          <div className="sticky top-0 h-screen overflow-hidden w-full">
             <div className="flex h-screen items-center">
               <div ref={sliderRef} className="flex will-change-transform">
               {services.map((service, index) => (
                 <div 
-                  className="group relative flex-shrink-0 overflow-hidden bg-neutral-200" 
+                  className="group relative flex-shrink-0 overflow-hidden"
                   key={index}
-                  style={{ width: '100vw', height: '100vh', minWidth: '100vw' }}
+                  style={{
+                    width: '100vw',
+                    height: '100vh',
+                    minWidth: '100vw'
+                  }}
                 >
                   <div
                     style={{
@@ -190,7 +249,7 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                     }}
                     className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110"
                   ></div>
-                  <div className="absolute inset-0 z-10 grid place-content-center bg-black/30">
+                  <div className="absolute inset-0 z-10 grid place-content-center">
                     <div className="text-center px-4">
                       <h2 className="text-white p-8 text-6xl md:text-8xl font-black uppercase">
                         {service.title}

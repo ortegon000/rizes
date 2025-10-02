@@ -16,7 +16,7 @@ import TextImages3 from "@components/textImages3";
 import TextImages4 from "@components/textImages4";
 import Services from "@components/services";
 import Banner1 from "@components/banner1";
-import SeerviceDetails from "@components/serviceDetails";
+import ServiceDetails from "@components/serviceDetails";
 import Team from "@components/team";
 import Customers from "@components/customers";
 import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
@@ -183,38 +183,69 @@ export default function Home() {
       const videoEl5 = videoRef5.current;
       const videoSquareEl1 = squareVideo1Ref.current;
 
+      // Listener para refrescar ScrollTrigger cuando se cierre el overlay horizontal
+      const handleRefreshScrollTrigger = () => {
+        // Refresh más agresivo con múltiples pasos
+        setTimeout(() => {
+          // 1. Matar todos los ScrollTriggers existentes
+          ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+
+          // 2. Refresh completo
+          ScrollTrigger.refresh();
+
+          // 3. Recrear todas las animaciones
+          setTimeout(() => {
+            setupAnimation();
+          }, 100);
+        }, 100);
+      };
+
+      window.addEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
+
       const setupAnimation = () => {
 
         // hero animations
-        gsap.timeline({
+        const heroTimeline = gsap.timeline({
           scrollTrigger: {
             trigger: container.current,
             start: "top top",
             end: "+=4000",
             scrub: 1,
           },
-        }).to("#hero-key", {
-          scale: 1,
-        }, 0)
-          .to("#hero-key-logo", {
-            opacity: 0,
-            scale: 0.5,
-          }, "<")
-          .to(
-            "#hero-key-logo-mask",
-            {
-              maskSize: "200px",
-              ease: "power4.out",
-              duration: 1,
-            },
-            "<"
-          )
-          .to("#hero-key", {
-            opacity: 0,
-          }, ">-0.2")
-          .to("#hero-key-logo-mask", {
-            opacity: 0,
-          }, ">-0.5")
+        });
+
+        // Verificar si el hero está temporalmente oculto por el overlay
+        const heroKey = document.getElementById('hero-key');
+        const isOverlayHidden = heroKey?.getAttribute('data-overlay-hidden') === 'true';
+
+        // Solo aplicar animaciones si no está oculto por el overlay
+        if (!isOverlayHidden) {
+          heroTimeline
+            .to("#hero-key", {
+              scale: 1,
+            }, 0)
+            .to("#hero-key-logo", {
+              opacity: 0,
+              scale: 0.5,
+            }, "<")
+            .to(
+              "#hero-key-logo-mask",
+              {
+                maskSize: "200px",
+                ease: "power4.out",
+                duration: 1,
+              },
+              "<"
+            )
+            .to("#hero-key-background", {
+              display: "none",
+            }, ">-0.2")
+            .to("#hero-key-logo-mask", {
+              opacity: 0,
+            }, ">-0.5");
+        }
+
+        heroTimeline
 
           // intro
           .fromTo(
@@ -392,14 +423,13 @@ export default function Home() {
           scrollTrigger: {
             trigger: "#team",
             start: "top bottom",
-            end: "bottom center",
+            end: "bottom bottom",
             scrub: 1,
           }
         })
           .to("#team-image", {
-            maxWidth: "80%",
-            y: 200,
-            ease: "power1.inOut",
+            y: "80%",
+            // ease: "power1.inOut",
           }, 0)
           .to("#team-description", {
             y: -200,
@@ -442,6 +472,11 @@ export default function Home() {
       };
 
       setupAnimation();
+
+      // Cleanup del event listener
+      return () => {
+        window.removeEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
+      };
     },
     { scope: container }
   );
@@ -694,7 +729,7 @@ export default function Home() {
           </div>
 
           <div className="mt-[10dvh]">
-            <SeerviceDetails />
+            <ServiceDetails />
           </div>
 
           <div className="mt-[20dvh]">

@@ -34,7 +34,7 @@ export default function Team() {
                         src={Team2Image}
                         width={500}
                         height={500}
-                        className="w-full max-w-lg mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full max-w-screen-md mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
                 </div>
             </section>
