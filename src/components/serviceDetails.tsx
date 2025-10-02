@@ -26,7 +26,7 @@ export default function ServiceDetails() {
                     Nuestros Servicios
                 </p>
 
-                <div className="relative mt-20 max-w-screen-xl aspect-video m-auto border-16 border-white transition-all duration-500 shadow shadow-purple-500/50 hover:shadow-2xl hover:scale-105 hover:rotate-1 group">
+                <div className={`relative mt-20 max-w-screen-lg aspect-video m-auto border-16 border-white transition-all duration-500 shadow shadow-purple-500/50 hover:shadow-2xl hover:scale-105 hover:rotate-1 group ${showHorizontalScroll ? '-translate-x-1/2 -rotate-1' : ''}`}>
                     <button
                         onClick={handleOpen}
                         className="cursor-pointer w-full h-full block relative"
