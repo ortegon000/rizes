@@ -14,6 +14,7 @@ type TextImagesProps = {
     image3: StaticImageData;
     image4: StaticImageData;
     video?: string;
+    poster?: string;
 }
 
 const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
@@ -29,6 +30,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
         image3,
         image4,
         video,
+        poster,
     }, ref) => {
 
         return (
@@ -52,8 +54,9 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                                 id={`${id}-video`}
                                 ref={ref}
                                 src={video}
-                                className="w-full h-full object-cover pinned"
-                                preload="auto"
+                                className="w-full h-full object-cover"
+
+                                // poster={poster || "/images/video-placeholder.svg"}
                                 playsInline
                                 muted
                                 loop

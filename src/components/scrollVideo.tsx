@@ -3,9 +3,10 @@ import { forwardRef } from 'react';
 type ScrollVideoProps = {
     src: string;
     id: string;
+    poster?: string;
 };
 
-const ScrollVideo = forwardRef<HTMLVideoElement, ScrollVideoProps>(({ src, id }, ref) => {
+const ScrollVideo = forwardRef<HTMLVideoElement, ScrollVideoProps>(({ src, id, poster = "/images/video-placeholder.svg" }, ref) => {
 
     return (
 
@@ -19,7 +20,8 @@ const ScrollVideo = forwardRef<HTMLVideoElement, ScrollVideoProps>(({ src, id },
                     ref={ref}
                     src={src}
                     className="w-full h-full object-cover"
-                    preload="auto"
+                    preload="metadata"
+                    poster={poster}
                     playsInline
                     muted
                     loop

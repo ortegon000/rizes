@@ -419,30 +419,35 @@ export default function Home() {
             ref={videoRef}
             id="video-scroll-1"
             src="/videos/output_scroll_1.mp4"
+            poster={Image1_1.src}
           />
 
           <ScrollVideo
             ref={videoRef2}
             id="video-scroll-2"
             src="/videos/output_scroll_2.mp4"
+            poster={Image2_1.src}
           />
 
           <ScrollVideo
             ref={videoRef3}
             id="video-scroll-3"
             src="/videos/output_scroll_3.mp4"
+            poster={Image3_1.src}
           />
 
           <ScrollVideo
             ref={videoRef4}
             id="video-scroll-4"
             src="/videos/output_scroll_4.mp4"
+            poster={Image4_1.src}
           />
 
           <ScrollVideo
             ref={videoRef5}
             id="video-scroll-5"
             src="/videos/output_scroll_5.mp4"
+            poster={Image5_1.src}
           />
 
           <Customers />
@@ -611,6 +616,7 @@ export default function Home() {
               image3={Image5_3}
               image4={Image5_4}
               video="/videos/square_video_1_output.mp4"
+              poster={Image5_2.src}
             />
           </div>
 
