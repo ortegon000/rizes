@@ -9,7 +9,7 @@ export default function Description({ zIndex = 20 }: DescriptionProps) {
         <>
             <section
                 id="hero-description"
-                className="fixed inset-0 w-full h-dvh bg-[#1d1b22]"
+                className="fixed inset-0 w-full md:h-dvh bg-[#1d1b22]"
                 style={{ zIndex }}
             >
                 <div id={`hero-description-entrance`} className="w-full h-full bg-[#1d1b22] absolute z-50 top-0 left-0"></div>

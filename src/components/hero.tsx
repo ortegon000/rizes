@@ -13,7 +13,7 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
         <>
             <section
                 id="hero-key-container"
-                className="fixed inset-0 h-dvh w-full"
+                className="fixed inset-0 md:h-dvh w-full"
                 style={{ zIndex }}
             >
                 <div
@@ -22,11 +22,11 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
                 >
                     <picture
                         id="hero-key"
-                        className="relative h-full w-full block scale-125 overflow-hidden"
+                        className="relative h-full w-full block scale-150 sm:scale-125 overflow-hidden"
                     >
                         <Logo
                             id="hero-key-logo"
-                            className="absolute inset-0 m-auto w-80 h-auto text-white z-10"
+                            className="absolute inset-0 m-auto w-40 sm:w-60 md:w-80 h-auto text-white z-10"
                         />
                         <Image
                             alt=""
