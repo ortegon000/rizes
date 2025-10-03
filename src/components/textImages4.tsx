@@ -41,7 +41,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
             <>
                 <div id={`${id}-in`}></div>
 
-                <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
+                <section id={id} className="relative min-h-dvh w-full grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
 
                     <div id={`${id}-left`} className="">
 
@@ -50,10 +50,10 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                             src={image1}
                             width={500}
                             height={500}
-                            className="w-full mt-[200px] max-w-xl mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                            className="w-full mt-12 md:mt-[200px] max-w-xl mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
-                        <div className="relative z-10 mt-12 h-dvh w-full">
+                        <div className="relative z-10 mt-12 h-[50dvh] md:h-dvh w-full">
                             <video
                                 id={`${id}-video`}
                                 ref={ref}
@@ -82,7 +82,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                             src={image2}
                             width={500}
                             height={500}
-                            className="w-full relative z-20 mt-[110dvh] max-w-lg mr-0 ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                            className="w-full relative z-20 mt-[15dvh] md:mt-[110dvh] max-w-lg mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
                         {description}
@@ -108,7 +108,7 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                                 src={image4}
                                 width={500}
                                 height={500}
-                                className="w-full max-w-md mt-[100px] h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                                className="w-full max-w-md mt-12 md:mt-[100px] h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all mx-auto"
                             />
                         )}
 

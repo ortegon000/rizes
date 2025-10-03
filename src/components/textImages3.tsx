@@ -15,12 +15,12 @@ export default function TextImages3({ id, title, subtitle, description, image1, 
     return (
         <>
 
-            <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
-                <div className="col-span-2" id={`${id}-title`}>
+            <section id={id} className="relative min-h-dvh w-full grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 md:px-8">
+                <div className="col-span-1 lg:col-span-2" id={`${id}-title`}>
                     {title}
                 </div>
 
-                <div id={`${id}-left`} className="">
+                <div id={`${id}-left`} className="flex flex-col justify-center order-2 lg:order-1">
 
                     {subtitle}
 
@@ -29,18 +29,18 @@ export default function TextImages3({ id, title, subtitle, description, image1, 
                         src={image1}
                         width={500}
                         height={500}
-                        className="w-full ml-0 mt-12 mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full ml-0 mt-8 md:mt-12 mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
                 </div>
 
-                <div className="" id={`${id}-right`}>
+                <div className="lg:pt-[200px] order-1 lg:order-2" id={`${id}-right`}>
 
                     <Image
                         alt=""
                         src={image2}
                         width={500}
                         height={500}
-                        className="w-full ml-0 mt-[200px] mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full ml-0 mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
 
                     {image3 && (
@@ -53,7 +53,9 @@ export default function TextImages3({ id, title, subtitle, description, image1, 
                         />
                     )}
 
-                    {description}
+                    <div className="mt-8 md:mt-12">
+                        {description}
+                    </div>
                 </div>
 
             </section>

@@ -21,7 +21,7 @@ const ScrollVideo = forwardRef<HTMLVideoElement, ScrollVideoProps>(({ src, id, p
         <>
             <section
                 id={id}
-                className="fixed inset-0 h-dvh w-full opacity-0"
+                className="fixed inset-0 md:h-dvh w-full opacity-0"
             >
                 <div data-role="video-overlay" className='absolute inset-0 h-full w-full bg-black/60 transition-opacity duration-500 ease-out'></div>
                 <video

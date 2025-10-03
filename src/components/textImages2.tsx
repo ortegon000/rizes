@@ -14,16 +14,16 @@ type TextImagesProps = {
 export default function TextImages2({ id, title, subtitle, description, image1, image2, image3 }: TextImagesProps) {
     return (
         <>
-            <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
+            <section id={id} className="relative min-h-dvh w-full grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 md:px-8">
 
-                <div id={`${id}-left`} className="">
+                <div id={`${id}-left`} className="lg:pt-[200px]">
 
                     <Image
                         alt=""
                         src={image1}
                         width={500}
                         height={500}
-                        className="w-full ml-0 mt-[200px] mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full mx-auto lg:ml-0 lg:mr-auto object-cover h-[400px] md:h-auto border border-transparent hover:border-white hover:border-8 transition-all"
                     />
 
                     <Image
@@ -31,11 +31,11 @@ export default function TextImages2({ id, title, subtitle, description, image1, 
                         src={image2}
                         width={500}
                         height={500}
-                        className="w-full mt-8 ml-auto mr-0 max-w-md h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full mt-8 mx-auto lg:ml-auto lg:mr-0 max-w-md h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
                 </div>
 
-                <div className="" id={`${id}-right`}>
+                <div className="flex flex-col justify-center" id={`${id}-right`}>
                     {title}
 
                     {subtitle}
@@ -45,7 +45,7 @@ export default function TextImages2({ id, title, subtitle, description, image1, 
                         src={image3}
                         width={500}
                         height={500}
-                        className="w-full max-w-md mt-12 h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full max-w-md mt-12 mx-auto lg:mx-0 h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
 
                     {description}

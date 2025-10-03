@@ -18,9 +18,6 @@
 }
 
 body {
-  /* background: #020024; */
-  
-  
   background-position: top center;
   background: linear-gradient(
     135deg,
@@ -59,8 +56,7 @@ body {
     hsl(359 64% 19%) 96%,
     hsl(220 60% 12%) 100%
   );
-  
-  background-repeat: none;
+  background-color: #1d1b22;
   font-family: Arial, Helvetica, sans-serif;
   /* min-height: 30000px; */
 }

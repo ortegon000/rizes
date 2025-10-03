@@ -14,9 +14,9 @@ export default function TextImages({ id, title, subtitle, image1, image2, image3
     return (
         <>
             {/* <div className="h-[100dvh]"></div> */}
-            <section id={id} className="relative min-h-dvh w-full grid grid-cols-2 gap-8">
+            <section id={id} className="relative min-h-dvh w-full grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 md:px-8">
 
-                <div className="">
+                <div className="flex flex-col justify-center">
 
                     {title}
 
@@ -27,25 +27,25 @@ export default function TextImages({ id, title, subtitle, image1, image2, image3
                         src={image1}
                         width={500}
                         height={500}
-                        className="w-full max-w-md mt-12 mr-0 ml-auto h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full max-w-md mt-12 mx-auto lg:mr-0 lg:ml-auto h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
                 </div>
 
-                <div className="" id={`${id}-right`}>
+                <div className="lg:pt-[200px]" id={`${id}-right`}>
 
                     <Image
                         alt=""
                         src={image2}
                         width={500}
                         height={500}
-                        className="w-full ml-0 mt-[200px] mr-auto h-[600px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full mx-auto lg:ml-0 lg:mr-auto h-[400px] md:h-[600px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
                     <Image
                         alt=""
                         src={image3}
                         width={500}
                         height={500}
-                        className="w-full mt-8 max-w-md h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                        className="w-full mt-8 max-w-md mx-auto lg:mx-0 h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
 
                 </div>

@@ -3,8 +3,8 @@
 export default function Services() {
     return (
         <>
-            <section id="services" className="relative min-h-dvh w-full flex flex-col items-center justify-cente">
-                <ul className="text-4xl md:text-5xl lg:text-6xl text-center text-white font-black leading-10 md:leading-12 lg:leading-14 space-y-6 md:space-y-8 lg:space-y-10 [&>li]:bg-gradient-to-r [&>li]:from-red-500 [&>li]:to-blue-500 [&>li]:bg-clip-text [&>li]:text-transparent">
+            <section id="services" className="relative min-h-dvh w-full flex flex-col items-center justify-center px-4">
+                <ul className="text-4xl md:text-5xl lg:text-6xl text-center text-white font-black leading-tight md:leading-12 lg:leading-14 space-y-4 md:space-y-6 lg:space-y-8 [&>li]:bg-gradient-to-r [&>li]:from-red-500 [&>li]:to-blue-500 [&>li]:bg-clip-text [&>li]:text-transparent">
                     <li>Lanzamientos ATL</li>
                     <li>Convenciones</li>
                     <li>Turismo</li>
