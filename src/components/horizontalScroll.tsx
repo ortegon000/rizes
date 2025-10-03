@@ -2,59 +2,10 @@
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
+import ServiceBG from '@images/services/bg.webp';
+import Service1Image from '@images/services/1.jpg';
 
-const services = [
-  {
-    title: "Convenciones",
-    description: "Eventos corporativos que conectan, inspiran y transforman equipos completos.",
-    image: "/src/assets/images/text-image-1/1.jpg",
-  },
-  {
-    title: "Conferencias",
-    description: "Espacios de conocimiento diseñados para potenciar ideas y generar impacto.",
-    image: "/src/assets/images/text-image-2/1.webp",
-  },
-  {
-    title: "Viajes Corporativos",
-    description: "Experiencias únicas que fortalecen lazos y celebran logros en cualquier destino.",
-    image: "/src/assets/images/text-image-3/1.webp",
-  },
-  {
-    title: "Eventos Híbridos",
-    description: "Conexión perfecta entre lo presencial y digital para alcance sin límites.",
-    image: "/src/assets/images/text-image-4/1.webp",
-  },
-  {
-    title: "Producción Creativa",
-    description: "Diseño y ejecución de conceptos únicos que definen tu marca.",
-    image: "/src/assets/images/text-image-5/1.webp",
-  },
-  {
-    title: "Logística Integral",
-    description: "Coordinación impecable de cada detalle para una ejecución sin preocupaciones.",
-    image: "/src/assets/images/text-image-1/2.webp",
-  },
-  {
-    title: "Tecnología Audiovisual",
-    description: "Soluciones técnicas de vanguardia para experiencias inmersivas inolvidables.",
-    image: "/src/assets/images/text-image-2/2.webp",
-  },
-  {
-    title: "Eventos Internacionales",
-    description: "Experiencia global con presencia local en cualquier rincón del mundo.",
-    image: "/src/assets/images/text-image-3/2.webp",
-  },
-  {
-    title: "Activaciones de Marca",
-    description: "Momentos memorables que conectan emocionalmente con tu audiencia.",
-    image: "/src/assets/images/text-image-4/2.webp",
-  },
-  {
-    title: "Consultoría Estratégica",
-    description: "Asesoramiento experto para maximizar el ROI de cada evento corporativo.",
-    image: "/src/assets/images/text-image-5/2.webp",
-  },
-];
+import Image from "next/image";
 
 interface HorizontalScrollViewProps {
   onClose: () => void;
@@ -224,6 +175,7 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
         bottom: 0,
       }}
     >
+
       {/* Botón de cerrar */}
       <button 
         onClick={handleClose}
@@ -239,6 +191,7 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
 
       </button>
 
+
       {/* Barra de progreso horizontal */}
       <div
         className={`fixed bottom-8 left-1/2 -translate-x-1/2 w-80 h-2 bg-white/20 rounded-full backdrop-blur-md transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'
@@ -251,6 +204,8 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
           style={{ width: '0%' }}
         ></div>
       </div>
+
+
       
       <div 
         ref={containerRef}
@@ -264,41 +219,45 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
       >
         <div 
           className="relative bg-gradient-to-br from-[#020024] to-red-800"
-          style={{ height: `${services.length * 175}vh` }}
+          // style={{ height: `${services.length * 175}vh` }}
         >
           <div className="sticky top-0 h-screen overflow-hidden w-full">
             <div className="flex h-screen items-center">
               <div ref={sliderRef} className="flex will-change-transform">
-              {services.map((service, index) => (
+
+
+
                 <div 
                   className="group relative flex-shrink-0 overflow-hidden"
-                  key={index}
                   style={{
-                    width: '100vw',
-                    height: '100vh',
-                    minWidth: '100vw'
+                    width: '100dvw',
+                    height: '100dvh',
+                    minWidth: '100dvw',
+                    backgroundImage: `url(${ServiceBG.src})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
                   }}
                 >
-                  <div
-                    style={{
-                      // backgroundImage: `url(${service.image})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                    className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110"
+                  <div className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110 bg-black/40"
                   ></div>
-                  <div className="absolute inset-0 z-10 grid place-content-center">
-                    <div className="text-center px-4">
-                      <h2 className="text-white p-8 text-6xl md:text-8xl font-black uppercase">
-                        {service.title}
-                      </h2>
-                      <p className="text-white/80 p-4 text-xl md:text-2xl mt-4 max-w-2xl mx-auto">
-                        {service.description}
+
+
+                  <div id="service-1" className={`absolute inset-0 z-10 flex gap-8 items-center justify-center ${isVisible ? 'translate-x-0' : 'translate-x-full'} transition-all duration-500`}>
+                    <Image src={Service1Image} alt="" width={500} className="w-full max-w-[500px] aspect-[5/3] object-cover border-8 border-white hover:-rotate-1 hover:scale-110 transition all " />
+                    <div className=" text-white px-4">
+                      <h3 className="text-4xl font-black">Nuestros <br /> servicios</h3>
+
+                      <p className="mt-16 ml-12 text-2xl max-w-sm">Nuestro principal objetivo, integrar todos y cada uno de los servicios que nuestros clientes requieren dentro de la organización de  eventos, estrategis y presupuestos. <br />
+                        Te acompañamos con asesoría integral para:
                       </p>
                     </div>
                   </div>
+
+
                 </div>
-              ))}
+
+
+
               </div>
             </div>
           </div>
