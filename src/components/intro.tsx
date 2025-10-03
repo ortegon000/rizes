@@ -16,8 +16,8 @@ export default function Intro({ zIndex = 20 }: IntroProps) {
 
                 <div className="flex justify-center items-center w-full h-full">
                     <div className="">
-                        <p className="text-7xl font-bold text-center mt-12 bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">Bienvenido a la <br /> Experiencia Rizes</p>
-                        <p className="text-white text-3xl text-center mt-4">Vibra, sueña, explota.</p>
+                        <p className="text-4xl md:text-7xl font-bold text-center mt-12 bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">Bienvenido a la <br /> Experiencia Rizes</p>
+                        <p className="text-white text-2xl md:text-3xl text-center mt-4">Vibra, sueña, explota.</p>
                     </div>
                 </div>
 

@@ -16,7 +16,7 @@ export default function Description({ zIndex = 20 }: DescriptionProps) {
 
                 <div className="flex justify-center items-center w-full h-full">
                     <div className="translate-y-[-20px]">
-                        <p className="text-6xl font-bold text-center bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
+                        <p className="text-3xl md:text-6xl font-bold text-center bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent">
                             Cumplimos 30 años <br /> creando  emociones <br /> que dejan huella.
                         </p>
                     </div>

@@ -585,14 +585,14 @@ export default function Home() {
             id="text-images-1"
             title={
               <>
-                <p className="text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+                <p className="text-3xl md:text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">
                   <strong>Somos una empresa 100% mexicana</strong> que combina <strong>precisión, pasión y visión estratégica.</strong>
                 </p>
               </>
             }
             subtitle={
               <>
-                <p className="mt-12 text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+                <p className="mt-12 text-3xl md:text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">
                   Ejecución impecable, <strong>control presupuestal inteligente</strong> y atención a cada detalle.
                 </p>
               </>
@@ -607,7 +607,7 @@ export default function Home() {
               id="text-images-2"
               title={
                 <>
-                  <p className="text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r font-black from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+                  <p className="text-3xl md:text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r font-black from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">
                     <span className="text-2xl tracking-normal leading-10 block font-medium">Con Rizes las fronteras no son más que una palabra...</span>
                     ¡Conoce el verdadero significado de romper las fronteras!
                   </p>
@@ -615,7 +615,7 @@ export default function Home() {
               }
               subtitle={
                 <>
-                  <p className="mt-12 text-3xl max-w-md mr-0 ml-auto text-white">
+                  <p className="mt-12 text-xl md:text-3xl max-w-md mr-0 ml-auto text-white">
                     Que los planes se lleven a cabo tal y como los sueñas, ya sean en una playa, en otro país, desde el polo norte o al polo sur...
                   </p>
                 </>
@@ -699,7 +699,7 @@ export default function Home() {
               ref={squareVideo1Ref}
               title={
                 <>
-                  <p className="text-6xl w-full max-w-md mt-[100px] font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-14">
+                  <p className="text-4xl md:text-6xl w-full max-w-md mt-[100px] font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">
                     Lograrás ser el evento que marque tendencia.
                   </p>
                 </>
@@ -720,7 +720,7 @@ export default function Home() {
               }
               text1={
                 <>
-                  <p className="mt-[100px] text-4xl max-w-md text-white">
+                  <p className="mt-[100px] text-2xl md:ext-4xl max-w-md text-white">
                     Fusionamos innovación, tecnología y visión creativa para dar vida a convenciones, conferencias y viajes corporativos que inspiran.
                   </p>
                 </>
