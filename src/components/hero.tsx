@@ -26,7 +26,7 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
                     >
                         <Logo
                             id="hero-key-logo"
-                            className="absolute inset-0 m-auto w-40 sm:w-60 md:w-80 h-auto text-white z-10"
+                            className="absolute inset-0 m-auto w-32 sm:w-60 md:w-80 h-auto text-white z-10"
                         />
                         <Image
                             alt=""

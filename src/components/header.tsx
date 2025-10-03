@@ -20,12 +20,12 @@ export default function Header({ onMenuChange }: HeaderProps) {
         <>
             {/* Header fijo - solo la barra superior */}
             <div className="fixed top-0 left-0 right-0 z-[3010] pointer-events-none">
-                <header className="flex justify-between w-full px-20 py-16">
-                    <Logo className="size-20 text-white hover:text-yellow-100 transition-colors duration-500 pointer-events-auto" />
+                <header className="flex justify-between w-full px-4 md:px-20 py-4 md:py-16">
+                    <Logo className="size-12 md:size-20 text-white hover:text-yellow-100 transition-colors duration-500 pointer-events-auto" />
 
                     <button
                         onClick={toggleMenu}
-                        className={`flex flex-col gap-2 items-center justify-center group size-18 cursor-pointer p-4 rounded-full transition-colors pointer-events-auto ${menuOpen ? "bg-blue-500/30" : ""
+                        className={`flex flex-col gap-2 items-center justify-center group size-12 md:size-18 cursor-pointer p-0 md:p-4 rounded-full transition-colors pointer-events-auto ${menuOpen ? "bg-blue-500/30" : ""
                             }`}
                     >
                         <span
@@ -46,7 +46,7 @@ export default function Header({ onMenuChange }: HeaderProps) {
                     setMenuOpen(false);
                     onMenuChange?.(false);
                 }}
-                className={`fixed inset-0 w-full h-full bg-black/20 backdrop-blur-3xl grid grid-cols-2 z-[2990] transition-opacity duration-500 ${menuOpen
+                className={`hidden fixed inset-0 w-full h-full bg-black/20 backdrop-blur-3xl md:grid grid-cols-2 z-[2990] transition-opacity duration-500 ${menuOpen
                     ? "opacity-100 pointer-events-auto"
                     : "opacity-0 pointer-events-none"
                     }`}
@@ -58,22 +58,22 @@ export default function Header({ onMenuChange }: HeaderProps) {
 
             {/* Menú lateral */}
             <ul
-                className={`fixed h-full w-1/2 top-0 right-0 z-[3000] transform transition-all duration-500 flex flex-col gap-8 bg-[#111] p-16 pr-20 pt-[200px] text-white ${menuOpen ? "translate-x-0" : "translate-x-full"
+                className={`fixed h-full w-full md:w-1/2 top-0 right-0 z-[3000] transform transition-all duration-500 flex flex-col gap-8 bg-[#111] p-8 md:p-16 pr-10 md:pr-20 pt-28 md:pt-[200px] text-white ${menuOpen ? "translate-x-0" : "translate-x-full"
                     }`}
             >
-                <li className="text-5xl font-semibold uppercase">
+                <li className="text-2xl md:text-5xl font-semibold uppercase">
                     <a href="#" className="hover:text-red-300 transition-colors">Home</a>
                 </li>
-                <li className="text-5xl font-semibold uppercase">
+                <li className="text-2xl md:text-5xl font-semibold uppercase">
                     <a href="#" className="hover:text-red-300 transition-colors">¿Quiénes Somos?</a>
                 </li>
-                <li className="text-5xl font-semibold uppercase">
+                <li className="text-2xl md:text-5xl font-semibold uppercase">
                     <a href="#" className="hover:text-red-300 transition-colors">¿Qué hacemos?</a>
                 </li>
-                <li className="text-5xl font-semibold uppercase">
+                <li className="text-2xl md:text-5xl font-semibold uppercase">
                     <a href="#" className="hover:text-red-300 transition-colors">Clientes</a>
                 </li>
-                <li className="text-5xl font-semibold uppercase">
+                <li className="text-2xl md:text-5xl font-semibold uppercase">
                     <a href="#" className="hover:text-red-300 transition-colors">Contacto</a>
                 </li>
             </ul>
