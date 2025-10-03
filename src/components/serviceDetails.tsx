@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import HorizontalScrollView from "@components/horizontalScroll";
@@ -12,8 +12,8 @@ export default function ServiceDetails() {
     const [showHorizontalScroll, setShowHorizontalScroll] = useState(false);
 
     // Refs para limpiar timeouts
-    const refreshTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-    const restoreTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+    const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const restoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
     // Helper function para obtener elementos del hero
     const getHeroElements = () => {
@@ -79,7 +79,7 @@ export default function ServiceDetails() {
     };
 
     // Cleanup al desmontar el componente
-    React.useEffect(() => {
+    useEffect(() => {
         return () => {
             if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
             if (restoreTimeoutRef.current) clearTimeout(restoreTimeoutRef.current);

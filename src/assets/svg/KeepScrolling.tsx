@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 
 interface KeepScrolling {
     id?: string;
     className?: string;
 }
 
-export const KeepScrolling: React.FC<KeepScrolling> = ({ className = "", id = "keep-scrolling" }) => {
+export const KeepScrolling: FC<KeepScrolling> = ({ className = "", id = "keep-scrolling" }) => {
 
     return (
         <svg

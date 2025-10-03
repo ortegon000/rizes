@@ -1,11 +1,11 @@
-import React from 'react';
+import { FC } from 'react';
 
 interface Logo {
     id?: string;
     className?: string;
 }
 
-export const Logo: React.FC<Logo> = ({ className = "", id = "main-logo-scg" }) => {
+export const Logo: FC<Logo> = ({ className = "", id = "main-logo-scg" }) => {
     return (
         <svg
             id={id}
