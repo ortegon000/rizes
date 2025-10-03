@@ -51,6 +51,9 @@ export default function ServiceDetails() {
     const handleOpen = () => {
         setShowHorizontalScroll(true);
 
+        // Deshabilitar ScrollTriggers de la página principal para evitar conflictos
+        window.dispatchEvent(new CustomEvent('disableScrollTriggers'));
+
         // Ocultar hero-key temporalmente al abrir el overlay
         const heroElements = getHeroElements();
         hideHeroElements(heroElements);

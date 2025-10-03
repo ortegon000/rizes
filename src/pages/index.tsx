@@ -185,6 +185,7 @@ export default function Home() {
 
       // Listener para refrescar ScrollTrigger cuando se cierre el overlay horizontal
       const handleRefreshScrollTrigger = () => {
+        console.log('Refrescando ScrollTriggers después de cerrar scroll horizontal');
         // Refresh más agresivo con múltiples pasos
         setTimeout(() => {
           // 1. Matar todos los ScrollTriggers existentes
@@ -196,11 +197,26 @@ export default function Home() {
           // 3. Recrear todas las animaciones
           setTimeout(() => {
             setupAnimation();
+            console.log('ScrollTriggers reestablecidos');
           }, 100);
         }, 100);
       };
 
+      // Listener para deshabilitar ScrollTriggers cuando se abre el overlay horizontal
+      const handleDisableScrollTriggers = () => {
+        console.log('Deshabilitando ScrollTriggers para evitar conflictos con scroll horizontal');
+        // Deshabilitar todos los ScrollTriggers temporalmente con un pequeño delay
+        setTimeout(() => {
+          const triggers = ScrollTrigger.getAll();
+          console.log(`Deshabilitando ${triggers.length} ScrollTriggers`);
+          triggers.forEach(trigger => {
+            trigger.disable();
+          });
+        }, 50);
+      };
+
       window.addEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
+      window.addEventListener('disableScrollTriggers', handleDisableScrollTriggers);
 
       const setupAnimation = () => {
 
@@ -476,6 +492,7 @@ export default function Home() {
       // Cleanup del event listener
       return () => {
         window.removeEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
+        window.removeEventListener('disableScrollTriggers', handleDisableScrollTriggers);
       };
     },
     { scope: container }

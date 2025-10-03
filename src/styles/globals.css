@@ -1,6 +1,22 @@
 @import "tailwindcss";
 @custom-variant hover (&:hover);
 
+/* Optimización para el scroll horizontal y evitar saltos */
+.horizontal-scroll-slider {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform;
+  contain: layout style paint;
+}
+
+.horizontal-scroll-content {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  will-change: auto;
+  contain: layout style paint;
+}
+
 body {
   /* background: #020024; */
   
@@ -66,4 +82,12 @@ body {
 
 #banner-1 {
   clip-path: polygon(0 0, 100% 0, 100% calc(100% - 4vw), 0 100%);
+}
+
+#service-2-bg {
+  mask-image: linear-gradient(to right, black 80%, transparent);
+}
+
+#service-4-bg {
+  mask-image: linear-gradient(to right, transparent 10%, black 80%, transparent);
 }

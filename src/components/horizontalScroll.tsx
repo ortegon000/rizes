@@ -110,14 +110,14 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
 
     // Función de animación suave
     const smoothScrollAnimation = () => {
-      // Interpolación suave hacia la posición objetivo
-      currentX += (targetX - currentX) * 0.15; // Factor de suavizado (0.1 = muy suave, 0.3 = más rápido)
+      // Interpolación ultra suave hacia la posición objetivo
+      currentX += (targetX - currentX) * 0.06; // Factor de suavizado aún más reducido
 
       // Aplicar la transformación
       gsap.set(slider, { x: currentX });
 
       // Continuar animando si no hemos llegado al objetivo
-      if (Math.abs(targetX - currentX) > 0.5) {
+      if (Math.abs(targetX - currentX) > 0.1) { // Umbral aún más fino
         animationId = requestAnimationFrame(smoothScrollAnimation);
       } else {
         // Detener animación cuando llegamos al objetivo
@@ -225,12 +225,12 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
         }}
       >
         <div 
-          className="relative bg-gradient-to-br from-[#020024] to-red-800"
-          style={{ height: `${3 * 175}vh` }}
+          className="relative bg-[#baa6f4]"
+          style={{ height: `${5 * 150}vh` }}
         >
           <div className="sticky top-0 h-screen overflow-hidden w-full">
             <div className="flex h-screen items-center">
-              <div ref={sliderRef} className="relative flex will-change-transform">
+              <div ref={sliderRef} className="relative flex will-change-transform horizontal-scroll-slider" style={{ transform: 'translateZ(0)' }}>
 
                 {/* Seervices loop */}
                 <div className="group relative flex-shrink-0"
@@ -246,7 +246,7 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                   <div className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110 bg-black/40"
                   ></div>
 
-                  <div className={`absolute inset-0 z-10 flex gap-8 items-center justify-center ${isVisible ? 'translate-x-0' : 'translate-x-full'} transition-all duration-500`}>
+                  <div className={`absolute inset-0 z-10 flex gap-8 items-center justify-center horizontal-scroll-content transition-all delay-75 ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
                     <Image src={Service1Image} alt="" width={500} className="w-full max-w-[500px] aspect-[5/3] object-cover border-8 border-white hover:-rotate-1 hover:scale-110 transition all " />
                     <div className=" text-white px-4">
                       <h3 className="text-6xl font-black">Nuestros <br /> servicios</h3>
@@ -263,27 +263,30 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                     width: '100dvw',
                     height: '100dvh',
                     minWidth: '100dvw',
-                    backgroundImage: `url(${ServiceBG.src})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    // backgroundImage: `url(${ServiceBG.src})`,
+                    // backgroundSize: "cover",
+                    // backgroundPosition: "center",
                   }}
                 >
 
-                  <div className={`absolute inset-0 z-20 flex gap-12 items-center justify-center`}>
-                    <div className="relative">
-                      <Image src={Service2Image} alt="" width={800} className="w-full max-w-md aspect-[4/3] object-cover border-8 border-white " />
+                  <Image id="service-2-bg" fill src={ServiceBG.src} alt="" className="w-full h-full absolute inset-0 object-cover" />
+
+                  <div className="absolute inset-0 z-20 flex gap-8 items-center justify-center horizontal-scroll-content -translate-x-[300px]">
+                    <div className="relative w-full max-w-lg aspect-[4/3]">
+                      <Image src={Service2Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Eventos</p>
                     </div>
 
-                    <div className="relative">
-                      <Image src={Service3Image} alt="" width={800} className="w-full max-w-md aspect-[4/5] object-cover border-8 border-white " />
+                    <div className="relative w-full max-w-lg aspect-[4/6]">
+                      <Image src={Service3Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Viajes de incentivos</p>
                     </div>
 
-                    <div className="relative">
-                      <Image src={Service4Image} alt="" width={800} className="w-full max-w-md aspect-[4/3] object-cover border-8 border-white " />
+
+                    <div className="relative w-full max-w-lg aspect-[4/3]">
+                      <Image src={Service4Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Experiencias personalizadas</p>
                     </div>
@@ -346,27 +349,28 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                     width: '100dvw',
                     height: '100dvh',
                     minWidth: '100dvw',
-                    backgroundImage: `url(${ServiceBG.src})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    // backgroundImage: `url(${ServiceBG.src})`,
+                    // backgroundSize: "cover",
+                    // backgroundPosition: "center",
                   }}
                 >
+                  <Image id="service-4-bg" fill src={ServiceBG.src} alt="" className="w-full h-full absolute inset-0 object-cover" />
 
-                  <div className={`absolute inset-0 z-20 flex gap-12 items-center justify-center`}>
-                    <div className="relative">
-                      <Image src={Service5Image} alt="" width={800} className="w-full max-w-md aspect-[4/3] object-cover border-8 border-white " />
+                  <div className="absolute inset-0 z-20 flex gap-12 items-center justify-center horizontal-scroll-content">
+                    <div className="relative w-full max-w-lg aspect-[4/3]">
+                      <Image src={Service5Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Eventos virtuales e híbridos</p>
                     </div>
 
-                    <div className="relative">
-                      <Image src={Service6Image} alt="" width={800} className="w-full max-w-md aspect-[4/5] object-cover border-8 border-white " />
+                    <div className="relative w-full max-w-lg aspect-[4/6]">
+                      <Image src={Service6Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Congresos y convenciones</p>
                     </div>
 
-                    <div className="relative">
-                      <Image src={Service7Image} alt="" width={800} className="w-full max-w-md aspect-[4/3] object-cover border-8 border-white " />
+                    <div className="relative w-full max-w-lg aspect-[4/3]">
+                      <Image src={Service7Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Producicón y creatividad</p>
                     </div>
