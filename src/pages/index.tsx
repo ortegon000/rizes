@@ -4,6 +4,7 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import Image from "next/image";
 
 import Header from "@components/header";
 import Hero from "@components/hero";
@@ -20,6 +21,8 @@ import ServiceDetails from "@components/serviceDetails";
 import Team from "@components/team";
 import Customers from "@components/customers";
 import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
+
+import { KeepScrolling } from "@svg/KeepScrolling"
 
 import Image1_1 from "@images/text-image-1/1.webp";
 import Image1_2 from "@images/text-image-1/2.webp";
@@ -576,6 +579,11 @@ export default function Home() {
           <LastLogo />
 
           <Footer />
+
+          <div className="fixed bottom-6 right-0 left-0 mx-auto text-center text-yellow-500 text-shadow-md tracking-wider text-sm text-shadow-black/40 z-[3000]">
+            Sige Bajando
+            <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-yellow-500" />
+          </div>
 
         </div>
 

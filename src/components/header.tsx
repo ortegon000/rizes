@@ -25,15 +25,15 @@ export default function Header({ onMenuChange }: HeaderProps) {
 
                     <button
                         onClick={toggleMenu}
-                        className={`flex flex-col gap-2 items-center justify-center group size-12 md:size-18 cursor-pointer p-0 md:p-4 rounded-full transition-colors pointer-events-auto ${menuOpen ? "bg-blue-500/30" : ""
+                        className={`flex flex-col gap-2 items-center justify-center group size-8 md:size-18 cursor-pointer p-0 md:p-4 rounded-full transition-colors pointer-events-auto ${menuOpen ? "bg-blue-500/30" : ""
                             }`}
                     >
                         <span
-                            className={`block w-full h-2 bg-white group-hover:bg-red-300 transition-all transform origin-center ${menuOpen ? "rotate-45 translate-y-full scale-75" : ""
+                            className={`block w-full h-1.5 md:h-2 bg-white group-hover:bg-red-300 transition-all transform origin-center ${menuOpen ? "rotate-45 translate-y-full scale-75" : ""
                                 }`}
                         ></span>
                         <span
-                            className={`block w-full h-2 bg-white group-hover:bg-red-300 transition-all transform origin-center ${menuOpen ? "-rotate-45 -translate-y-full scale-75" : ""
+                            className={`block w-full h-1.5 md:h-2 bg-white group-hover:bg-red-300 transition-all transform origin-center ${menuOpen ? "-rotate-45 -translate-y-full scale-75" : ""
                                 }`}
                         ></span>
                     </button>

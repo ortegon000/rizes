@@ -169,6 +169,7 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
     }, 300);
   };
 
+
   return (
     <div 
       className={`fixed inset-0 transition-opacity duration-300 ease-out ${isVisible ? 'opacity-100' : 'opacity-0'
@@ -216,10 +217,11 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
       
       <div 
         ref={containerRef}
-        className="w-full h-full overflow-y-scroll overflow-x-hidden overscroll-y-contain"
+        className="w-full h-full overflow-y-scroll overscroll-y-contain overflow-x-hidden"
         style={{ 
           height: '100vh', 
-          width: '100vw',
+          width: 'auto',
+          minWidth: '100vw',
           position: 'relative',
           overscrollBehavior: 'contain',
         }}
@@ -228,101 +230,93 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
           className="relative bg-[#baa6f4]"
           style={{ height: `${5 * 150}vh` }}
         >
-          <div className="sticky top-0 h-screen overflow-hidden w-full">
+          <div className="sticky top-0 h-screen w-auto">
             <div className="flex h-screen items-center">
-              <div ref={sliderRef} className="relative flex will-change-transform horizontal-scroll-slider" style={{ transform: 'translateZ(0)' }}>
+              <div ref={sliderRef} className="relative flex will-change-transform">
 
-                {/* Seervices loop */}
-                <div className="group relative flex-shrink-0"
+                {/* Services loop */}
+
+                <div className="service-1 relative flex-shrink-0 w-[1024px]"
                   style={{
-                    width: '100dvw',
-                    height: '100dvh',
-                    minWidth: '100dvw',
                     backgroundImage: `url(${ServiceBG.src})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
                   }}
                 >
                   <div className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110 bg-black/40"
                   ></div>
 
-                  <div className={`absolute inset-0 z-10 flex gap-8 items-center justify-center horizontal-scroll-content transition-all delay-75 ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
-                    <Image src={Service1Image} alt="" width={500} className="w-full max-w-[500px] aspect-[5/3] object-cover border-8 border-white hover:-rotate-1 hover:scale-110 transition all " />
-                    <div className=" text-white px-4">
-                      <h3 className="text-6xl font-black">Nuestros <br /> servicios</h3>
+                  <div className={`absolute inset-0 z-10 flex gap-4 md:gap-8 items-center justify-center p-4 md:p-8 transition-all delay-75 ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
+                    <Image src={Service1Image} alt="" width={500} className="w-auto max-w-[300px] md:max-w-[500px] aspect-[5/3] object-cover border-4 md:border-8 border-white hover:-rotate-1 hover:scale-110 transition-all flex-shrink-0" />
 
-                      <p className="mt-16 ml-12 font-semibold text-3xl max-w-sm">Nuestro principal objetivo, integrar todos y cada uno de los servicios que nuestros clientes requieren dentro de la organización de  eventos, estrategis y presupuestos. <br />
+                    <div className="text-white px-4 whitespace-normal">
+                      <h3 className="text-3xl md:text-6xl font-black whitespace-nowrap">Nuestros <br /> servicios</h3>
+
+                      <p className="mt-6 md:mt-16 md:ml-12 font-semibold text-base md:text-3xl max-w-sm">Nuestro principal objetivo, integrar todos y cada uno de los servicios que nuestros clientes requieren dentro de la organización de  eventos, estrategis y presupuestos. <br />
                         Te acompañamos con asesoría integral para:
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="group relative flex-shrink-0"
+                {/*
+                <div className="service-2 relative flex-shrink-0 w-[1024px]"
                   style={{
-                    width: '100dvw',
-                    height: '100dvh',
-                    minWidth: '100dvw',
-                    // backgroundImage: `url(${ServiceBG.src})`,
-                    // backgroundSize: "cover",
-                    // backgroundPosition: "center",
+                    backgroundImage: `url(${ServiceBG.src})`,
+                    backgroundSize: "300% 300%",
+                    backgroundPosition: "center",
                   }}
                 >
 
                   <Image id="service-2-bg" fill src={ServiceBG.src} alt="" className="w-full h-full absolute inset-0 object-cover" />
 
-                  <div className="absolute inset-0 z-20 flex gap-8 items-center justify-center horizontal-scroll-content -translate-x-[300px]">
-                    <div className="relative w-full max-w-lg aspect-[4/3]">
-                      <Image src={Service2Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
+                  <div className="absolute inset-0 z-20 flex gap-4 md:gap-8 items-center justify-center px-4 md:px-0">
+                    <div className="relative w-auto max-w-[300px] md:max-w-lg aspect-[4/3] flex-shrink-0">
+                      <Image src={Service2Image} alt="" width={800} className="w-full h-full object-cover border-4 md:border-8 border-white" />
                       <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Eventos</p>
+                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Eventos</p>
                     </div>
 
-                    <div className="relative w-full max-w-lg aspect-[4/6]">
-                      <Image src={Service3Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
+                    <div className="relative w-auto max-w-[300px] md:max-w-lg aspect-[4/6] flex-shrink-0">
+                      <Image src={Service3Image} alt="" width={800} className="w-full h-full object-cover border-4 md:border-8 border-white" />
                       <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Viajes de incentivos</p>
+                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Viajes de incentivos</p>
                     </div>
 
 
-                    <div className="relative w-full max-w-lg aspect-[4/3]">
-                      <Image src={Service4Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
+                    <div className="relative w-auto max-w-[300px] md:max-w-lg aspect-[4/3] flex-shrink-0">
+                      <Image src={Service4Image} alt="" width={800} className="w-full h-full object-cover border-4 md:border-8 border-white" />
                       <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Experiencias personalizadas</p>
+                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Experiencias personalizadas</p>
                     </div>
                   </div>
 
 
                 </div>
 
-                <div className="group relative flex-shrink-0"
+                <div className="service-3 relative flex-shrink-0 w-[1024px]"
                   style={{
-                    width: '100dvw',
-                    height: '100dvh',
-                    minWidth: '100dvw',
                     backgroundColor: '#baa6f4',
                   }}
                 >
-                  <div className={`absolute inset-0 z-20 flex gap-20 items-center justify-center`}>
+                  <div className={`absolute inset-0 z-20 flex gap-8 md:gap-20 items-center justify-center px-4 md:px-8`}>
 
-                    <div className="text-xl w-full max-w-sm">
+                    <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm flex-shrink-0">
                       <p>Los Mejores Eventos <br /> Te acompañamos con asesoría 360° para realizar cualquier tipo de reunión como;</p>
-                      <ul className="list-disc list-inside mt-6 space-y-2">
+                      <ul className="list-disc list-inside mt-3 md:mt-6 space-y-1 md:space-y-2">
                         <li>Lanzamientos</li>
                         <li>Convenciones</li>
                         <li>Juntas de trabajo</li>
                         <li>Viajes de incentivo</li>
                         <li>Y mucho más</li>
                       </ul>
-                      <p className="mt-6">Trabajando de la mano para el logro de los objetivos.</p>
+                      <p className="mt-3 md:mt-6">Trabajando de la mano para el logro de los objetivos.</p>
                     </div>
 
-                    <div className="text-xl w-full max-w-sm">
+                    <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm flex-shrink-0">
                       <h4 className="font-bold">Congresos y Convenciones</h4>
 
                       <p>Resolvemos de manera integral;</p>
 
-                      <ul className="list-disc list-inside mt-6 space-y-2">
+                      <ul className="list-disc list-inside mt-3 md:mt-6 space-y-1 md:space-y-2">
                         <li>Sede</li>
                         <li>Hoteles</li>
                         <li>Centro de convenciones</li>
@@ -335,7 +329,7 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                       </ul>
                     </div>
 
-                    <div className="text-xl w-full max-w-sm">
+                    <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm flex-shrink-0">
                       <h4 className="font-bold">Producción y Creatividad</h4>
 
                       <p>Desarrollamos conceptos con tendencia e ideas innovadoras con equipo de la mas alta tecnología para grandes escenarios.</p>
@@ -344,67 +338,61 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                   </div>
                 </div>
 
-                <div className="group relative flex-shrink-0"
+                <div className="service-4 relative flex-shrink-0 w-[1024px]"
                   style={{
-                    width: '100dvw',
-                    height: '100dvh',
-                    minWidth: '100dvw',
-                    // backgroundImage: `url(${ServiceBG.src})`,
-                    // backgroundSize: "cover",
-                    // backgroundPosition: "center",
+                    backgroundImage: `url(${ServiceBG.src})`,
+                    backgroundSize: "300% 300%",
+                    backgroundPosition: "center",
                   }}
                 >
                   <Image id="service-4-bg" fill src={ServiceBG.src} alt="" className="w-full h-full absolute inset-0 object-cover" />
 
-                  <div className="absolute inset-0 z-20 flex gap-12 items-center justify-center horizontal-scroll-content">
-                    <div className="relative w-full max-w-lg aspect-[4/3]">
-                      <Image src={Service5Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
+                  <div className="absolute inset-0 z-20 flex gap-4 md:gap-12 items-center justify-center px-4 md:px-0">
+                    <div className="relative w-auto max-w-[300px] md:max-w-lg aspect-[4/3] flex-shrink-0">
+                      <Image src={Service5Image} alt="" width={800} className="w-full h-full object-cover border-4 md:border-8 border-white" />
                       <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Eventos virtuales e híbridos</p>
+                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Eventos virtuales e híbridos</p>
                     </div>
 
-                    <div className="relative w-full max-w-lg aspect-[4/6]">
-                      <Image src={Service6Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
+                    <div className="relative w-auto max-w-[300px] md:max-w-lg aspect-[4/6] flex-shrink-0">
+                      <Image src={Service6Image} alt="" width={800} className="w-full h-full object-cover border-4 md:border-8 border-white" />
                       <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Congresos y convenciones</p>
+                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Congresos y convenciones</p>
                     </div>
 
-                    <div className="relative w-full max-w-lg aspect-[4/3]">
-                      <Image src={Service7Image} alt="" width={800} className="w-full h-full object-cover border-8 border-white " />
+                    <div className="relative w-auto max-w-[300px] md:max-w-lg aspect-[4/3] flex-shrink-0">
+                      <Image src={Service7Image} alt="" width={800} className="w-full h-full object-cover border-4 md:border-8 border-white" />
                       <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-3xl font-black text-white">Producicón y creatividad</p>
+                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Producción y creatividad</p>
                     </div>
                   </div>
 
 
                 </div>
 
-                <div className="group relative flex-shrink-0"
+                <div className="service-5 relative flex-shrink-0 w-[1024px]"
                   style={{
-                    width: '100dvw',
-                    height: '100dvh',
-                    minWidth: '100dvw',
                     backgroundColor: '#baa6f4',
                   }}
                 >
-                  <div className={`absolute inset-0 z-20 flex gap-20 items-center justify-center`}>
+                  <div className={`absolute inset-0 z-20 flex gap-8 md:gap-20 items-center justify-center px-4 md:px-8`}>
 
-                    <div className="text-xl w-full max-w-sm">
+                    <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm flex-shrink-0">
                       <h4 className="font-bold">Eventos Virtuales e Híbridos</h4>
 
                       <p>Nos reinventamos transformando los eventos presenciales en online, garantizando la misma experiencia vivencial con soluciones hechas a la medida, permitiéndonos abrir nuevas formas de comunicación.</p>
                     </div>
 
-                    <div className="text-xl w-full max-w-sm">
+                    <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm flex-shrink-0">
                       <h4 className="font-bold">Viajes de incentivos</h4>
 
                       <p>Deja de preocuparte por la logística de tu viaje individual o grupal. Nosotros nos encargaremos de todo según tus necesidades y planes.</p>
                     </div>
 
-                    <div className="text-xl w-full max-w-sm">
+                    <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm flex-shrink-0">
                       <h4 className="font-bold">Y Muchas Experiencias Más</h4>
 
-                      <ul className="list-disc list-inside mt-6 space-y-2">
+                      <ul className="list-disc list-inside mt-3 md:mt-6 space-y-1 md:space-y-2">
                         <li>Catering</li>
                         <li>PR</li>
                         <li>Speakers</li>
@@ -418,8 +406,12 @@ const HorizontalScrollView: React.FC<HorizontalScrollViewProps> = ({
                     </div>
 
                   </div>
-                </div>
-                {/* End Services loop */}
+                </div> */
+                }
+
+
+
+                {/* End Services loop  */}
 
               </div>
             </div>

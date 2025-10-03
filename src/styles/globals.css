@@ -1,21 +1,29 @@
 @import "tailwindcss";
-@custom-variant hover (&:hover);
 
-/* Optimización para el scroll horizontal y evitar saltos */
-.horizontal-scroll-slider {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  perspective: 1000px;
-  will-change: transform;
-  contain: layout style paint;
+@theme {
+  --animate-bounce-pulse: bounce-pulse 2s ease-in-out infinite;
 }
-
-.horizontal-scroll-content {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  will-change: auto;
-  contain: layout style paint;
+    
+@keyframes bounce-pulse {
+  0% {
+    transform: translateY(0);
+    scale: 0.8;
+    opacity: 0.8;
+  }
+  
+  50% {
+    transform: translateY(-5px);
+    opacity: 1;
+    scale: 1;
+  }
+  
+  100% {
+    transform: translateY(0);
+    scale: 0.8;
+    opacity: 0.8;
+  }
 }
+  
 
 body {
   background-position: top center;
