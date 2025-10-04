@@ -4,13 +4,13 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-import Image from "next/image";
+// import Image from "next/image";
 
 import Header from "@components/header";
 import Hero from "@components/hero";
 import Intro from "@components/intro";
 import Description from "@components/description";
-import ScrollVideo from "@components/scrollVideo";
+// import ScrollVideo from "@components/scrollVideo";
 import TextImages from "@components/textImages";
 import TextImages2 from "@components/textImages2";
 import TextImages3 from "@components/textImages3";
@@ -48,451 +48,446 @@ import Banner1Image from "@images/banner-1.webp";
 import LastLogo from "@components/lastLogo";
 import Footer from "@components/footer";
 
+
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Home() {
+/* ============================
+   NEW: Handler mejorado para múltiples secuencias en UN SOLO canvas
+   - Usa un solo canvas reutilizable
+   - Cambia frames según la secuencia activa
+   - Preload por ventana deslizante
+================================ */
+type SeqManifest = {
+  id: string;
+  baseUrl: string;
+  ext: string;
+  count: number;
+  pad: number;
+  width: number;
+  height: number;
+};
 
-  const container = useRef<HTMLDivElement>(null);
+const padNum = (n: number, len: number) => n.toString().padStart(len, "0");
+const urlAt = (m: SeqManifest, i: number) => `${m.baseUrl}${padNum(i, m.pad)}${m.ext}`;
 
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoRef2 = useRef<HTMLVideoElement>(null);
-  const videoRef3 = useRef<HTMLVideoElement>(null);
-  const videoRef4 = useRef<HTMLVideoElement>(null);
-  const videoRef5 = useRef<HTMLVideoElement>(null);
-  const squareVideo1Ref = useRef<HTMLVideoElement>(null);
+// Clase que maneja un solo canvas con múltiples secuencias (Estilo Apple AirPods)
+class MultiSequenceCanvas {
+  private canvas: HTMLCanvasElement;
+  private ctx: CanvasRenderingContext2D;
+  private images: HTMLImageElement[] = [];
+  private frameObj = { frame: 0 }; // Objeto para animar con GSAP
+  private manifest: SeqManifest | null = null;
 
-  function handleScrollVideo({
-    video,
-    target,
-    scrub,
-    fadeIn,
-    fadeOut,
-  }: {
-    video: HTMLVideoElement;
-    target: string | Element;
-    scrub: { trigger: string | Element; start?: string; end?: string; pin?: boolean };
-    fadeIn: { trigger: string | Element; start?: string; end?: string };
-    fadeOut: { trigger: string | Element; start?: string; end?: string };
-    }) {
+  constructor(canvas: HTMLCanvasElement, width: number, height: number) {
+    this.canvas = canvas;
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.ctx = canvas.getContext("2d", {
+      alpha: false,
+      desynchronized: true,
+      willReadFrequently: false
+    })!;
+    this.ctx.imageSmoothingEnabled = true; // Activado para mejor calidad
+    this.ctx.imageSmoothingQuality = 'high';
+  }
 
-    const elCandidate = typeof target === "string" ? document.querySelector(target) : target;
-    if (!elCandidate) {
-      if (process.env.NODE_ENV !== "production") {
-        console.warn("handleScrollVideo: target not found", target);
-      }
-      return;
-    }
-    const el = elCandidate as Element;
+  // Precargar TODAS las imágenes de una secuencia
+  async loadSequence(manifest: SeqManifest): Promise<void> {
+    this.manifest = manifest;
 
-    gsap.set(el, {
-      opacity: 0,
-      filter: "blur(20px)",
-      transform: "translateZ(0)",
+    // Crear array de imágenes
+    this.images = Array.from({ length: manifest.count }, (_, i) => {
+      const img = new Image();
+      img.src = urlAt(manifest, i);
+      return img;
     });
-    const overlay = el.querySelector('[data-role="video-overlay"]') as HTMLElement | null;
-    if (overlay) {
-      gsap.set(overlay, { opacity: 0 });
-    }
-    video.pause();
-    video.currentTime = 0;
 
-    const enforcePause = () => {
-      if (!video.paused) video.pause();
-    };
-
-    if (video.readyState >= 2) enforcePause();
-    else video.addEventListener("loadeddata", enforcePause, { once: true });
-
-    let inP = 0;
-    let outP = 0;
-
-    const apply = () => {
-      const alpha = Math.max(0, Math.min(1, inP * (1 - outP)));
-      const blurAmount = 20 * (1 - alpha);
-
-      gsap.set(el, {
-        opacity: alpha,
-        filter: blurAmount > 0.5 ? `blur(${blurAmount}px)` : "none",
-      });
-      if (overlay) {
-        gsap.set(overlay, { opacity: alpha });
+    // Esperar a que cargue el primer frame para renderizar
+    await new Promise<void>((resolve) => {
+      if (this.images[0].complete) {
+        resolve();
+      } else {
+        this.images[0].onload = () => resolve();
       }
-      gsap.set(video, {
-        filter: blurAmount > 0.5 ? `blur(${blurAmount * 0.5}px)` : "none",
-        willChange: alpha > 0 && alpha < 1 ? "filter, opacity" : "auto",
-      });
-    };
+    });
 
-    const initScrub = () => {
-      ScrollTrigger.create({
+    this.render();
+  }
+
+  // Renderizar frame actual
+  render() {
+    if (!this.images.length) return;
+
+    const frameIndex = Math.round(this.frameObj.frame);
+    const img = this.images[frameIndex];
+
+    if (!img || !img.complete) return;
+
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  // Obtener objeto frame para animar con GSAP
+  getFrameObject() {
+    return this.frameObj;
+  }
+
+  // Obtener número total de frames
+  getTotalFrames(): number {
+    return this.manifest ? this.manifest.count : 0;
+  }
+
+  // Limpiar recursos
+  destroy() {
+    this.images.forEach(img => {
+      img.src = '';
+    });
+    this.images = [];
+  }
+}// Handler mejorado estilo Apple AirPods - Animación suave con snap
+function handleScrollCanvasSequence({
+  canvasManager,
+  manifest,
+  target,
+  scrub,
+  fadeIn,
+  fadeOut,
+}: {
+  canvasManager: MultiSequenceCanvas;
+  manifest: SeqManifest;
+  target: string | Element;
+  scrub: { trigger: string | Element; start?: string; end?: string; pin?: boolean };
+  fadeIn: { trigger: string | Element; start?: string; end?: string };
+  fadeOut: { trigger: string | Element; start?: string; end?: string };
+}) {
+  const el = (typeof target === "string" ? document.querySelector(target)! : target) as HTMLElement;
+  if (!el) return;
+
+  // Estado visual inicial - empieza invisible y con pointer-events-none
+  gsap.set(el, {
+    opacity: 0, 
+    visibility: "hidden",
+    transform: "translateZ(0)",
+    pointerEvents: "none"
+  });
+
+  // Cargar secuencia
+  canvasManager.loadSequence(manifest).then(() => {
+    const frameObj = canvasManager.getFrameObject();
+    const totalFrames = canvasManager.getTotalFrames();
+
+    // Animación principal de frames con GSAP (estilo Apple)
+    gsap.to(frameObj, {
+      frame: totalFrames - 1,
+      ease: "none",
+      snap: "frame", // Snap a frames completos para animación más suave
+      scrollTrigger: {
         trigger: scrub.trigger,
         start: scrub.start || "top bottom",
         end: scrub.end || "bottom top",
-        scrub: true,
+        scrub: 0.5, // Scrub suave como en el ejemplo de Apple
         pin: !!scrub.pin,
-        anticipatePin: !!scrub.pin ? 1 : 0,
+        anticipatePin: scrub.pin ? 1 : 0,
         invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          if (!video.duration) return;
-          // Directly set the time. Keep it simple.
-          const newTime = self.progress * video.duration;
-          if (Math.abs(video.currentTime - newTime) > 0.01) {
-            video.currentTime = newTime;
-          }
-        },
-        onLeaveBack: () => {
-          video.currentTime = 0;
-        },
-        onToggle: (self) => {
-          // When the trigger is not active, ensure the video is paused.
-          if (!self.isActive) {
-            video.pause();
-          }
-        },
-      });
-    };
-    if (video.readyState >= 1) initScrub();
-    else video.addEventListener("loadedmetadata", initScrub, { once: true });
+      },
+      onUpdate: () => canvasManager.render(),
+    });
 
-    // FADE IN
+    // Sistema de opacidad y visibilidad mejorado
+    let inP = 0, outP = 0;
+    const VISIBILITY_THRESHOLD = 0.01; // Threshold para mostrar/ocultar
+
+    const applyFx = () => {
+      const alpha = Math.max(0, Math.min(1, inP * (1 - outP)));
+
+      // Control de opacidad suave
+      el.style.opacity = String(alpha);
+
+      // Control de visibilidad - solo visible cuando hay opacidad significativa
+      if (alpha > VISIBILITY_THRESHOLD) {
+        el.style.visibility = "visible";
+        el.style.pointerEvents = "auto";
+      } else {
+        el.style.visibility = "hidden";
+        el.style.pointerEvents = "none";
+      }
+    };
+
+    // Fade In con curva personalizada para transición más suave
     ScrollTrigger.create({
       trigger: fadeIn.trigger,
       start: fadeIn.start || "top center",
       end: fadeIn.end || "bottom center",
-      scrub: true,
+      scrub: 0.5, // Scrub suave para opacidad
       invalidateOnRefresh: true,
-      onUpdate: (self) => { inP = self.progress; apply(); },
+      onUpdate: (st) => {
+        // Curva ease-in para fade in más suave
+        inP = gsap.parseEase("power2.in")(st.progress);
+        applyFx();
+      },
     });
 
-    // FADE OUT
+    // Fade Out con curva personalizada
     ScrollTrigger.create({
       trigger: fadeOut.trigger,
       start: fadeOut.start || "top center",
       end: fadeOut.end || "bottom center",
-      scrub: true,
+      scrub: 0.5, // Scrub suave para opacidad
       invalidateOnRefresh: true,
-      onUpdate: (self) => { outP = self.progress; apply(); },
+      onUpdate: (st) => {
+        // Curva ease-out para fade out más suave
+        outP = gsap.parseEase("power2.out")(st.progress);
+        applyFx();
+      },
     });
-  }
+
+    // Aplicar estado inicial
+    applyFx();
+  });
+}
+/* ============================ END NEW ============================ */
+
+export default function Home() {
+  const container = useRef<HTMLDivElement>(null);
+
+  // Canvas independientes para cada video (evita encimado)
+  const canvas1Ref = useRef<HTMLCanvasElement>(null);
+  const canvas2Ref = useRef<HTMLCanvasElement>(null);
+  const canvas3Ref = useRef<HTMLCanvasElement>(null);
+  const canvas4Ref = useRef<HTMLCanvasElement>(null);
+  const canvas5Ref = useRef<HTMLCanvasElement>(null);
+
+  // Canvas exclusivo para el square video
+  const squareCanvasRef = useRef<HTMLCanvasElement>(null);
 
   useGSAP(
     () => {
 
-      const videoEl = videoRef.current;
-      const videoEl2 = videoRef2.current;
-      const videoEl3 = videoRef3.current;
-      const videoEl4 = videoRef4.current;
-      const videoEl5 = videoRef5.current;
-      const videoSquareEl1 = squareVideo1Ref.current;
-
-      // Listener para refrescar ScrollTrigger cuando se cierre el overlay horizontal
+      // Listeners existentes
       const handleRefreshScrollTrigger = () => {
-        console.log('Refrescando ScrollTriggers después de cerrar scroll horizontal');
-        // Refresh más agresivo con múltiples pasos
         setTimeout(() => {
-          // 1. Matar todos los ScrollTriggers existentes
           ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-
-          // 2. Refresh completo
           ScrollTrigger.refresh();
-
-          // 3. Recrear todas las animaciones
-          setTimeout(() => {
-            setupAnimation();
-            console.log('ScrollTriggers reestablecidos');
-          }, 100);
+          setTimeout(() => { setupAnimation(); }, 100);
         }, 100);
       };
-
-      // Listener para deshabilitar ScrollTriggers cuando se abre el overlay horizontal
       const handleDisableScrollTriggers = () => {
-        console.log('Deshabilitando ScrollTriggers para evitar conflictos con scroll horizontal');
-        // Deshabilitar todos los ScrollTriggers temporalmente con un pequeño delay
         setTimeout(() => {
           const triggers = ScrollTrigger.getAll();
-          console.log(`Deshabilitando ${triggers.length} ScrollTriggers`);
-          triggers.forEach(trigger => {
-            trigger.disable();
-          });
+          triggers.forEach(trigger => trigger.disable());
         }, 50);
       };
-
       window.addEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
       window.addEventListener('disableScrollTriggers', handleDisableScrollTriggers);
 
       const setupAnimation = () => {
-
-        // hero animations
+        // Hero timeline existente
         const heroTimeline = gsap.timeline({
-          scrollTrigger: {
-            trigger: container.current,
-            start: "top top",
-            end: "+=4000",
-            scrub: 1,
-          },
+          scrollTrigger: { trigger: container.current, start: "top top", end: "+=4000", scrub: 1 },
         });
 
-        // Verificar si el hero está temporalmente oculto por el overlay
         const heroKey = document.getElementById('hero-key');
         const isOverlayHidden = heroKey?.getAttribute('data-overlay-hidden') === 'true';
 
-        // Solo aplicar animaciones si no está oculto por el overlay
         if (!isOverlayHidden) {
           heroTimeline
-            .to("#hero-key", {
-              scale: 1,
-            }, 0)
-            .to("#hero-key-logo", {
-              opacity: 0,
-              scale: 0.5,
-            }, "<")
-            .to(
-              "#hero-key-logo-mask",
-              {
-                maskSize: "200px",
-                ease: "power4.out",
-                duration: 1,
-              },
-              "<"
-            )
-            .to("#hero-key-background", {
-              display: "none",
-            }, ">-0.2")
-            .to("#hero-key-logo-mask", {
-              opacity: 0,
-            }, ">-0.5");
+            .to("#hero-key", { scale: 1 }, 0)
+            .to("#hero-key-logo", { opacity: 0, scale: 0.5 }, "<")
+            .to("#hero-key-logo-mask", { maskSize: "200px", ease: "power4.out", duration: 1 }, "<")
+            .to("#hero-key-background", { display: "none" }, ">-0.2")
+            .to("#hero-key-logo-mask", { opacity: 0 }, ">-0.5");
         }
 
         heroTimeline
-
-          // intro
-          .fromTo(
-            "#hero-intro-entrance",
-            {
-              maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)",
-            },
-            {
-              maskImage: "radial-gradient(circle at 50% -100%, black 50%, transparent 50%)",
-            },
+          .fromTo("#hero-intro-entrance",
+            { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
+            { maskImage: "radial-gradient(circle at 50% -100%, black 50%, transparent 50%)" },
             '>-0.45'
           )
-          .fromTo(
-            "#hero-intro-exit",
-            {
-              maskImage: "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)",
-            },
-            {
-              maskImage: "radial-gradient(circle at 50% -150%, transparent 50%, black 50%)",
-            },
-            ">",
+          .fromTo("#hero-intro-exit",
+            { maskImage: "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)" },
+            { maskImage: "radial-gradient(circle at 50% -150%, transparent 50%, black 50%)" },
+            ">"
           )
-          .to("#hero-intro", {
-            opacity: 0,
-          }, "<")
-
-          // description
-          .fromTo(
-            "#hero-description-entrance",
-            {
-              maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)",
-            },
-            {
-              maskImage: "radial-gradient(circle at 50% -150%, black 50%, transparent 50%)",
-            },
+          .to("#hero-intro", { opacity: 0 }, "<")
+          .fromTo("#hero-description-entrance",
+            { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
+            { maskImage: "radial-gradient(circle at 50% -150%, black 50%, transparent 50%)" },
             ">-0.25"
           )
-          .to("#hero-description", {
-            opacity: 0,
-          }, ">0.25");
+          .to("#hero-description", { opacity: 0 }, ">0.25");
 
-        // videos
-        if (!videoEl || !videoEl2 || !videoEl3 || !videoEl4 || !videoEl5 || !videoSquareEl1) return;
-
-        videoEl.pause();
-        videoEl.currentTime = 0;
-        videoEl2.pause();
-        videoEl2.currentTime = 0;
-        videoEl3.pause();
-        videoEl3.currentTime = 0;
-        videoEl4.pause();
-        videoEl4.currentTime = 0;
-        videoEl5.pause();
-        videoEl5.currentTime = 0;
-        videoSquareEl1.pause();
-        videoSquareEl1.currentTime = 0;
-
-        handleScrollVideo({
-          video: videoEl,
-          target: "#video-scroll-1",
-          scrub: { trigger: "#text-images-1", start: "-150% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#hero-description", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-1", start: "20% center", end: "45% center" },
-        });
-
-        handleScrollVideo({
-          video: videoEl2,
-          target: "#video-scroll-2",
-          scrub: { trigger: "#text-images-2", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-1", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-2", start: "20% center", end: "45% center" },
-        });
-
-        handleScrollVideo({
-          video: videoEl3,
-          target: "#video-scroll-3",
-          scrub: { trigger: "#text-images-3", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-2", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-3", start: "20% center", end: "45% center" },
-        });
-
-        handleScrollVideo({
-          video: videoEl4,
-          target: "#video-scroll-4",
-          scrub: { trigger: "#text-images-4", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-3", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#text-images-4", start: "20% center", end: "45% center" },
-        });
-
-        handleScrollVideo({
-          video: videoEl5,
-          target: "#video-scroll-5",
-          scrub: { trigger: "#services", start: "-120% bottom", end: "bottom top" },
-          fadeIn: { trigger: "#text-images-4", start: "65% top", end: "80% top" },
-          fadeOut: { trigger: "#services", start: "90% bottom", end: "90% top" },
-        });
-
-        handleScrollVideo({
-          video: videoSquareEl1,
-          target: "#text-images-5-video",
-          scrub: { trigger: "#text-images-5-video", start: "top top", end: "top -100%", pin: true },
-          fadeIn: { trigger: "#text-images-5-in", start: "-120% top", end: "130% top" },
-          fadeOut: { trigger: "#text-images-5-out", start: "120% top", end: "130% top" },
-        });
-
-
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#text-images-1",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
+        /* ========== NEW: Inicialización con CANVAS INDEPENDIENTES ==========
+           - Cada video tiene su propio canvas (evita encimado)
+           - Sistema de opacidad y visibilidad mejorado
+           - Carga manifest.json centralizado con todos los videos
+        ============================================================================ */
+        const initSequences = async () => {
+          if (!canvas1Ref.current || !canvas2Ref.current || !canvas3Ref.current ||
+            !canvas4Ref.current || !canvas5Ref.current || !squareCanvasRef.current) {
+            console.error("Canvas refs no listas");
+            return;
           }
-        }).to("#text-images-1-right", {
-          y: -300
-        }, 0)
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#text-images-2",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
+          // Cargar manifest centralizado
+          const res = await fetch("/videos/manifest.json", { cache: "force-cache" });
+          if (!res.ok) {
+            console.error("manifest 404/err", res.status);
+            return;
           }
-        }).to("#text-images-2-right", {
-          y: -300
-        }, 0)
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#text-images-3",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
+          const data = await res.json();
+          const videos = data.videos as SeqManifest[];
+
+          // ===== Canvas independientes para cada video (mejor separación) =====
+
+          // Video 1 - Canvas propio
+          const video1 = videos.find(v => v.id === "video1");
+          if (video1 && canvas1Ref.current) {
+            const manager1 = new MultiSequenceCanvas(
+              canvas1Ref.current,
+              video1.width,
+              video1.height
+            );
+            handleScrollCanvasSequence({
+              canvasManager: manager1,
+              manifest: video1,
+              target: canvas1Ref.current.parentElement!,
+              scrub: { trigger: "#text-images-1", start: "-150% bottom", end: "bottom top" },
+              fadeIn: { trigger: "#hero-description", start: "65% top", end: "80% top" },
+              fadeOut: { trigger: "#text-images-1", start: "20% center", end: "45% center" },
+            });
           }
-        }).to("#text-images-3-left", {
-          y: -300
-        }, 0)
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#text-images-4",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
+          // Video 2 - Canvas propio
+          const video2 = videos.find(v => v.id === "video2");
+          if (video2 && canvas2Ref.current) {
+            const manager2 = new MultiSequenceCanvas(
+              canvas2Ref.current,
+              video2.width,
+              video2.height
+            );
+            handleScrollCanvasSequence({
+              canvasManager: manager2,
+              manifest: video2,
+              target: canvas2Ref.current.parentElement!,
+              scrub: { trigger: "#text-images-2", start: "-120% bottom", end: "bottom top" },
+              fadeIn: { trigger: "#text-images-1", start: "65% top", end: "80% top" },
+              fadeOut: { trigger: "#text-images-2", start: "20% center", end: "45% center" },
+            });
           }
-        }).to("#text-images-4-right", {
-          y: -300
-        }, 0)
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#banner-1",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
+          // Video 3 - Canvas propio
+          const video3 = videos.find(v => v.id === "video3");
+          if (video3 && canvas3Ref.current) {
+            const manager3 = new MultiSequenceCanvas(
+              canvas3Ref.current,
+              video3.width,
+              video3.height
+            );
+            handleScrollCanvasSequence({
+              canvasManager: manager3,
+              manifest: video3,
+              target: canvas3Ref.current.parentElement!,
+              scrub: { trigger: "#text-images-3", start: "-120% bottom", end: "bottom top" },
+              fadeIn: { trigger: "#text-images-2", start: "65% top", end: "80% top" },
+              fadeOut: { trigger: "#text-images-3", start: "20% center", end: "45% center" },
+            });
           }
-        }).to("#banner-1-image", {
-          y: -300
-        }, 0)
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#text-images-5",
-            start: "top bottom",
-            end: "bottom top",
-            scrub: 1,
+          // Video 4 - Canvas propio
+          const video4 = videos.find(v => v.id === "video4");
+          if (video4 && canvas4Ref.current) {
+            const manager4 = new MultiSequenceCanvas(
+              canvas4Ref.current,
+              video4.width,
+              video4.height
+            );
+            handleScrollCanvasSequence({
+              canvasManager: manager4,
+              manifest: video4,
+              target: canvas4Ref.current.parentElement!,
+              scrub: { trigger: "#text-images-4", start: "-120% bottom", end: "bottom top" },
+              fadeIn: { trigger: "#text-images-3", start: "65% top", end: "80% top" },
+              fadeOut: { trigger: "#text-images-4", start: "20% center", end: "45% center" },
+            });
           }
-        }).to("#text-images-5-right", {
-          y: 600
-        }, 0)
 
-
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#team",
-            start: "top bottom",
-            end: "bottom bottom",
-            scrub: 1,
+          // Video 5 - Canvas propio
+          const video5 = videos.find(v => v.id === "video5");
+          if (video5 && canvas5Ref.current) {
+            const manager5 = new MultiSequenceCanvas(
+              canvas5Ref.current,
+              video5.width,
+              video5.height
+            );
+            handleScrollCanvasSequence({
+              canvasManager: manager5,
+              manifest: video5,
+              target: canvas5Ref.current.parentElement!,
+              scrub: { trigger: "#services", start: "-120% bottom", end: "bottom top" },
+              fadeIn: { trigger: "#text-images-4", start: "65% top", end: "80% top" },
+              fadeOut: { trigger: "#services", start: "90% bottom", end: "90% top" },
+            });
           }
-        })
-          .to("#team-image", {
-            y: "80%",
-            // ease: "power1.inOut",
-          }, 0)
-          .to("#team-description", {
-            y: -200,
-            ease: "power1.inOut",
-          }, 0.2);
 
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: "#team-description",
-            start: "bottom center-=200",
-            end: "+=2000",
-            scrub: 1,
+          // ===== Square Video (integrado en TextImages4) =====
+          const squareVideo = videos.find(v => v.id === "squareVideo");
+          if (squareVideo && squareCanvasRef.current) {
+            const squareManager = new MultiSequenceCanvas(
+              squareCanvasRef.current,
+              squareVideo.width,
+              squareVideo.height
+            );
+
+            handleScrollCanvasSequence({
+              canvasManager: squareManager,
+              manifest: squareVideo,
+              target: squareCanvasRef.current.parentElement!,
+              scrub: { trigger: "#text-images-5-canvas", start: "top top", end: "top -100%", pin: true },
+              fadeIn: { trigger: "#text-images-5-in", start: "-120% top", end: "130% top" },
+              fadeOut: { trigger: "#text-images-5-out", start: "120% top", end: "130% top" },
+            });
           }
-        })
-          .to("#customers", {
-            opacity: 1,
-          }, 0)
-          .to("#customers", {
-            opacity: 0,
-          }, ">2")
-          .to("#lastLogo", {
-            opacity: 1,
-          }, ">-0.3")
-          .to("#lastLogoImage", {
-            scale: 1,
-            ease: "power1.inOut",
-          }, "<")
-          .to("#lastLogo", {
-            backgroundColor: "#1d1b22",
-          }, ">")
-          .to("#lastLogo", {
-            y: -100,
-          }, ">0.5")
-          .to("#footer", {
-            y: 0,
-          }, "<")
-          ;
+
+          console.log("✅ Secuencias inicializadas:", videos.map(v => v.id));
+        };
+
+        initSequences();
+
+        // Parallax existentes
+        gsap.timeline({ scrollTrigger: { trigger: "#text-images-1", start: "top bottom", end: "bottom top", scrub: 1 } })
+          .to("#text-images-1-right", { y: -300 }, 0);
+        gsap.timeline({ scrollTrigger: { trigger: "#text-images-2", start: "top bottom", end: "bottom top", scrub: 1 } })
+          .to("#text-images-2-right", { y: -300 }, 0);
+        gsap.timeline({ scrollTrigger: { trigger: "#text-images-3", start: "top bottom", end: "bottom top", scrub: 1 } })
+          .to("#text-images-3-left", { y: -300 }, 0);
+        gsap.timeline({ scrollTrigger: { trigger: "#text-images-4", start: "top bottom", end: "bottom top", scrub: 1 } })
+          .to("#text-images-4-right", { y: -300 }, 0);
+        gsap.timeline({ scrollTrigger: { trigger: "#banner-1", start: "top bottom", end: "bottom top", scrub: 1 } })
+          .to("#banner-1-image", { y: -300 }, 0);
+        gsap.timeline({ scrollTrigger: { trigger: "#text-images-5", start: "top bottom", end: "bottom top", scrub: 1 } })
+          .to("#text-images-5-right", { y: 600 }, 0);
+
+        gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "bottom bottom", scrub: 1 } })
+          .to("#team-image", { y: "80%" }, 0)
+          .to("#team-description", { y: -200, ease: "power1.inOut" }, 0.2);
+
+        gsap.timeline({ scrollTrigger: { trigger: "#team-description", start: "bottom center-=200", end: "+=2000", scrub: 1 } })
+          .to("#customers", { opacity: 1 }, 0)
+          .to("#customers", { opacity: 0 }, ">2")
+          .to("#lastLogo", { opacity: 1 }, ">-0.3")
+          .to("#lastLogoImage", { scale: 1, ease: "power1.inOut" }, "<")
+          .to("#lastLogo", { backgroundColor: "#1d1b22" }, ">")
+          .to("#lastLogo", { y: -100 }, ">0.5")
+          .to("#footer", { y: 0 }, "<");
 
         ScrollTrigger.refresh();
       };
 
       setupAnimation();
 
-      // Cleanup del event listener
       return () => {
         window.removeEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
         window.removeEventListener('disableScrollTriggers', handleDisableScrollTriggers);
@@ -514,77 +509,44 @@ export default function Home() {
 
         <div className="fixed w-full">
           <Hero zIndex={1000} />
-
           <Intro zIndex={990} />
-
           <Description zIndex={980} />
 
-          <ScrollVideo
-            ref={videoRef}
-            id="video-scroll-1"
-            src="/videos/output_scroll_1.mp4"
-            poster={Image1_1.src}
-            sources={[
-              { src: "/videos/1.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
-              { src: "/videos/output_scroll_1.mp4", type: "video/mp4" },
-            ]}
-          />
+          {/* ========== Canvas INDEPENDIENTES para cada video (evita encimado) ========== */}
 
-          <ScrollVideo
-            ref={videoRef2}
-            id="video-scroll-2"
-            src="/videos/output_scroll_2.mp4"
-            poster={Image2_1.src}
-            sources={[
-              { src: "/videos/output_scroll_2_test.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
-              { src: "/videos/output_scroll_2.mp4", type: "video/mp4" },
-            ]}
-          />
+          {/* Video 1 */}
+          <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
+            <canvas ref={canvas1Ref} className="w-full h-full block" />
+          </div>
 
-          <ScrollVideo
-            ref={videoRef3}
-            id="video-scroll-3"
-            src="/videos/output_scroll_3.mp4"
-            poster={Image3_1.src}
-            sources={[
-              { src: "/videos/3.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
-              { src: "/videos/output_scroll_3.mp4", type: "video/mp4" },
-            ]}
-          />
+          {/* Video 2 */}
+          <div className="pointer-events-none fixed inset-0 z-[969]" aria-hidden="true">
+            <canvas ref={canvas2Ref} className="w-full h-full block" />
+          </div>
 
-          <ScrollVideo
-            ref={videoRef4}
-            id="video-scroll-4"
-            src="/videos/output_scroll_4.mp4"
-            poster={Image4_1.src}
-            sources={[
-              { src: "/videos/4.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
-              { src: "/videos/output_scroll_4.mp4", type: "video/mp4" },
-            ]}
-          />
+          {/* Video 3 */}
+          <div className="pointer-events-none fixed inset-0 z-[968]" aria-hidden="true">
+            <canvas ref={canvas3Ref} className="w-full h-full block" />
+          </div>
 
-          <ScrollVideo
-            ref={videoRef5}
-            id="video-scroll-5"
-            src="/videos/output_scroll_5.mp4"
-            poster={Image5_1.src}
-            sources={[
-              { src: "/videos/5.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
-              { src: "/videos/output_scroll_5.mp4", type: "video/mp4" },
-            ]}
-          />
+          {/* Video 4 */}
+          <div className="pointer-events-none fixed inset-0 z-[967]" aria-hidden="true">
+            <canvas ref={canvas4Ref} className="w-full h-full block" />
+          </div>
+
+          {/* Video 5 */}
+          <div className="pointer-events-none fixed inset-0 z-[966]" aria-hidden="true">
+            <canvas ref={canvas5Ref} className="w-full h-full block" />
+          </div>
 
           <Customers />
-
           <LastLogo />
-
           <Footer />
 
           <div className="fixed bottom-6 right-0 left-0 mx-auto text-center text-yellow-500 text-shadow-md tracking-wider text-sm text-shadow-black/40 z-[3000]">
             Sige Bajando
             <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-yellow-500" />
           </div>
-
         </div>
 
         <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[3200px]">
@@ -704,7 +666,7 @@ export default function Home() {
           <div className="mt-[-10dvh]">
             <TextImages4
               id="text-images-5"
-              ref={squareVideo1Ref}
+              canvasRef={squareCanvasRef}
               title={
                 <>
                   <p className="text-4xl md:text-6xl w-full max-w-md mt-[100px] font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">
@@ -744,12 +706,6 @@ export default function Home() {
               image2={Image5_2}
               image3={Image5_3}
               image4={Image5_4}
-              video="/videos/square_video_1_output.mp4"
-              poster={Image5_2.src}
-              sources={[
-                { src: "/videos/square_video_1.mp4", type: "video/mp4", media: "(max-width: 1023px)" },
-                { src: "/videos/square_video_1_output.mp4", type: "video/mp4" },
-              ]}
             />
           </div>
 

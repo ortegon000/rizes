@@ -1,4 +1,3 @@
-import { forwardRef } from 'react';
 import Image, { type StaticImageData } from "next/image";
 import { type ReactNode } from "react";
 
@@ -13,29 +12,22 @@ type TextImagesProps = {
     image2: StaticImageData;
     image3: StaticImageData;
     image4: StaticImageData;
-    video?: string;
-    poster?: string;
-    loop?: boolean;
-    sources?: Array<{ src: string; type?: string; media?: string }>;
+    canvasRef?: React.RefObject<HTMLCanvasElement | null>;
 }
 
-const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
-    ({
-        id,
-        title,
-        subtitle,
-        description,
-        text1,
-        text2,
-        image1,
-        image2,
-        image3,
-        image4,
-        video,
-        poster,
-        loop = true,
-        sources,
-    }, ref) => {
+const TextImages4 = ({
+    id,
+    title,
+    subtitle,
+    description,
+    text1,
+    text2,
+    image1,
+    image2,
+    image3,
+    image4,
+    canvasRef,
+}: TextImagesProps) => {
 
         return (
             <>
@@ -54,27 +46,15 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                         />
 
                         <div className="relative z-10 mt-12 h-[50dvh] md:h-dvh w-full">
-                            <video
-                                id={`${id}-video`}
-                                ref={ref}
-                                {...(!(sources && sources.length) ? { src: video } : {})}
-                                className="w-full h-full object-cover pinned"
-                                preload="metadata"
-                                poster={poster || "/images/video-placeholder.svg"}
-                                playsInline
-                                muted
-                                loop={loop}
-                            >
-                                {sources?.map((source) => (
-                                    <source
-                                        key={`${id}-${source.src}`}
-                                        src={source.src}
-                                        type={source.type}
-                                        media={source.media}
-                                    />
-                                ))}
-                                {sources?.length ? <source src={video} type="video/mp4" /> : null}
-                            </video>
+                            {/* Canvas para frames de video */}
+                            {canvasRef && (
+                                <canvas
+                                    ref={canvasRef}
+                                    id={`${id}-canvas`}
+                                    className="w-full h-full object-cover pinned"
+                                    style={{ opacity: 0 }}
+                                />
+                            )}
                         </div>
 
                         <Image
@@ -122,9 +102,6 @@ const TextImages4 = forwardRef<HTMLVideoElement, TextImagesProps>(
                 <div id={`${id}-out`}></div>
             </>
         )
-
-    })
-
-TextImages4.displayName = 'TextImages4';
+}
 
 export default TextImages4;

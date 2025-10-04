@@ -1,0 +1,58 @@
+{
+  "videos": [
+    {
+      "id": "video1",
+      "baseUrl": "/videos/video1/frame_",
+      "ext": ".jpg",
+      "count": 105,
+      "pad": 5,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "video2",
+      "baseUrl": "/videos/video2/frame_",
+      "ext": ".jpg",
+      "count": 105,
+      "pad": 5,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "video3",
+      "baseUrl": "/videos/video3/frame_",
+      "ext": ".jpg",
+      "count": 105,
+      "pad": 5,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "video4",
+      "baseUrl": "/videos/video4/frame_",
+      "ext": ".jpg",
+      "count": 105,
+      "pad": 5,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "video5",
+      "baseUrl": "/videos/video5/frame_",
+      "ext": ".jpg",
+      "count": 105,
+      "pad": 5,
+      "width": 1920,
+      "height": 1080
+    },
+    {
+      "id": "squareVideo",
+      "baseUrl": "/videos/squarevideo/frame_",
+      "ext": ".jpg",
+      "count": 105,
+      "pad": 5,
+      "width": 1920,
+      "height": 1080
+    }
+  ]
+}
