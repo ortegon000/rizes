@@ -55,7 +55,9 @@ function addFooterAnimation(timeline: gsap.core.Timeline): void {
       { opacity: 0 },
       { opacity: 1, duration: 0.3, ease: "power2.out" },
       0.6 // Aparece al 60% cuando LastLogo desaparece
-    );
+  ).to("#keep-scrolling", {
+      opacity: 0,
+  }, "<");
   // Footer se queda visible (no se hace fadeOut)
 }
 

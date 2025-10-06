@@ -100,48 +100,15 @@ export default function Home() {
           <Description zIndex={980} />
         </div>
 
-        <div className="fixed bottom-6 right-0 left-0 mx-auto text-center text-yellow-500 text-shadow-md tracking-wider text-sm text-shadow-black/40 z-[2000]">
-          Sige Bajando
-          <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-yellow-500" />
-        </div>
-
-        {/* Canvas Videos - Fixed independientes (NO dentro de hero-container) */}
-        {/* Video 1 */}
-        <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas1} className="block w-full h-full" />
-        </div>
-
-        {/* Video 2 */}
-        <div className="pointer-events-none fixed inset-0 z-[960]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas2} className="block w-full h-full" />
-        </div>
-
-        {/* Video 3 */}
-        <div className="pointer-events-none fixed inset-0 z-[950]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas3} className="block w-full h-full" />
-        </div>
-
-        {/* Video 4 */}
-        <div className="pointer-events-none fixed inset-0 z-[940]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas4} className="block w-full h-full" />
-        </div>
-
-        {/* Video 5 */}
-        <div className="pointer-events-none fixed inset-0 z-[930]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas5} className="block w-full h-full" />
-        </div>
-
-
-
         {/* ✅ Hero Scroll Spacer - Define la duración del hero timeline */}
         <div
           id="hero-scroll-space"
-          className="h-[400vh] md:h-[300vh]"
+          className="h-[300vh]"
           data-animation-purpose="hero-timeline"
           aria-hidden="true"
         />
 
-        {/* ✅ Canvas Scroll Spacers - Definen la duración de cada secuencia de canvas */}
+        {/* ✅ Spacer para Canvas 1 */}
         <div
           id="canvas-1-spacer"
           className="h-[200vh]"
@@ -149,6 +116,27 @@ export default function Home() {
           data-scroll-speed="normal"
           aria-hidden="true"
         />
+
+        {/* Video 1 */}
+        <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas1} className="block w-full h-full" />
+        </div>
+        {/* Video 2 */}
+        <div className="pointer-events-none fixed inset-0" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas2} className="block w-full h-full" />
+        </div>
+        {/* Video 3 */}
+        <div className="pointer-events-none fixed inset-0" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas3} className="block w-full h-full" />
+        </div>
+        {/* Video 4 */}
+        <div className="pointer-events-none fixed inset-0 z-[940]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas4} className="block w-full h-full" />
+        </div>
+        {/* Video 5 */}
+        <div className="pointer-events-none fixed inset-0 z-[930]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas5} className="block w-full h-full" />
+        </div>
 
         <div id="normalScrolling" className="relative z-[1000]">
 
@@ -347,7 +335,7 @@ export default function Home() {
           {/* ✅ Final Scroll Spacer - Define la duración del timeline final (Customers → LastLogo → Footer) */}
           <div
             id="final-scroll-space"
-            className="h-[350vh]"
+            className="h-[400vh]"
             data-animation-purpose="final-timeline"
             aria-hidden="true"
           />
@@ -358,6 +346,11 @@ export default function Home() {
         <Customers />
         <LastLogo />
         <Footer />
+
+        <div id="keep-scrolling" className="fixed bottom-6 right-0 left-0 mx-auto text-center text-yellow-500 text-shadow-md tracking-wider text-sm text-shadow-black/40 z-[2000]">
+          Sige Bajando
+          <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-yellow-500" />
+        </div>
       </div>
     </>
   );

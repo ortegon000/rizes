@@ -18,21 +18,21 @@ export async function setupAnimations(
   container: RefObject<HTMLDivElement | null>,
   canvasRefs: CanvasRefs
 ): Promise<void> {
-    // 1. Hero timeline (pin solo durante hero-scroll-space)
-  createHeroTimeline(container.current);
+    // 1. Hero timeline
+    createHeroTimeline();
 
-  // 2. Canvas sequences (async)
-  await initializeCanvasSequences(canvasRefs);
+    // 2. Canvas sequences (async)
+    await initializeCanvasSequences(canvasRefs);
 
-  // 3. Parallax animations
-  createParallaxAnimations();
+    // 3. Parallax animations
+    createParallaxAnimations();
 
-  // 4. Team timeline
-  createTeamTimeline();
+    // 4. Team timeline
+    createTeamTimeline();
 
     // 5. Final timeline (Customers → LastLogo → Footer)
     createFinalTimeline(container.current);
 
     // 6. Refresh ScrollTrigger para asegurar cálculos correctos
-  ScrollTrigger.refresh();
+    ScrollTrigger.refresh();
 }
