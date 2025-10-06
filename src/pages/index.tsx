@@ -5,9 +5,6 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
-import { MultiSequenceCanvas, handleScrollCanvasSequence } from "@utils/canvas";
-import type { SeqManifest } from "@utils/types/canvas.types";
-
 import Header from "@components/header";
 import Hero from "@components/hero";
 import Intro from "@components/intro";
@@ -49,239 +46,46 @@ import Banner1Image from "@images/banner-1.webp";
 import LastLogo from "@components/lastLogo";
 import Footer from "@components/footer";
 
+// Importar animaciones refactorizadas
+import { setupAnimations, type CanvasRefs } from "@animations";
+import { useScrollTriggerEvents } from "@hooks/useScrollTriggerEvents";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
-
-const handleMenuChange = (isOpen: boolean) => {
-  if (isOpen) lockScrollLenis();
-  else unlockScrollLenis();
-};
 
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
 
   // Canvas independientes para cada video (evita encimado)
-  const canvas1Ref = useRef<HTMLCanvasElement>(null);
-  const canvas2Ref = useRef<HTMLCanvasElement>(null);
-  const canvas3Ref = useRef<HTMLCanvasElement>(null);
-  const canvas4Ref = useRef<HTMLCanvasElement>(null);
-  const canvas5Ref = useRef<HTMLCanvasElement>(null);
+  const canvasRefs: CanvasRefs = {
+    canvas1: useRef<HTMLCanvasElement>(null),
+    canvas2: useRef<HTMLCanvasElement>(null),
+    canvas3: useRef<HTMLCanvasElement>(null),
+    canvas4: useRef<HTMLCanvasElement>(null),
+    canvas5: useRef<HTMLCanvasElement>(null),
+    square: useRef<HTMLCanvasElement>(null),
+  };
 
-  // Canvas exclusivo para el square video
-  const squareCanvasRef = useRef<HTMLCanvasElement>(null);
+  // Función de setup de animaciones (wrapeada para el hook)
+  const setupAllAnimations = () => {
+    setupAnimations(container, canvasRefs);
+  };
 
+  // Hook para manejar eventos de ScrollTrigger
+  useScrollTriggerEvents(setupAllAnimations);
+
+  // Hook principal de GSAP
   useGSAP(
     () => {
-
-      // Listeners existentes
-      const handleRefreshScrollTrigger = () => {
-        setTimeout(() => {
-          ScrollTrigger.getAll().forEach(trigger => trigger.kill());
-          ScrollTrigger.refresh();
-          setTimeout(() => { setupAnimation(); }, 100);
-        }, 100);
-      };
-
-      const handleDisableScrollTriggers = () => {
-        setTimeout(() => {
-          const triggers = ScrollTrigger.getAll();
-          triggers.forEach(trigger => trigger.disable());
-        }, 50);
-      };
-
-      window.addEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
-      window.addEventListener('disableScrollTriggers', handleDisableScrollTriggers);
-
-      const setupAnimation = () => {
-        // Hero timeline existente
-        const heroTimeline = gsap.timeline({
-          scrollTrigger: { trigger: container.current, start: "top top", end: "+=4000", scrub: 1 },
-        });
-
-        const heroKey = document.getElementById('hero-key');
-        const isOverlayHidden = heroKey?.getAttribute('data-overlay-hidden') === 'true';
-
-        if (!isOverlayHidden) {
-          heroTimeline
-            .to("#hero-key", { scale: 1 }, 0)
-            .to("#hero-key-logo", { opacity: 0, scale: 0.5 }, "<")
-            .to("#hero-key-logo-mask", { maskSize: "200px", ease: "power4.out", duration: 1 }, "<")
-            .to("#hero-key-background", { display: "none" }, ">-0.2")
-            .to("#hero-key-logo-mask", { opacity: 0 }, ">-0.5");
-        }
-
-        heroTimeline
-          .fromTo("#hero-intro-entrance",
-            { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
-            { maskImage: "radial-gradient(circle at 50% -100%, black 50%, transparent 50%)" },
-            '>-0.45'
-          )
-          .fromTo("#hero-intro-exit",
-            { maskImage: "radial-gradient(circle at 50% 50%, transparent 50%, black 100%)" },
-            { maskImage: "radial-gradient(circle at 50% -150%, transparent 50%, black 50%)" },
-            ">"
-          )
-          .to("#hero-intro", { opacity: 0 }, "<")
-          .fromTo("#hero-description-entrance",
-            { maskImage: "radial-gradient(circle at 50% 10%, black 50%, transparent 100%)" },
-            { maskImage: "radial-gradient(circle at 50% -150%, black 50%, transparent 50%)" },
-            ">-0.25"
-          )
-          .to("#hero-description", { opacity: 0 }, ">0.25");
-
-        /* ========== NEW: Inicialización con CANVAS INDEPENDIENTES ==========
-           - Cada video tiene su propio canvas (evita encimado)
-           - Sistema de opacidad y visibilidad mejorado
-           - Carga manifest.json centralizado con todos los videos
-        ============================================================================ */
-        const initSequences = async () => {
-          if (!canvas1Ref.current || !canvas2Ref.current || !canvas3Ref.current ||
-            !canvas4Ref.current || !canvas5Ref.current || !squareCanvasRef.current) {
-            console.error("Canvas refs no listas");
-            return;
-          }
-
-          // Cargar manifest centralizado
-          const res = await fetch("/videos/manifest.json", { cache: "force-cache" });
-          if (!res.ok) {
-            console.error("manifest 404/err", res.status);
-            return;
-          }
-
-          const data = await res.json();
-          const videos = data.videos as SeqManifest[];
-
-          // ===== Canvas independientes para cada video (mejor separación) =====
-
-          // Video 1 - Canvas propio
-          const video1 = videos.find(v => v.id === "video1");
-          if (video1 && canvas1Ref.current) {
-            const manager1 = new MultiSequenceCanvas(canvas1Ref.current);
-            handleScrollCanvasSequence({
-              canvasManager: manager1,
-              manifest: video1,
-              target: canvas1Ref.current.parentElement!,
-              scrub: { trigger: "#text-images-1", start: "-150% bottom", end: "bottom top" },
-              fadeIn: { trigger: "#hero-description", start: "65% top", end: "80% top" },
-              fadeOut: { trigger: "#text-images-1", start: "20% center", end: "45% center" },
-            });
-          }
-
-          // Video 2 - Canvas propio
-          const video2 = videos.find(v => v.id === "video2");
-          if (video2 && canvas2Ref.current) {
-            const manager2 = new MultiSequenceCanvas(canvas2Ref.current);
-            handleScrollCanvasSequence({
-              canvasManager: manager2,
-              manifest: video2,
-              target: canvas2Ref.current.parentElement!,
-              scrub: { trigger: "#text-images-2", start: "-120% bottom", end: "bottom top" },
-              fadeIn: { trigger: "#text-images-1", start: "65% top", end: "80% top" },
-              fadeOut: { trigger: "#text-images-2", start: "20% center", end: "45% center" },
-            });
-          }
-
-          // Video 3 - Canvas propio
-          const video3 = videos.find(v => v.id === "video3");
-          if (video3 && canvas3Ref.current) {
-            const manager3 = new MultiSequenceCanvas(canvas3Ref.current);
-            handleScrollCanvasSequence({
-              canvasManager: manager3,
-              manifest: video3,
-              target: canvas3Ref.current.parentElement!,
-              scrub: { trigger: "#text-images-3", start: "-120% bottom", end: "bottom top" },
-              fadeIn: { trigger: "#text-images-2", start: "65% top", end: "80% top" },
-              fadeOut: { trigger: "#text-images-3", start: "20% center", end: "45% center" },
-            });
-          }
-
-          // Video 4 - Canvas propio
-          const video4 = videos.find(v => v.id === "video4");
-          if (video4 && canvas4Ref.current) {
-            const manager4 = new MultiSequenceCanvas(canvas4Ref.current);
-            handleScrollCanvasSequence({
-              canvasManager: manager4,
-              manifest: video4,
-              target: canvas4Ref.current.parentElement!,
-              scrub: { trigger: "#text-images-4", start: "-120% bottom", end: "bottom top" },
-              fadeIn: { trigger: "#text-images-3", start: "65% top", end: "80% top" },
-              fadeOut: { trigger: "#text-images-4", start: "20% center", end: "45% center" },
-            });
-          }
-
-          // Video 5 - Canvas propio
-          const video5 = videos.find(v => v.id === "video5");
-          if (video5 && canvas5Ref.current) {
-            const manager5 = new MultiSequenceCanvas(canvas5Ref.current);
-            handleScrollCanvasSequence({
-              canvasManager: manager5,
-              manifest: video5,
-              target: canvas5Ref.current.parentElement!,
-              scrub: { trigger: "#services", start: "-120% bottom", end: "bottom top" },
-              fadeIn: { trigger: "#text-images-4", start: "65% top", end: "80% top" },
-              fadeOut: { trigger: "#services", start: "90% bottom", end: "90% top" },
-            });
-          }
-
-          // ===== Square Video (integrado en TextImages4) =====
-          const squareVideo = videos.find(v => v.id === "squareVideo");
-          if (squareVideo && squareCanvasRef.current) {
-            const squareManager = new MultiSequenceCanvas(squareCanvasRef.current);
-
-            handleScrollCanvasSequence({
-              canvasManager: squareManager,
-              manifest: squareVideo,
-              target: squareCanvasRef.current.parentElement!,
-              scrub: { trigger: "#text-images-5-canvas-container", start: "top top", end: "bottom top", pin: true },
-              fadeIn: { trigger: "#text-images-5-canvas-container", start: "top 500%", end: "top top" },
-              fadeOut: { trigger: "#text-images-5-canvas-container", start: "bottom top", end: "bottom top+=100" },
-            });
-          }
-
-        };
-
-        initSequences();
-
-        // Parallax existentes
-        gsap.timeline({ scrollTrigger: { trigger: "#text-images-1", start: "top bottom", end: "bottom top", scrub: 1 } })
-          .to("#text-images-1-right", { y: -300 }, 0);
-        gsap.timeline({ scrollTrigger: { trigger: "#text-images-2", start: "top bottom", end: "bottom top", scrub: 1 } })
-          .to("#text-images-2-right", { y: -300 }, 0);
-        gsap.timeline({ scrollTrigger: { trigger: "#text-images-3", start: "top bottom", end: "bottom top", scrub: 1 } })
-          .to("#text-images-3-left", { y: -300 }, 0);
-        gsap.timeline({ scrollTrigger: { trigger: "#text-images-4", start: "top bottom", end: "bottom top", scrub: 1 } })
-          .to("#text-images-4-right", { y: -300 }, 0);
-        gsap.timeline({ scrollTrigger: { trigger: "#banner-1", start: "top bottom", end: "bottom top", scrub: 1 } })
-          .to("#banner-1-image", { y: -300 }, 0);
-        gsap.timeline({ scrollTrigger: { trigger: "#text-images-5", start: "top bottom", end: "bottom top", scrub: 1 } })
-          .to("#text-images-5-right", { y: 600 }, 0);
-
-        gsap.timeline({ scrollTrigger: { trigger: "#team", start: "top bottom", end: "bottom bottom", scrub: 1 } })
-          .to("#team-image", { y: "80%" }, 0)
-          .to("#team-description", { y: -200, ease: "power1.inOut" }, 0.2);
-
-        gsap.timeline({ scrollTrigger: { trigger: "#team-description", start: "bottom center-=200", end: "+=2000", scrub: 1 } })
-          .to("#customers", { opacity: 1 }, 0)
-          .to("#customers", { opacity: 0 }, ">2")
-          .to("#lastLogo", { opacity: 1 }, ">-0.3")
-          .to("#lastLogoImage", { scale: 1, ease: "power1.inOut" }, "<")
-          .to("#lastLogo", { backgroundColor: "#1d1b22" }, ">")
-          .to("#lastLogo", { y: -100 }, ">0.5")
-          .to("#footer", { y: 0 }, "<");
-
-        ScrollTrigger.refresh();
-      };
-
-      setupAnimation();
-
-      return () => {
-        window.removeEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
-        window.removeEventListener('disableScrollTriggers', handleDisableScrollTriggers);
-      };
+      setupAllAnimations();
     },
     { scope: container }
   );
+
+  const handleMenuChange = (isOpen: boolean) => {
+    if (isOpen) lockScrollLenis();
+    else unlockScrollLenis();
+  };
 
   return (
     <>
@@ -296,27 +100,27 @@ export default function Home() {
 
           {/* Video 1 */}
           <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
-            <canvas ref={canvas1Ref} className="block w-full h-full" />
+            <canvas ref={canvasRefs.canvas1} className="block w-full h-full" />
           </div>
 
           {/* Video 2 */}
           <div className="pointer-events-none fixed inset-0 z-[969]" aria-hidden="true">
-            <canvas ref={canvas2Ref} className="block w-full h-full" />
+            <canvas ref={canvasRefs.canvas2} className="block w-full h-full" />
           </div>
 
           {/* Video 3 */}
           <div className="pointer-events-none fixed inset-0 z-[968]" aria-hidden="true">
-            <canvas ref={canvas3Ref} className="block w-full h-full" />
+            <canvas ref={canvasRefs.canvas3} className="block w-full h-full" />
           </div>
 
           {/* Video 4 */}
           <div className="pointer-events-none fixed inset-0 z-[967]" aria-hidden="true">
-            <canvas ref={canvas4Ref} className="block w-full h-full" />
+            <canvas ref={canvasRefs.canvas4} className="block w-full h-full" />
           </div>
 
           {/* Video 5 */}
           <div className="pointer-events-none fixed inset-0 z-[966]" aria-hidden="true">
-            <canvas ref={canvas5Ref} className="block w-full h-full" />
+            <canvas ref={canvasRefs.canvas5} className="block w-full h-full" />
           </div>
 
           <Customers />
@@ -446,7 +250,7 @@ export default function Home() {
           <div className="mt-[-10dvh]">
             <TextImages4
               id="text-images-5"
-              canvasRef={squareCanvasRef}
+              canvasRef={canvasRefs.square}
               title={
                 <>
                   <p className="text-4xl md:text-6xl w-full max-w-md mt-[100px] font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">

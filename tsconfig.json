@@ -35,6 +35,15 @@
       ],
       "@svg/*": [
         "./src/assets/svg/*"
+      ],
+      "@animations": [
+        "./src/animations"
+      ],
+      "@animations/*": [
+        "./src/animations/*"
+      ],
+      "@hooks/*": [
+        "./src/hooks/*"
       ]
     }
   },
