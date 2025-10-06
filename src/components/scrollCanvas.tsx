@@ -29,7 +29,7 @@ export default function ScrollCanvas() {
 
   return (
     <div ref={wrapRef} id="video-seq" className="relative w-full h-[100vh]">
-      <canvas ref={canvasRef} className="block w-full h-full" />
+      <canvas ref={canvasRef} className="block w-full h-full object-cover" />
     </div>
   );
 }

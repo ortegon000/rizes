@@ -45,14 +45,13 @@ const TextImages4 = ({
                             className="w-full mt-12 md:mt-[200px] max-w-xl mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
-                        <div className="relative z-10 mt-12 h-[50dvh] md:h-dvh w-full">
+                        <div id={`${id}-canvas-container`} className="relative z-10 mt-12 h-[50dvh] md:h-dvh w-full">
                             {/* Canvas para frames de video */}
                             {canvasRef && (
                                 <canvas
                                     ref={canvasRef}
                                     id={`${id}-canvas`}
                                     className="w-full h-full object-cover pinned"
-                                    style={{ opacity: 0 }}
                                 />
                             )}
                         </div>
