@@ -64,6 +64,7 @@ function setupScrollAnimation(
       end: scrub.end || "bottom top",
       scrub: 0.5, // Scrub suave como en el ejemplo de Apple
       pin: !!scrub.pin,
+      pinSpacing: scrub.pinSpacing !== undefined ? scrub.pinSpacing : true, // Usar config o default true
       anticipatePin: scrub.pin ? 1 : 0,
       invalidateOnRefresh: true,
     },

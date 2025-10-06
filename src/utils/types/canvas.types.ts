@@ -19,6 +19,7 @@ export type ScrollTriggerConfig = {
   start?: string;
   end?: string;
   pin?: boolean;
+    pinSpacing?: boolean; // Controla si el pin crea spacing (default: true)
 };
 
 export type FadeConfig = {

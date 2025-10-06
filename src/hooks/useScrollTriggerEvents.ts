@@ -20,18 +20,18 @@ export function useScrollTriggerEvents(setupAnimation: () => void | Promise<void
      * Útil cuando cambia el layout o contenido de la página
      */
     const handleRefreshScrollTrigger = () => {
-      setTimeout(() => {
-        // Limpiar triggers existentes
-        ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+        setTimeout(() => {
+            //     Limpiar triggers existentes
+            ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
         
-        // Refrescar
-        ScrollTrigger.refresh();
-        
+            //     // Refrescar
+            ScrollTrigger.refresh();
+
         // Re-inicializar animaciones
         setTimeout(() => {
-          setupAnimation();
+            setupAnimation();
         }, 100);
-      }, 100);
+        }, 100);
     };
 
     /**

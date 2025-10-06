@@ -1,7 +1,6 @@
 "use client";
 import { useRef, useEffect, useState, FC } from "react";
 import gsap from "gsap";
-import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
 import ServiceBG from '@images/services/bg.webp';
 import Service1Image from '@images/services/1.jpg';
 
@@ -27,8 +26,6 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
   
   // Manejar scroll horizontal con interpolación suave
   useEffect(() => {
-    lockScrollLenis();
-    
     const container = containerRef.current;
     const slider = sliderRef.current;
     const progressBar = progressBarRef.current;
@@ -141,15 +138,11 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
         cancelAnimationFrame(animationId);
       }
 
-      // Pequeño delay para evitar conflictos durante la transición de salida
-      setTimeout(() => {
-        container.removeEventListener('wheel', handleWheel);
-        container.removeEventListener('touchstart', handleTouchStart);
-        container.removeEventListener('touchmove', handleTouchMove);
-        container.removeEventListener('scroll', updateProgressAndScroll);
-        // Ya no tenemos ScrollTrigger, solo limpiamos Lenis
-        unlockScrollLenis();
-      }, 50);
+      // Limpiar event listeners
+      container.removeEventListener('wheel', handleWheel);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
+      container.removeEventListener('scroll', updateProgressAndScroll);
     };
   }, []);
 

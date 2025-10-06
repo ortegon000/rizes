@@ -1,91 +1,22 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import HorizontalScrollView from "@components/horizontalScroll";
 import ServicesDetailsImage from "@images/services-details.jpg";
-
-// Constantes de timing para mejor mantenimiento
-const SCROLL_TRIGGER_REFRESH_DELAY = 600; // OVERLAY_CLOSE_ANIMATION_DURATION + margen
-const HERO_RESTORE_DELAY = 1000; // Después de refresh completo
+import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
 
 export default function ServiceDetails() {
     const [showHorizontalScroll, setShowHorizontalScroll] = useState(false);
 
-    // Refs para limpiar timeouts
-    const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const restoreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-    // Helper function para obtener elementos del hero
-    const getHeroElements = () => {
-        return {
-            heroKeyContainer: document.getElementById('hero-key-container'),
-            heroIntro: document.getElementById('hero-intro'),
-            heroDesc: document.getElementById('hero-description')
-        };
-    };
-
-    // Helper function para ocultar elementos del hero
-    const hideHeroElements = (elements: ReturnType<typeof getHeroElements>) => {
-        const { heroKeyContainer, heroIntro, heroDesc } = elements;
-        if (heroKeyContainer && heroIntro && heroDesc) {
-            heroKeyContainer.setAttribute('data-overlay-hidden', 'true');
-            heroKeyContainer.style.opacity = '0';
-            heroKeyContainer.style.visibility = 'hidden';
-            heroIntro.style.opacity = '0';
-            heroIntro.style.visibility = 'hidden';
-            heroDesc.style.opacity = '0';
-            heroDesc.style.visibility = 'hidden';
-        }
-    };
-
-    // Helper function para restaurar elementos del hero
-    const restoreHeroElements = (elements: ReturnType<typeof getHeroElements>) => {
-        const { heroKeyContainer, heroIntro, heroDesc } = elements;
-        if (heroKeyContainer && heroIntro && heroDesc) {
-            heroKeyContainer.removeAttribute('data-overlay-hidden');
-            heroKeyContainer.style.opacity = '';
-            heroKeyContainer.style.visibility = '';
-        }
-    };
-
     const handleOpen = () => {
         setShowHorizontalScroll(true);
-
-        // Deshabilitar ScrollTriggers de la página principal para evitar conflictos
-        window.dispatchEvent(new CustomEvent('disableScrollTriggers'));
-
-        // Ocultar hero-key temporalmente al abrir el overlay
-        const heroElements = getHeroElements();
-        hideHeroElements(heroElements);
+        lockScrollLenis();
     };
 
     const handleClose = () => {
         setShowHorizontalScroll(false);
-
-        // Limpiar timeouts previos si existen
-        if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
-        if (restoreTimeoutRef.current) clearTimeout(restoreTimeoutRef.current);
-
-        // RETRASAR la reactivación hasta que termine la animación de salida del overlay
-        refreshTimeoutRef.current = setTimeout(() => {
-            window.dispatchEvent(new CustomEvent('refreshScrollTrigger'));
-        }, SCROLL_TRIGGER_REFRESH_DELAY);
-
-        // Restaurar el control normal del hero-key después del cierre
-        const heroElements = getHeroElements();
-        restoreTimeoutRef.current = setTimeout(() => {
-            restoreHeroElements(heroElements);
-        }, HERO_RESTORE_DELAY);
+        unlockScrollLenis();
     };
-
-    // Cleanup al desmontar el componente
-    useEffect(() => {
-        return () => {
-            if (refreshTimeoutRef.current) clearTimeout(refreshTimeoutRef.current);
-            if (restoreTimeoutRef.current) clearTimeout(restoreTimeoutRef.current);
-        };
-    }, []);
-
 
     return (
         <>

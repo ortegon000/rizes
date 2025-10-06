@@ -41,12 +41,9 @@ const VIDEO_CONFIGS: VideoConfig[] = [
   {
     id: "video1",
     canvasKey: "canvas1",
-        // ✅ Usa el spacer dedicado con valores relativos
-        scrub: { trigger: "#canvas-1-spacer", start: "-20% top", end: "bottom top" },
-        // ✅ FadeIn cuando el hero está terminando
-        fadeIn: { trigger: "#hero-scroll-space", start: "70% top", end: "100% top" },
-        // ✅ FadeOut cuando entra la siguiente sección
-        fadeOut: { trigger: "#text-images-1", start: "top bottom", end: "20% top" },
+    scrub: { trigger: "#canvas-1-spacer", start: "-20% top", end: "bottom top" },
+    fadeIn: { trigger: "#hero-scroll-space", start: "70% top", end: "100% top" },
+    fadeOut: { trigger: "#text-images-1", start: "top bottom", end: "20% top" },
   },
   {
     id: "video2",
@@ -84,7 +81,13 @@ const VIDEO_CONFIGS: VideoConfig[] = [
 const SQUARE_VIDEO_CONFIG: VideoConfig = {
   id: "squareVideo",
   canvasKey: "square",
-  scrub: { trigger: "#text-images-5-canvas-container", start: "top top", end: "bottom top", pin: true },
+  scrub: {
+    trigger: "#text-images-5-canvas-container",
+    start: "top top",
+    end: "bottom top",
+    pin: true,
+    pinSpacing: false // ✅ Evita layout shifts al no crear spacing placeholder
+  },
   fadeIn: { trigger: "#text-images-5-canvas-container", start: "top 500%", end: "top top" },
   fadeOut: { trigger: "#text-images-5-canvas-container", start: "bottom top", end: "bottom top+=100" },
 };
@@ -194,6 +197,4 @@ export async function initializeCanvasSequences(canvasRefs: CanvasRefs): Promise
 
   // Inicializar square video
   initializeSquareVideo(canvasRefs, videos);
-
-  console.log("✅ Canvas sequences initialized:", videos.map((v) => v.id));
 }

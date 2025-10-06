@@ -11,7 +11,7 @@ interface ParallaxConfig {
   trigger: string;
   target: string;
   y: number;
-    yMobile?: number; // ✅ Opcional: valor diferente para mobile
+  yMobile?: number; // ✅ Opcional: valor diferente para mobile
   start?: string;
   end?: string;
   scrub?: number;
@@ -28,13 +28,13 @@ const PARALLAX_CONFIGS: ParallaxConfig[] = [
     trigger: "#text-images-1",
     target: "#text-images-1-right",
     y: -300,
-        yMobile: -150, // ✅ 50% en mobile para mejor rendimiento
+    yMobile: -150, // ✅ 50% en mobile para mejor rendimiento
   },
   {
     trigger: "#text-images-2",
     target: "#text-images-2-right",
     y: -300,
-      yMobile: -150,
+    yMobile: -150,
   },
   {
     trigger: "#text-images-3",
@@ -45,20 +45,20 @@ const PARALLAX_CONFIGS: ParallaxConfig[] = [
   {
     trigger: "#text-images-4",
     target: "#text-images-4-right",
-    y: -300,
-      yMobile: -150,
+    y: -150,
+    yMobile: -150,
   },
   {
     trigger: "#banner-1",
     target: "#banner-1-image",
     y: -300,
-      yMobile: -150,
+    yMobile: -150,
   },
   {
     trigger: "#text-images-5",
     target: "#text-images-5-right",
-      y: 600, // ✅ Movimiento opuesto (hacia abajo)
-      yMobile: 300,
+    y: 600, // ✅ Movimiento opuesto (hacia abajo)
+    yMobile: 300,
   },
 ];
 
