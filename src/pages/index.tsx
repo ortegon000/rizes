@@ -103,7 +103,7 @@ export default function Home() {
         {/* ✅ Hero Scroll Spacer - Define la duración del hero timeline */}
         <div
           id="hero-scroll-space"
-          className="h-[300vh]"
+          className="h-[150vh] md:h-[300vh]"
           data-animation-purpose="hero-timeline"
           aria-hidden="true"
         />
@@ -111,7 +111,7 @@ export default function Home() {
         {/* ✅ Spacer para Canvas 1 */}
         <div
           id="canvas-1-spacer"
-          className="h-[200vh]"
+          className="h-[100vh] md:h-[200vh]"
           data-canvas-frames="120"
           data-scroll-speed="normal"
           aria-hidden="true"
@@ -164,7 +164,7 @@ export default function Home() {
           {/* ✅ Spacer para Canvas 2 */}
           <div
             id="canvas-2-spacer"
-            className="h-[200vh]"
+            className="h-[100vh] md:h-[200vh]"
             data-canvas-frames="120"
             data-scroll-speed="normal"
             aria-hidden="true"
@@ -195,7 +195,7 @@ export default function Home() {
           {/* ✅ Spacer para Canvas 3 */}
           <div
             id="canvas-3-spacer"
-            className="h-[200vh]"
+            className="h-[100vh] md:h-[200vh]"
             data-canvas-frames="120"
             data-scroll-speed="normal"
             aria-hidden="true"
@@ -232,7 +232,7 @@ export default function Home() {
           {/* ✅ Spacer para Canvas 4 */}
           <div
             id="canvas-4-spacer"
-            className="h-[200vh]"
+            className="h-[100vh] md:h-[200vh]"
             data-canvas-frames="120"
             data-scroll-speed="normal"
             aria-hidden="true"
@@ -268,7 +268,7 @@ export default function Home() {
           {/* ✅ Spacer para Canvas 5 */}
           <div
             id="canvas-5-spacer"
-            className="h-[200vh]"
+            className="h-[100vh] md:h-[200vh]"
             data-canvas-frames="120"
             data-scroll-speed="normal"
             aria-hidden="true"
@@ -335,7 +335,7 @@ export default function Home() {
           {/* ✅ Final Scroll Spacer - Define la duración del timeline final (Customers → LastLogo → Footer) */}
           <div
             id="final-scroll-space"
-            className="h-[400vh]"
+            className="h-[200vh] md:h-[400vh]"
             data-animation-purpose="final-timeline"
             aria-hidden="true"
           />
