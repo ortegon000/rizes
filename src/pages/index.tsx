@@ -4,13 +4,11 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
-// import Image from "next/image";
 
 import Header from "@components/header";
 import Hero from "@components/hero";
 import Intro from "@components/intro";
 import Description from "@components/description";
-// import ScrollVideo from "@components/scrollVideo";
 import TextImages from "@components/textImages";
 import TextImages2 from "@components/textImages2";
 import TextImages3 from "@components/textImages3";
@@ -48,275 +46,12 @@ import Banner1Image from "@images/banner-1.webp";
 import LastLogo from "@components/lastLogo";
 import Footer from "@components/footer";
 
+// Importar utilidades de canvas refactorizadas
+import { MultiSequenceCanvas, handleScrollCanvasSequence } from "@utils/canvas";
+import type { SeqManifest } from "@utils/types/canvas.types";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
-
-/* ============================
-   NEW: Handler mejorado para múltiples secuencias en UN SOLO canvas
-   - Usa un solo canvas reutilizable
-   - Cambia frames según la secuencia activa
-   - Preload por ventana deslizante
-================================ */
-type SeqManifest = {
-  id: string;
-  baseUrl: string;
-  ext: string;
-  count: number;
-  pad: number;
-  width: number;
-  height: number;
-};
-
-const padNum = (n: number, len: number) => n.toString().padStart(len, "0");
-const urlAt = (m: SeqManifest, i: number) => `${m.baseUrl}${padNum(i, m.pad)}${m.ext}`;
-
-// Clase que maneja un solo canvas con múltiples secuencias (Estilo Apple AirPods)
-class MultiSequenceCanvas {
-  private canvas: HTMLCanvasElement;
-  private ctx: CanvasRenderingContext2D;
-  private images: HTMLImageElement[] = [];
-  private frameObj = { frame: 0 }; // Objeto para animar con GSAP
-  private manifest: SeqManifest | null = null;
-  private resizeHandler: () => void;
-  // private originalWidth: number;
-  // private originalHeight: number;
-
-  constructor(canvas: HTMLCanvasElement, width: number, height: number) {
-    this.canvas = canvas;
-    // this.originalWidth = width;
-    // this.originalHeight = height;
-    
-    this.ctx = canvas.getContext("2d", {
-      alpha: false,
-      desynchronized: true,
-      willReadFrequently: false
-    })!;
-    this.ctx.imageSmoothingEnabled = true; // Activado para mejor calidad
-    this.ctx.imageSmoothingQuality = 'high';
-
-    // Ajustar dimensiones del canvas según el viewport manteniendo aspect ratio
-    this.updateCanvasSize();
-
-    // Listener para resize (responsive)
-    this.resizeHandler = () => this.updateCanvasSize();
-    window.addEventListener('resize', this.resizeHandler);
-  }
-
-  // Actualizar tamaño del canvas manteniendo aspect ratio
-  private updateCanvasSize() {
-    const container = this.canvas.parentElement;
-    if (!container) return;
-
-    const containerWidth = container.clientWidth;
-    const containerHeight = container.clientHeight;
-
-    // Usar devicePixelRatio para mejor calidad en pantallas retina
-    const dpr = window.devicePixelRatio || 1;
-
-    // Canvas ocupa todo el contenedor (pantalla completa)
-    this.canvas.width = containerWidth * dpr;
-    this.canvas.height = containerHeight * dpr;
-
-    // CSS size (tamaño visible) - pantalla completa
-    this.canvas.style.width = `${containerWidth}px`;
-    this.canvas.style.height = `${containerHeight}px`;
-
-    // Resetear transformaciones y escalar el contexto para dispositivos retina
-    this.ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset
-    this.ctx.scale(dpr, dpr);
-
-    // Re-renderizar si ya hay imágenes cargadas
-    if (this.images.length > 0) {
-      this.render();
-    }
-  }
-
-  // Precargar TODAS las imágenes de una secuencia
-  async loadSequence(manifest: SeqManifest): Promise<void> {
-    this.manifest = manifest;
-
-    // Crear array de imágenes
-    this.images = Array.from({ length: manifest.count }, (_, i) => {
-      const img = new Image();
-      img.src = urlAt(manifest, i);
-      return img;
-    });
-
-    // Esperar a que cargue el primer frame para renderizar
-    await new Promise<void>((resolve) => {
-      if (this.images[0].complete) {
-        resolve();
-      } else {
-        this.images[0].onload = () => resolve();
-      }
-    });
-
-    this.render();
-  }
-
-  // Renderizar frame actual con object-fit: cover (cubre todo sin deformar)
-  render() {
-    if (!this.images.length) return;
-
-    const frameIndex = Math.round(this.frameObj.frame);
-    const img = this.images[frameIndex];
-
-    if (!img || !img.complete) return;
-
-    const dpr = window.devicePixelRatio || 1;
-    const canvasWidth = this.canvas.width / dpr;
-    const canvasHeight = this.canvas.height / dpr;
-
-    // Calcular aspect ratios
-    const canvasRatio = canvasWidth / canvasHeight;
-    const imgRatio = img.width / img.height;
-
-    let drawWidth, drawHeight, offsetX, offsetY;
-
-    // Lógica de object-fit: cover
-    // La imagen debe cubrir todo el canvas, cortando lo que sobre
-    if (imgRatio > canvasRatio) {
-      // Imagen más ancha que el canvas - ajustar por altura
-      drawHeight = canvasHeight;
-      drawWidth = drawHeight * imgRatio;
-      offsetX = (canvasWidth - drawWidth) / 2;
-      offsetY = 0;
-    } else {
-      // Imagen más alta que el canvas - ajustar por anchura
-      drawWidth = canvasWidth;
-      drawHeight = drawWidth / imgRatio;
-      offsetX = 0;
-      offsetY = (canvasHeight - drawHeight) / 2;
-    }
-
-    // Limpiar canvas
-    this.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    // Dibujar imagen centrada con object-fit: cover
-    this.ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
-  }
-
-  // Obtener objeto frame para animar con GSAP
-  getFrameObject() {
-    return this.frameObj;
-  }
-
-  // Obtener número total de frames
-  getTotalFrames(): number {
-    return this.manifest ? this.manifest.count : 0;
-  }
-
-  // Limpiar recursos
-  destroy() {
-    this.images.forEach(img => {
-      img.src = '';
-    });
-    this.images = [];
-    window.removeEventListener('resize', this.resizeHandler);
-  }
-}// Handler mejorado estilo Apple AirPods - Animación suave con snap
-function handleScrollCanvasSequence({
-  canvasManager,
-  manifest,
-  target,
-  scrub,
-  fadeIn,
-  fadeOut,
-}: {
-  canvasManager: MultiSequenceCanvas;
-  manifest: SeqManifest;
-  target: string | Element;
-  scrub: { trigger: string | Element; start?: string; end?: string; pin?: boolean };
-  fadeIn: { trigger: string | Element; start?: string; end?: string };
-  fadeOut: { trigger: string | Element; start?: string; end?: string };
-}) {
-  const el = (typeof target === "string" ? document.querySelector(target)! : target) as HTMLElement;
-  if (!el) return;
-
-  // Estado visual inicial - empieza invisible y con pointer-events-none
-  gsap.set(el, {
-    opacity: 0, 
-    visibility: "hidden",
-    transform: "translateZ(0)",
-    pointerEvents: "none"
-  });
-
-  // Cargar secuencia
-  canvasManager.loadSequence(manifest).then(() => {
-    const frameObj = canvasManager.getFrameObject();
-    const totalFrames = canvasManager.getTotalFrames();
-
-    // Animación principal de frames con GSAP (estilo Apple)
-    gsap.to(frameObj, {
-      frame: totalFrames - 1,
-      ease: "none",
-      snap: "frame", // Snap a frames completos para animación más suave
-      scrollTrigger: {
-        trigger: scrub.trigger,
-        start: scrub.start || "top bottom",
-        end: scrub.end || "bottom top",
-        scrub: 0.5, // Scrub suave como en el ejemplo de Apple
-        pin: !!scrub.pin,
-        anticipatePin: scrub.pin ? 1 : 0,
-        invalidateOnRefresh: true,
-      },
-      onUpdate: () => canvasManager.render(),
-    });
-
-    // Sistema de opacidad y visibilidad mejorado
-    let inP = 0, outP = 0;
-    const VISIBILITY_THRESHOLD = 0.01; // Threshold para mostrar/ocultar
-
-    const applyFx = () => {
-      const alpha = Math.max(0, Math.min(1, inP * (1 - outP)));
-
-      // Control de opacidad suave
-      el.style.opacity = String(alpha);
-
-      // Control de visibilidad - solo visible cuando hay opacidad significativa
-      if (alpha > VISIBILITY_THRESHOLD) {
-        el.style.visibility = "visible";
-        el.style.pointerEvents = "auto";
-      } else {
-        el.style.visibility = "hidden";
-        el.style.pointerEvents = "none";
-      }
-    };
-
-    // Fade In con curva personalizada para transición más suave
-    ScrollTrigger.create({
-      trigger: fadeIn.trigger,
-      start: fadeIn.start || "top center",
-      end: fadeIn.end || "bottom center",
-      scrub: 0.5, // Scrub suave para opacidad
-      invalidateOnRefresh: true,
-      onUpdate: (st) => {
-        // Curva ease-in para fade in más suave
-        inP = gsap.parseEase("power2.in")(st.progress);
-        applyFx();
-      },
-    });
-
-    // Fade Out con curva personalizada
-    ScrollTrigger.create({
-      trigger: fadeOut.trigger,
-      start: fadeOut.start || "top center",
-      end: fadeOut.end || "bottom center",
-      scrub: 0.5, // Scrub suave para opacidad
-      invalidateOnRefresh: true,
-      onUpdate: (st) => {
-        // Curva ease-out para fade out más suave
-        outP = gsap.parseEase("power2.out")(st.progress);
-        applyFx();
-      },
-    });
-
-    // Aplicar estado inicial
-    applyFx();
-  });
-}
-/* ============================ END NEW ============================ */
 
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
@@ -415,11 +150,7 @@ export default function Home() {
           // Video 1 - Canvas propio
           const video1 = videos.find(v => v.id === "video1");
           if (video1 && canvas1Ref.current) {
-            const manager1 = new MultiSequenceCanvas(
-              canvas1Ref.current,
-              video1.width,
-              video1.height
-            );
+            const manager1 = new MultiSequenceCanvas(canvas1Ref.current);
             handleScrollCanvasSequence({
               canvasManager: manager1,
               manifest: video1,
@@ -433,11 +164,7 @@ export default function Home() {
           // Video 2 - Canvas propio
           const video2 = videos.find(v => v.id === "video2");
           if (video2 && canvas2Ref.current) {
-            const manager2 = new MultiSequenceCanvas(
-              canvas2Ref.current,
-              video2.width,
-              video2.height
-            );
+            const manager2 = new MultiSequenceCanvas(canvas2Ref.current);
             handleScrollCanvasSequence({
               canvasManager: manager2,
               manifest: video2,
@@ -451,11 +178,7 @@ export default function Home() {
           // Video 3 - Canvas propio
           const video3 = videos.find(v => v.id === "video3");
           if (video3 && canvas3Ref.current) {
-            const manager3 = new MultiSequenceCanvas(
-              canvas3Ref.current,
-              video3.width,
-              video3.height
-            );
+            const manager3 = new MultiSequenceCanvas(canvas3Ref.current);
             handleScrollCanvasSequence({
               canvasManager: manager3,
               manifest: video3,
@@ -469,11 +192,7 @@ export default function Home() {
           // Video 4 - Canvas propio
           const video4 = videos.find(v => v.id === "video4");
           if (video4 && canvas4Ref.current) {
-            const manager4 = new MultiSequenceCanvas(
-              canvas4Ref.current,
-              video4.width,
-              video4.height
-            );
+            const manager4 = new MultiSequenceCanvas(canvas4Ref.current);
             handleScrollCanvasSequence({
               canvasManager: manager4,
               manifest: video4,
@@ -487,11 +206,7 @@ export default function Home() {
           // Video 5 - Canvas propio
           const video5 = videos.find(v => v.id === "video5");
           if (video5 && canvas5Ref.current) {
-            const manager5 = new MultiSequenceCanvas(
-              canvas5Ref.current,
-              video5.width,
-              video5.height
-            );
+            const manager5 = new MultiSequenceCanvas(canvas5Ref.current);
             handleScrollCanvasSequence({
               canvasManager: manager5,
               manifest: video5,
@@ -505,11 +220,7 @@ export default function Home() {
           // ===== Square Video (integrado en TextImages4) =====
           const squareVideo = videos.find(v => v.id === "squareVideo");
           if (squareVideo && squareCanvasRef.current) {
-            const squareManager = new MultiSequenceCanvas(
-              squareCanvasRef.current,
-              squareVideo.width,
-              squareVideo.height
-            );
+            const squareManager = new MultiSequenceCanvas(squareCanvasRef.current);
 
             handleScrollCanvasSequence({
               canvasManager: squareManager,
@@ -616,7 +327,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[225dvh]">
+        <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[415dvh] md:pb-[225dvh]">
 
           <TextImages
             id="text-images-1"
