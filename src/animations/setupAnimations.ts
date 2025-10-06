@@ -9,20 +9,23 @@ import { createFinalTimeline } from "./finalTimeline";
 import { initializeCanvasSequences, type CanvasRefs } from "./canvasSequences";
 import { createParallaxAnimations } from "./parallaxAnimations";
 import { createTeamTimeline } from "./teamTimeline";
-import type { RefObject } from "react";
 
 /**
  * Configura todas las animaciones de la página
  */
 export async function setupAnimations(
-  container: RefObject<HTMLDivElement | null>,
   canvasRefs: CanvasRefs
 ): Promise<void> {
+  // const startTime = performance.now();
+
     // 1. Hero timeline
     createHeroTimeline();
 
-    // 2. Canvas sequences (async)
+  // 2. Canvas sequences (async) - ⏳ Esto precarga TODAS las imágenes
+  // const canvasStartTime = performance.now();
     await initializeCanvasSequences(canvasRefs);
+  // const canvasEndTime = performance.now();
+  // 
 
     // 3. Parallax animations
     createParallaxAnimations();
@@ -31,8 +34,11 @@ export async function setupAnimations(
     createTeamTimeline();
 
     // 5. Final timeline (Customers → LastLogo → Footer)
-    createFinalTimeline(container.current);
+  createFinalTimeline();
 
     // 6. Refresh ScrollTrigger para asegurar cálculos correctos
     ScrollTrigger.refresh();
+
+  // const endTime = performance.now();
+  // console.log(`🎉 Setup completo en ${((endTime - startTime) / 1000).toFixed(2)}s`);
 }

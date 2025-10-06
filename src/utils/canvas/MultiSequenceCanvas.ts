@@ -77,22 +77,34 @@ export class MultiSequenceCanvas {
   async loadSequence(manifest: SeqManifest): Promise<void> {
     this.manifest = manifest;
 
+      // Crear array de promesas para cargar todas las imágenes
+      const imagePromises: Promise<void>[] = [];
+
     // Crear array de imágenes
     this.images = Array.from({ length: manifest.count }, (_, i) => {
       const img = new Image();
+
+        // Crear promesa para cada imagen
+        const promise = new Promise<void>((resolve) => {
+            img.onload = () => resolve();
+            img.onerror = () => {
+                console.error(`Error cargando frame ${i} de ${manifest.id}`);
+                resolve(); // Resolver igual para no bloquear
+            };
+        });
+
+        imagePromises.push(promise);
+
+        // Asignar src DESPUÉS de configurar los handlers
       img.src = getFrameUrl(manifest, i);
+
       return img;
     });
 
-    // Esperar a que cargue el primer frame para renderizar
-    await new Promise<void>((resolve) => {
-      if (this.images[0].complete) {
-        resolve();
-      } else {
-        this.images[0].onload = () => resolve();
-      }
-    });
+      // Esperar a que TODAS las imágenes se carguen
+      await Promise.all(imagePromises);
 
+      // Renderizar el primer frame
     this.render();
   }
 
@@ -106,8 +118,26 @@ export class MultiSequenceCanvas {
     const frameIndex = Math.round(this.frameObj.frame);
     const img = this.images[frameIndex];
 
-    if (!img || !img.complete) return;
+      // Verificar que la imagen existe y está completamente cargada
+      if (!img || !img.complete || img.naturalWidth === 0) {
+          // Si la imagen no está lista, intentar usar la última imagen válida
+          for (let i = frameIndex - 1; i >= 0; i--) {
+              const fallbackImg = this.images[i];
+              if (fallbackImg?.complete && fallbackImg.naturalWidth > 0) {
+                  this.renderImage(fallbackImg);
+                  return;
+              }
+          }
+          return; // No hay imágenes válidas para renderizar
+      }
 
+      this.renderImage(img);
+  }
+
+    /**
+     * Renderiza una imagen específica en el canvas
+     */
+    private renderImage(img: HTMLImageElement): void {
     const dpr = window.devicePixelRatio || 1;
     const canvasWidth = this.canvas.width / dpr;
     const canvasHeight = this.canvas.height / dpr;

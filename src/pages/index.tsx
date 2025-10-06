@@ -68,7 +68,7 @@ export default function Home() {
 
   // Función de setup de animaciones (wrapeada para el hook)
   const setupAllAnimations = () => {
-    setupAnimations(container, canvasRefs);
+    setupAnimations(canvasRefs);
   };
 
   // Hook para manejar eventos de ScrollTrigger

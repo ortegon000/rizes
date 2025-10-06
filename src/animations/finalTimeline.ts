@@ -21,7 +21,7 @@ function addCustomersAnimation(timeline: gsap.core.Timeline): void {
     .to(
       "#customers",
       { opacity: 0, duration: 0.2, ease: "power2.in" },
-      0.25 // FadeOut al 25% del timeline
+      0.45 // FadeOut al 25% del timeline
     );
 }
 
@@ -34,13 +34,13 @@ function addLastLogoAnimation(timeline: gsap.core.Timeline): void {
     .fromTo(
       "#last-logo",
       { opacity: 0 },
-      { opacity: 1, duration: 0.2, ease: "power2.out" },
-      0.3 // Aparece al 30% cuando Customers desaparece
+      { opacity: 1, duration: 0.3, ease: "power2.out" },
+      0.5 // Aparece al 30% cuando Customers desaparece
     )
     .to(
       "#last-logo",
-      { opacity: 0, duration: 0.2, ease: "power2.in" },
-      0.55 // FadeOut al 55% para dar espacio a Footer
+      { opacity: 0, duration: 0.3, ease: "power2.in" },
+      0.85 // FadeOut al 55% para dar espacio a Footer
     );
 }
 
@@ -53,8 +53,8 @@ function addFooterAnimation(timeline: gsap.core.Timeline): void {
     .fromTo(
       "#footer",
       { opacity: 0 },
-      { opacity: 1, duration: 0.3, ease: "power2.out" },
-      0.6 // Aparece al 60% cuando LastLogo desaparece
+      { opacity: 1, duration: 0.1, ease: "power2.out" },
+      0.9 // Aparece al 60% cuando LastLogo desaparece
   ).to("#keep-scrolling", {
       opacity: 0,
   }, "<");
@@ -66,31 +66,10 @@ function addFooterAnimation(timeline: gsap.core.Timeline): void {
  * 
  * ✅ Usa el final-scroll-space spacer para definir la duración
  */
-export function createFinalTimeline(container: HTMLElement | null): gsap.core.Timeline {
+export function createFinalTimeline(): gsap.core.Timeline {
   // ✅ Obtener el spacer que define la duración del timeline final
   const finalSpacer = document.getElementById('final-scroll-space');
-  
-  // Validación: Si no existe el spacer, usar fallback
-  if (!finalSpacer) {
-    console.warn('[finalTimeline] final-scroll-space not found, using container fallback');
-    
-    const timeline = gsap.timeline({
-      scrollTrigger: {
-        trigger: container,
-        start: "top top",
-        end: "+=2000", // Fallback
-        scrub: 1,
-      },
-    });
 
-    addCustomersAnimation(timeline);
-    addLastLogoAnimation(timeline);
-    addFooterAnimation(timeline);
-
-    return timeline;
-  }
-
-  // Timeline principal usando el spacer
   const timeline = gsap.timeline({
     scrollTrigger: {
       trigger: finalSpacer,
