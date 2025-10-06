@@ -79,13 +79,13 @@ class MultiSequenceCanvas {
   private frameObj = { frame: 0 }; // Objeto para animar con GSAP
   private manifest: SeqManifest | null = null;
   private resizeHandler: () => void;
-  private originalWidth: number;
-  private originalHeight: number;
+  // private originalWidth: number;
+  // private originalHeight: number;
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number) {
     this.canvas = canvas;
-    this.originalWidth = width;
-    this.originalHeight = height;
+    // this.originalWidth = width;
+    // this.originalHeight = height;
     
     this.ctx = canvas.getContext("2d", {
       alpha: false,
@@ -581,8 +581,6 @@ export default function Home() {
           <Intro zIndex={990} />
           <Description zIndex={980} />
 
-          {/* ========== Canvas INDEPENDIENTES para cada video (evita encimado) ========== */}
-
           {/* Video 1 */}
           <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
             <canvas ref={canvas1Ref} className="block w-full h-full" />
@@ -618,7 +616,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[3200px]">
+        <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[225dvh]">
 
           <TextImages
             id="text-images-1"
