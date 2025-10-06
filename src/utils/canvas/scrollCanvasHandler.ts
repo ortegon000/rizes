@@ -26,10 +26,10 @@ export function handleScrollCanvasSequence(options: CanvasSequenceOptions): void
     return;
   }
 
-  // Estado visual inicial - empieza invisible
+    // Estado visual inicial - empieza visible (los fadeIn/fadeOut controlan la visibilidad)
   gsap.set(el, {
-    opacity: 0,
-    visibility: "hidden",
+      opacity: 1,
+      visibility: "visible",
     transform: "translateZ(0)",
     pointerEvents: "none"
   });

@@ -1,10 +1,13 @@
 /**
  * Configuraciones para las secuencias de canvas de video
+ * 
+ * ✅ Actualizado: Ahora usa canvas spacers y valores relativos
  */
 
 import type { RefObject } from "react";
 import { MultiSequenceCanvas, handleScrollCanvasSequence } from "@utils/canvas";
 import type { SeqManifest, ScrollTriggerConfig, FadeConfig } from "@utils/types/canvas.types";
+// import { EndCalculator } from "@utils/animations"; // ✅ Disponible para ajustes futuros
 
 /**
  * Estructura de referencias de canvas
@@ -31,42 +34,47 @@ interface VideoConfig {
 
 /**
  * Configuraciones para todos los videos
+ * 
+ * ✅ Actualizado: Ahora usa canvas spacers en lugar de triggers negativos
  */
 const VIDEO_CONFIGS: VideoConfig[] = [
   {
     id: "video1",
     canvasKey: "canvas1",
-    scrub: { trigger: "#text-images-1", start: "-150% bottom", end: "bottom top" },
-    fadeIn: { trigger: "#hero-description", start: "65% top", end: "80% top" },
-    fadeOut: { trigger: "#text-images-1", start: "20% center", end: "45% center" },
+        // ✅ Usa el spacer dedicado con valores relativos
+        scrub: { trigger: "#canvas-1-spacer", start: "top top", end: "bottom top" },
+        // ✅ FadeIn cuando el hero está terminando
+        fadeIn: { trigger: "#hero-scroll-space", start: "80% top", end: "100% top" },
+        // ✅ FadeOut cuando entra la siguiente sección
+        fadeOut: { trigger: "#text-images-1", start: "top bottom", end: "top center" },
   },
   {
     id: "video2",
     canvasKey: "canvas2",
-    scrub: { trigger: "#text-images-2", start: "-120% bottom", end: "bottom top" },
-    fadeIn: { trigger: "#text-images-1", start: "65% top", end: "80% top" },
-    fadeOut: { trigger: "#text-images-2", start: "20% center", end: "45% center" },
+      scrub: { trigger: "#canvas-2-spacer", start: "top top", end: "bottom top" },
+      fadeIn: { trigger: "#text-images-1", start: "80% top", end: "100% top" },
+      fadeOut: { trigger: "#text-images-2", start: "top bottom", end: "top center" },
   },
   {
     id: "video3",
     canvasKey: "canvas3",
-    scrub: { trigger: "#text-images-3", start: "-120% bottom", end: "bottom top" },
-    fadeIn: { trigger: "#text-images-2", start: "65% top", end: "80% top" },
-    fadeOut: { trigger: "#text-images-3", start: "20% center", end: "45% center" },
+      scrub: { trigger: "#canvas-3-spacer", start: "top top", end: "bottom top" },
+      fadeIn: { trigger: "#text-images-2", start: "80% top", end: "100% top" },
+      fadeOut: { trigger: "#text-images-3", start: "top bottom", end: "top center" },
   },
   {
     id: "video4",
     canvasKey: "canvas4",
-    scrub: { trigger: "#text-images-4", start: "-120% bottom", end: "bottom top" },
-    fadeIn: { trigger: "#text-images-3", start: "65% top", end: "80% top" },
-    fadeOut: { trigger: "#text-images-4", start: "20% center", end: "45% center" },
+      scrub: { trigger: "#canvas-4-spacer", start: "top top", end: "bottom top" },
+      fadeIn: { trigger: "#text-images-3", start: "80% top", end: "100% top" },
+      fadeOut: { trigger: "#text-images-4", start: "top bottom", end: "top center" },
   },
   {
     id: "video5",
     canvasKey: "canvas5",
-    scrub: { trigger: "#services", start: "-120% bottom", end: "bottom top" },
-    fadeIn: { trigger: "#text-images-4", start: "65% top", end: "80% top" },
-    fadeOut: { trigger: "#services", start: "90% bottom", end: "90% top" },
+      scrub: { trigger: "#canvas-5-spacer", start: "top top", end: "bottom top" },
+      fadeIn: { trigger: "#text-images-4", start: "80% top", end: "100% top" },
+      fadeOut: { trigger: "#services", start: "top bottom", end: "top center" },
   },
 ];
 

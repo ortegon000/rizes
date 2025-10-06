@@ -7,18 +7,18 @@ export default function Team() {
 
         <>
             <section id="team" className="px-4">
-                <figure id="team-image" className="relative aspect-[16/9] h-auto w-full max-w-full lg:max-w-1/2">
+                <figure id="team-image" className="relative aspect-[16/9] h-auto w-full max-w-full lg:max-w-2/3">
                     <Image
                         alt=""
                         src={TeamImage}
                         fill
                         className="w-full h-auto object-cover"
                         priority
-                        sizes="(max-width: 1023px) 100vw, 50vw"
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                     />
                 </figure>
 
-                <div id="team-description" className="relative mt-[15dvh] md:mt-[30dvh] grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div id="team-description" className="relative mt-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div className="order-2 lg:order-1">
                         <p className="w-full max-w-lg mx-auto lg:mr-0 lg:ml-auto text-2xl md:text-4xl text-white font-black tracking-wide text-center lg:text-left">
                             Si estás pensando en alguna experiencia que no encuentres aquí, escríbenos ahora mismo y nuestros asesores te podrán ayudar.

@@ -93,47 +93,64 @@ export default function Home() {
 
       <div className="relative w-full" ref={container}>
 
-        <div className="fixed w-full">
+        {/* Hero Container - Fixed solo durante hero-scroll-space */}
+        <div id="hero-container" className="fixed inset-0 w-full h-screen">
           <Hero zIndex={1000} />
           <Intro zIndex={990} />
           <Description zIndex={980} />
-
-          {/* Video 1 */}
-          <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
-            <canvas ref={canvasRefs.canvas1} className="block w-full h-full" />
-          </div>
-
-          {/* Video 2 */}
-          <div className="pointer-events-none fixed inset-0 z-[969]" aria-hidden="true">
-            <canvas ref={canvasRefs.canvas2} className="block w-full h-full" />
-          </div>
-
-          {/* Video 3 */}
-          <div className="pointer-events-none fixed inset-0 z-[968]" aria-hidden="true">
-            <canvas ref={canvasRefs.canvas3} className="block w-full h-full" />
-          </div>
-
-          {/* Video 4 */}
-          <div className="pointer-events-none fixed inset-0 z-[967]" aria-hidden="true">
-            <canvas ref={canvasRefs.canvas4} className="block w-full h-full" />
-          </div>
-
-          {/* Video 5 */}
-          <div className="pointer-events-none fixed inset-0 z-[966]" aria-hidden="true">
-            <canvas ref={canvasRefs.canvas5} className="block w-full h-full" />
-          </div>
-
-          <Customers />
-          <LastLogo />
-          <Footer />
-
-          <div className="fixed bottom-6 right-0 left-0 mx-auto text-center text-yellow-500 text-shadow-md tracking-wider text-sm text-shadow-black/40 z-[3000]">
-            Sige Bajando
-            <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-yellow-500" />
-          </div>
         </div>
 
-        <div id="normalScrolling" className="relative z-[2000] pt-[7000px] pb-[415dvh] md:pb-[225dvh]">
+        <div className="fixed bottom-6 right-0 left-0 mx-auto text-center text-yellow-500 text-shadow-md tracking-wider text-sm text-shadow-black/40 z-[2000]">
+          Sige Bajando
+          <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-yellow-500" />
+        </div>
+
+        {/* Canvas Videos - Fixed independientes (NO dentro de hero-container) */}
+        {/* Video 1 */}
+        <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas1} className="block w-full h-full" />
+        </div>
+
+        {/* Video 2 */}
+        <div className="pointer-events-none fixed inset-0 z-[960]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas2} className="block w-full h-full" />
+        </div>
+
+        {/* Video 3 */}
+        <div className="pointer-events-none fixed inset-0 z-[950]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas3} className="block w-full h-full" />
+        </div>
+
+        {/* Video 4 */}
+        <div className="pointer-events-none fixed inset-0 z-[940]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas4} className="block w-full h-full" />
+        </div>
+
+        {/* Video 5 */}
+        <div className="pointer-events-none fixed inset-0 z-[930]" aria-hidden="true">
+          <canvas ref={canvasRefs.canvas5} className="block w-full h-full" />
+        </div>
+
+
+
+        {/* ✅ Hero Scroll Spacer - Define la duración del hero timeline */}
+        <div
+          id="hero-scroll-space"
+          className="h-[400vh] md:h-[300vh]"
+          data-animation-purpose="hero-timeline"
+          aria-hidden="true"
+        />
+
+        {/* ✅ Canvas Scroll Spacers - Definen la duración de cada secuencia de canvas */}
+        <div
+          id="canvas-1-spacer"
+          className="h-[200vh]"
+          data-canvas-frames="120"
+          data-scroll-speed="normal"
+          aria-hidden="true"
+        />
+
+        <div id="normalScrolling" className="relative z-[1000]">
 
           <TextImages
             id="text-images-1"
@@ -156,9 +173,17 @@ export default function Home() {
             image3={Image1_3}
           />
 
-          <div className="mt-[150dvh]">
-            <TextImages
-              id="text-images-2"
+          {/* ✅ Spacer para Canvas 2 */}
+          <div
+            id="canvas-2-spacer"
+            className="h-[200vh]"
+            data-canvas-frames="120"
+            data-scroll-speed="normal"
+            aria-hidden="true"
+          />
+
+          <TextImages
+            id="text-images-2"
               title={
                 <>
                   <p className="text-3xl md:text-5xl max-w-md mr-0 ml-auto bg-gradient-to-r font-black from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">
@@ -177,12 +202,19 @@ export default function Home() {
               image1={Image2_1}
               image2={Image2_2}
               image3={Image2_3}
-            />
-          </div>
+          />
 
-          <div className="mt-[150dvh]">
-            <TextImages2
-              id="text-images-3"
+          {/* ✅ Spacer para Canvas 3 */}
+          <div
+            id="canvas-3-spacer"
+            className="h-[200vh]"
+            data-canvas-frames="120"
+            data-scroll-speed="normal"
+            aria-hidden="true"
+          />
+
+          <TextImages2
+            id="text-images-3"
               title={
                 <>
                   <p className="text-2xl md:text-3xl max-w-md text-white text-center lg:text-left mx-auto lg:mx-0">
@@ -207,12 +239,19 @@ export default function Home() {
               image1={Image3_1}
               image2={Image3_2}
               image3={Image3_3}
-            />
-          </div>
+          />
 
-          <div className="mt-[150dvh]">
-            <TextImages3
-              id="text-images-4"
+          {/* ✅ Spacer para Canvas 4 */}
+          <div
+            id="canvas-4-spacer"
+            className="h-[200vh]"
+            data-canvas-frames="120"
+            data-scroll-speed="normal"
+            aria-hidden="true"
+          />
+
+          <TextImages3
+            id="text-images-4"
               title={
                 <>
                   <p className="text-4xl md:text-5xl w-full max-w-screen-lg mx-auto font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-wide leading-tight md:leading-14 text-center lg:text-left">
@@ -236,20 +275,25 @@ export default function Home() {
               }
               image1={Image4_1}
               image2={Image4_2}
-            />
-          </div>
+          />
 
-          <div className="mt-[100dvh]">
-            <Services />
-          </div>
+          {/* ✅ Spacer para Canvas 5 */}
+          <div
+            id="canvas-5-spacer"
+            className="h-[200vh]"
+            data-canvas-frames="120"
+            data-scroll-speed="normal"
+            aria-hidden="true"
+          />
+
+          <Services />
 
           <div className="mt-[10dvh]">
             <Banner1 id="banner-1" image={Banner1Image} text="Sentirás tranquilidad gracias al profesionalismo de nuestro equipo en todo momento." />
           </div>
 
-          <div className="mt-[-10dvh]">
-            <TextImages4
-              id="text-images-5"
+          <TextImages4
+            id="text-images-5"
               canvasRef={canvasRefs.square}
               title={
                 <>
@@ -290,18 +334,30 @@ export default function Home() {
               image2={Image5_2}
               image3={Image5_3}
               image4={Image5_4}
-            />
-          </div>
+          />
 
           <div className="mt-[10dvh]">
             <ServiceDetails />
           </div>
 
-          <div className="mt-[20dvh]">
+          <div className="mt-[10dvh]">
             <Team />
           </div>
 
+          {/* ✅ Final Scroll Spacer - Define la duración del timeline final (Customers → LastLogo → Footer) */}
+          <div
+            id="final-scroll-space"
+            className="h-[350vh]"
+            data-animation-purpose="final-timeline"
+            aria-hidden="true"
+          />
+
         </div>
+
+        {/* Secciones finales - Fixed independientes */}
+        <Customers />
+        <LastLogo />
+        <Footer />
       </div>
     </>
   );

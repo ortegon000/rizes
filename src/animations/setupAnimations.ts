@@ -1,10 +1,11 @@
 /**
  * Orchestrador principal de todas las animaciones de la página
- * Coordina hero, canvas sequences, parallax y team animations
+ * Coordina hero, canvas sequences, parallax, team y final animations
  */
 
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { createHeroTimeline } from "./heroTimeline";
+import { createFinalTimeline } from "./finalTimeline";
 import { initializeCanvasSequences, type CanvasRefs } from "./canvasSequences";
 import { createParallaxAnimations } from "./parallaxAnimations";
 import { createTeamTimeline } from "./teamTimeline";
@@ -17,7 +18,7 @@ export async function setupAnimations(
   container: RefObject<HTMLDivElement | null>,
   canvasRefs: CanvasRefs
 ): Promise<void> {
-  // 1. Hero timeline
+    // 1. Hero timeline (pin solo durante hero-scroll-space)
   createHeroTimeline(container.current);
 
   // 2. Canvas sequences (async)
@@ -29,6 +30,9 @@ export async function setupAnimations(
   // 4. Team timeline
   createTeamTimeline();
 
-  // 5. Refresh ScrollTrigger para asegurar cálculos correctos
+    // 5. Final timeline (Customers → LastLogo → Footer)
+    createFinalTimeline(container.current);
+
+    // 6. Refresh ScrollTrigger para asegurar cálculos correctos
   ScrollTrigger.refresh();
 }

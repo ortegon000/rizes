@@ -4,7 +4,7 @@ import Customer1Image from "@images/customers/1.png";
 export default function Customers() {
     return (
         <>
-            <section id="customers" className="fixed inset-0 h-dvh w-full bg-black opacity-0 p-4 md:p-12 flex items-center justify-center flex-col">
+            <section id="customers" className="fixed inset-0 h-dvh w-full bg-black opacity-0 p-4 md:p-12 flex items-center justify-center flex-col z-[965]">
                 <div className="w-full">
 
                     <p id="customers-title" className="text-2xl md:text-4xl text-center font-black max-w-screen-md mx-auto text-white tracking-wide leading-tight md:leading-14">

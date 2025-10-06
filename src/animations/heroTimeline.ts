@@ -1,7 +1,16 @@
 /**
  * Animaciones del timeline del Hero
- * Gestiona las transiciones del logo, intro y description
- */
+ * Gestiona las transiciones del logo, intro y de  // Timeline de animaciones del hero (solo durante hero-scroll-space)
+  const timeline = gsap.timeline({
+    scrollTrigger: {
+      trigger: heroSpacer,
+      start: "top top",
+      end: "bottom top",
+      scrub: 1,
+      pin: '#hero-container',
+      pinSpacing: false,
+    },
+  });*/
 
 import gsap from "gsap";
 
@@ -61,16 +70,47 @@ function shouldShowHeroOverlay(): boolean {
 
 /**
  * Crea el timeline principal del hero con todas sus animaciones
+ * 
+ * ✅ Actualizado: Solo hace pin durante hero-scroll-space (no hasta el final)
  */
 export function createHeroTimeline(container: HTMLElement | null): gsap.core.Timeline {
-  const timeline = gsap.timeline({
-    scrollTrigger: {
-      trigger: container,
-      start: "top top",
-      end: "+=4000",
-      scrub: 1,
-    },
-  });
+    // ✅ Obtener el spacer que define la duración del hero
+    const heroSpacer = document.getElementById('hero-scroll-space');
+
+    // Validación: Si no existe el spacer, usar fallback con container
+    if (!heroSpacer) {
+        console.warn('[heroTimeline] hero-scroll-space not found, using container fallback');
+
+        const timeline = gsap.timeline({
+            scrollTrigger: {
+                trigger: container,
+                start: "top top",
+                end: "+=4000", // Fallback al valor anterior
+                scrub: 1,
+            },
+        });
+
+        if (shouldShowHeroOverlay()) {
+            addHeroKeyAnimation(timeline);
+        }
+        addHeroIntroAnimation(timeline);
+        addHeroDescriptionAnimation(timeline);
+
+        return timeline;
+    }
+
+    // ✅ Timeline de animaciones del hero (solo durante hero-scroll-space)
+    const timeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: heroSpacer,
+            start: "top top",
+            end: "bottom top", // Solo anima durante hero-scroll-space
+            scrub: 1,
+            pin: '#hero-container', // ✅ Pin solo durante hero-scroll-space
+            pinSpacing: false,
+            id: "hero-timeline",
+        },
+    });
 
   // Solo agregar animación del key si el overlay está visible
   if (shouldShowHeroOverlay()) {
