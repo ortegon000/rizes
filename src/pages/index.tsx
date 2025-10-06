@@ -5,6 +5,9 @@ import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 
+import { MultiSequenceCanvas, handleScrollCanvasSequence } from "@utils/canvas";
+import type { SeqManifest } from "@utils/types/canvas.types";
+
 import Header from "@components/header";
 import Hero from "@components/hero";
 import Intro from "@components/intro";
@@ -46,12 +49,14 @@ import Banner1Image from "@images/banner-1.webp";
 import LastLogo from "@components/lastLogo";
 import Footer from "@components/footer";
 
-// Importar utilidades de canvas refactorizadas
-import { MultiSequenceCanvas, handleScrollCanvasSequence } from "@utils/canvas";
-import type { SeqManifest } from "@utils/types/canvas.types";
 
 gsap.registerPlugin(useGSAP);
 gsap.registerPlugin(ScrollTrigger);
+
+const handleMenuChange = (isOpen: boolean) => {
+  if (isOpen) lockScrollLenis();
+  else unlockScrollLenis();
+};
 
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
@@ -77,12 +82,14 @@ export default function Home() {
           setTimeout(() => { setupAnimation(); }, 100);
         }, 100);
       };
+
       const handleDisableScrollTriggers = () => {
         setTimeout(() => {
           const triggers = ScrollTrigger.getAll();
           triggers.forEach(trigger => trigger.disable());
         }, 50);
       };
+
       window.addEventListener('refreshScrollTrigger', handleRefreshScrollTrigger);
       window.addEventListener('disableScrollTriggers', handleDisableScrollTriggers);
 
@@ -275,11 +282,6 @@ export default function Home() {
     },
     { scope: container }
   );
-
-  const handleMenuChange = (isOpen: boolean) => {
-    if (isOpen) lockScrollLenis();
-    else unlockScrollLenis();
-  };
 
   return (
     <>
