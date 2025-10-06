@@ -51,7 +51,7 @@ const TextImages4 = ({
                                 <canvas
                                     ref={canvasRef}
                                     id={`${id}-canvas`}
-                                    className="w-full h-full object-cover pinned"
+                                    className="block w-full h-full pinned"
                                 />
                             )}
                         </div>
@@ -61,7 +61,7 @@ const TextImages4 = ({
                             src={image2}
                             width={500}
                             height={500}
-                            className="w-full relative z-20 mt-[15dvh] md:mt-[110dvh] max-w-lg mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
+                            className="w-full relative z-20 mt-12 max-w-lg mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
                         {description}

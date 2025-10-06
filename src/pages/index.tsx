@@ -78,11 +78,15 @@ class MultiSequenceCanvas {
   private images: HTMLImageElement[] = [];
   private frameObj = { frame: 0 }; // Objeto para animar con GSAP
   private manifest: SeqManifest | null = null;
+  private resizeHandler: () => void;
+  private originalWidth: number;
+  private originalHeight: number;
 
   constructor(canvas: HTMLCanvasElement, width: number, height: number) {
     this.canvas = canvas;
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.originalWidth = width;
+    this.originalHeight = height;
+    
     this.ctx = canvas.getContext("2d", {
       alpha: false,
       desynchronized: true,
@@ -90,6 +94,42 @@ class MultiSequenceCanvas {
     })!;
     this.ctx.imageSmoothingEnabled = true; // Activado para mejor calidad
     this.ctx.imageSmoothingQuality = 'high';
+
+    // Ajustar dimensiones del canvas según el viewport manteniendo aspect ratio
+    this.updateCanvasSize();
+
+    // Listener para resize (responsive)
+    this.resizeHandler = () => this.updateCanvasSize();
+    window.addEventListener('resize', this.resizeHandler);
+  }
+
+  // Actualizar tamaño del canvas manteniendo aspect ratio
+  private updateCanvasSize() {
+    const container = this.canvas.parentElement;
+    if (!container) return;
+
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+
+    // Usar devicePixelRatio para mejor calidad en pantallas retina
+    const dpr = window.devicePixelRatio || 1;
+
+    // Canvas ocupa todo el contenedor (pantalla completa)
+    this.canvas.width = containerWidth * dpr;
+    this.canvas.height = containerHeight * dpr;
+
+    // CSS size (tamaño visible) - pantalla completa
+    this.canvas.style.width = `${containerWidth}px`;
+    this.canvas.style.height = `${containerHeight}px`;
+
+    // Resetear transformaciones y escalar el contexto para dispositivos retina
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset
+    this.ctx.scale(dpr, dpr);
+
+    // Re-renderizar si ya hay imágenes cargadas
+    if (this.images.length > 0) {
+      this.render();
+    }
   }
 
   // Precargar TODAS las imágenes de una secuencia
@@ -115,7 +155,7 @@ class MultiSequenceCanvas {
     this.render();
   }
 
-  // Renderizar frame actual
+  // Renderizar frame actual con object-fit: cover (cubre todo sin deformar)
   render() {
     if (!this.images.length) return;
 
@@ -124,8 +164,37 @@ class MultiSequenceCanvas {
 
     if (!img || !img.complete) return;
 
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx.drawImage(img, 0, 0, this.canvas.width, this.canvas.height);
+    const dpr = window.devicePixelRatio || 1;
+    const canvasWidth = this.canvas.width / dpr;
+    const canvasHeight = this.canvas.height / dpr;
+
+    // Calcular aspect ratios
+    const canvasRatio = canvasWidth / canvasHeight;
+    const imgRatio = img.width / img.height;
+
+    let drawWidth, drawHeight, offsetX, offsetY;
+
+    // Lógica de object-fit: cover
+    // La imagen debe cubrir todo el canvas, cortando lo que sobre
+    if (imgRatio > canvasRatio) {
+      // Imagen más ancha que el canvas - ajustar por altura
+      drawHeight = canvasHeight;
+      drawWidth = drawHeight * imgRatio;
+      offsetX = (canvasWidth - drawWidth) / 2;
+      offsetY = 0;
+    } else {
+      // Imagen más alta que el canvas - ajustar por anchura
+      drawWidth = canvasWidth;
+      drawHeight = drawWidth / imgRatio;
+      offsetX = 0;
+      offsetY = (canvasHeight - drawHeight) / 2;
+    }
+
+    // Limpiar canvas
+    this.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    // Dibujar imagen centrada con object-fit: cover
+    this.ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   }
 
   // Obtener objeto frame para animar con GSAP
@@ -144,6 +213,7 @@ class MultiSequenceCanvas {
       img.src = '';
     });
     this.images = [];
+    window.removeEventListener('resize', this.resizeHandler);
   }
 }// Handler mejorado estilo Apple AirPods - Animación suave con snap
 function handleScrollCanvasSequence({
@@ -445,13 +515,12 @@ export default function Home() {
               canvasManager: squareManager,
               manifest: squareVideo,
               target: squareCanvasRef.current.parentElement!,
-              scrub: { trigger: "#text-images-5-canvas", start: "top top", end: "top -100%", pin: true },
-              fadeIn: { trigger: "#text-images-5-in", start: "-120% top", end: "130% top" },
-              fadeOut: { trigger: "#text-images-5-out", start: "120% top", end: "130% top" },
+              scrub: { trigger: "#text-images-5-canvas-container", start: "top top", end: "bottom top", pin: true },
+              fadeIn: { trigger: "#text-images-5-canvas-container", start: "top 500%", end: "top top" },
+              fadeOut: { trigger: "#text-images-5-canvas-container", start: "bottom top", end: "bottom top+=100" },
             });
           }
 
-          console.log("✅ Secuencias inicializadas:", videos.map(v => v.id));
         };
 
         initSequences();
@@ -516,27 +585,27 @@ export default function Home() {
 
           {/* Video 1 */}
           <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
-            <canvas ref={canvas1Ref} className="w-full h-full block" />
+            <canvas ref={canvas1Ref} className="block w-full h-full" />
           </div>
 
           {/* Video 2 */}
           <div className="pointer-events-none fixed inset-0 z-[969]" aria-hidden="true">
-            <canvas ref={canvas2Ref} className="w-full h-full block" />
+            <canvas ref={canvas2Ref} className="block w-full h-full" />
           </div>
 
           {/* Video 3 */}
           <div className="pointer-events-none fixed inset-0 z-[968]" aria-hidden="true">
-            <canvas ref={canvas3Ref} className="w-full h-full block" />
+            <canvas ref={canvas3Ref} className="block w-full h-full" />
           </div>
 
           {/* Video 4 */}
           <div className="pointer-events-none fixed inset-0 z-[967]" aria-hidden="true">
-            <canvas ref={canvas4Ref} className="w-full h-full block" />
+            <canvas ref={canvas4Ref} className="block w-full h-full" />
           </div>
 
           {/* Video 5 */}
           <div className="pointer-events-none fixed inset-0 z-[966]" aria-hidden="true">
-            <canvas ref={canvas5Ref} className="w-full h-full block" />
+            <canvas ref={canvas5Ref} className="block w-full h-full" />
           </div>
 
           <Customers />
@@ -683,7 +752,7 @@ export default function Home() {
               }
               description={
                 <>
-                  <p className="mt-[100px] relative z-20 text-4xl max-w-md ml-auto mr-12 text-white">
+                  <p className="mt-12 relative z-20 text-4xl max-w-md ml-auto mr-12 text-white">
                     ¡Deja que <span className="font-bold">los creativos hagan lo que saben para ti!</span>
                   </p>
                 </>
