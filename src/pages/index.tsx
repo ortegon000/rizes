@@ -335,7 +335,7 @@ export default function Home() {
           {/* ✅ Final Scroll Spacer - Define la duración del timeline final (Customers → LastLogo → Footer) */}
           <div
             id="final-scroll-space"
-            className="h-[200vh] md:h-[400vh]"
+            className="h-[300vh] md:h-[600vh]"
             data-animation-purpose="final-timeline"
             aria-hidden="true"
           />

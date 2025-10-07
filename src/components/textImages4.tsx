@@ -33,7 +33,7 @@ const TextImages4 = ({
             <>
                 <div id={`${id}-in`}></div>
 
-                <section id={id} className="relative min-h-dvh w-full grid grid-cols-1 lg:grid-cols-2 gap-8 px-4">
+                <section id={id} className="relative min-h-dvh w-full grid grid-cols-1 lg:grid-cols-2 gap-8 px-4 pb-[50dvh] md:pb-0">
 
                     <div id={`${id}-left`} className="">
 

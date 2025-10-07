@@ -1,8 +1,9 @@
 export default function Footer() {
     return (
         <>
-            <section id="footer" className="fixed bottom-0 h-full w-full text-xl md:text-3xl font-black flex justify-center items-center  text-white p-8 md:p-0 z-[963] opacity-0">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-20 max-w-screen-lg w-full mx-auto">
+            <section id="footer" className="fixed bottom-0 h-full w-full text-xl md:text-3xl font-black flex justify-center items-center text-white p-8 md:p-0 z-[820] opacity-0">
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-20 max-w-screen-lg w-full mx-auto pt-[20dvh]">
 
                     <div className="flex flex-col items-center text-center">
                         Teléfono

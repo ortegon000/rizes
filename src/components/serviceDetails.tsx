@@ -22,7 +22,7 @@ export default function ServiceDetails() {
         <>
             <section
                 id="services-details"
-                className="relative min-h-dvh w-full py-16 md:py-20 px-4"
+                className="relative md:min-h-dvh w-full py-16 md:py-20 px-4"
             >
                 <p className="text-4xl md:text-5xl lg:text-6xl text-center font-black m-auto bg-gradient-to-r from-red-500 to-blue-500 bg-clip-text text-transparent tracking-wide leading-tight md:leading-14">
                     Nuestros Servicios

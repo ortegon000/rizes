@@ -12,16 +12,18 @@ import gsap from "gsap";
  */
 function addCustomersAnimation(timeline: gsap.core.Timeline): void {
   timeline
-    .fromTo(
+    .to(
       "#customers",
-      { opacity: 0 },
-      { opacity: 1, duration: 0.2, ease: "power2.out" },
-      0 // Comienza al inicio del timeline
+      {
+        opacity: 1,
+      },
     )
     .to(
       "#customers",
-      { opacity: 0, duration: 0.2, ease: "power2.in" },
-      0.45 // FadeOut al 25% del timeline
+      {
+        opacity: 0,
+      },
+      ">" // Mantener visible por 0.5s antes de hacer fade out
     );
 }
 
@@ -31,17 +33,22 @@ function addCustomersAnimation(timeline: gsap.core.Timeline): void {
  */
 function addLastLogoAnimation(timeline: gsap.core.Timeline): void {
   timeline
-    .fromTo(
-      "#last-logo",
-      { opacity: 0 },
-      { opacity: 1, duration: 0.3, ease: "power2.out" },
-      0.5 // Aparece al 30% cuando Customers desaparece
-    )
     .to(
       "#last-logo",
-      { opacity: 0, duration: 0.3, ease: "power2.in" },
-      0.85 // FadeOut al 55% para dar espacio a Footer
-    );
+      {
+        opacity: 1,
+      },
+      ">-0.3"
+    ).to(
+      "#lastLogoImage",
+      {
+        scale: 1,
+      },
+      ">-0.25"
+    )
+    .to("#lastLogoImage", {
+      y: "-30dvh",
+    }, ">-0.25");
 }
 
 /**
@@ -50,15 +57,19 @@ function addLastLogoAnimation(timeline: gsap.core.Timeline): void {
  */
 function addFooterAnimation(timeline: gsap.core.Timeline): void {
   timeline
-    .fromTo(
+    .to(
       "#footer",
-      { opacity: 0 },
-      { opacity: 1, duration: 0.1, ease: "power2.out" },
-      0.9 // Aparece al 60% cuando LastLogo desaparece
-  ).to("#keep-scrolling", {
-      opacity: 0,
-  }, "<");
-  // Footer se queda visible (no se hace fadeOut)
+      {
+        opacity: 1,
+      },
+      "<"
+    )
+    .to("#keep-scrolling",
+      {
+        opacity: 0,
+      },
+      "<"
+    );
 }
 
 /**
@@ -73,7 +84,7 @@ export function createFinalTimeline(): gsap.core.Timeline {
   const timeline = gsap.timeline({
     scrollTrigger: {
       trigger: finalSpacer,
-      start: "top top", // Comienza cuando el spacer llega al top del viewport (Team ya salió)
+      start: "top center", // Comienza cuando el spacer llega al top del viewport (Team ya salió)
       end: "bottom bottom", // Termina cuando el bottom del spacer llega al bottom del viewport (100% progreso)
       scrub: 1,
     },
