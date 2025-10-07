@@ -36,6 +36,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
 
     // Permitir scroll solo dentro del contenedor y evitar el scroll chaining al body
     let touchStartY = 0;
+    let touchStartX = 0;
 
     const isAtTop = () => container.scrollTop <= 0;
     const isAtBottom = () => {
@@ -46,6 +47,19 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
     const handleWheel = (event: WheelEvent) => {
       event.stopPropagation();
 
+      // ✅ Detectar scroll horizontal (deltaX) además de vertical (deltaY)
+      const hasHorizontalScroll = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+
+      if (hasHorizontalScroll) {
+        // ✅ Convertir scroll horizontal a scroll vertical
+        // deltaX positivo = scroll derecha → scroll down
+        // deltaX negativo = scroll izquierda → scroll up
+        event.preventDefault();
+        container.scrollTop += event.deltaX;
+        return;
+      }
+
+      // Manejo normal de scroll vertical
       const scrollingUp = event.deltaY < 0;
       const scrollingDown = event.deltaY > 0;
 
@@ -57,14 +71,35 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
 
     const handleTouchStart = (event: TouchEvent) => {
       touchStartY = event.touches[0]?.clientY ?? 0;
+      touchStartX = event.touches[0]?.clientX ?? 0;
     };
 
     const handleTouchMove = (event: TouchEvent) => {
       event.stopPropagation();
 
       const currentY = event.touches[0]?.clientY ?? touchStartY;
+      const currentX = event.touches[0]?.clientX ?? touchStartX;
       const deltaY = touchStartY - currentY;
+      const deltaX = touchStartX - currentX;
 
+      // ✅ Detectar si es un swipe horizontal
+      const isHorizontalSwipe = Math.abs(deltaX) > Math.abs(deltaY);
+
+      if (isHorizontalSwipe) {
+        // ✅ Convertir swipe horizontal a scroll vertical
+        // Swipe izquierda (deltaX positivo) = scroll down
+        // Swipe derecha (deltaX negativo) = scroll up
+        event.preventDefault();
+        const scrollAmount = deltaX * 2; // Multiplicador para sensibilidad
+        container.scrollTop += scrollAmount;
+
+        // Actualizar posición de inicio para scroll continuo
+        touchStartX = currentX;
+        touchStartY = currentY;
+        return;
+      }
+
+      // Manejo normal de scroll vertical
       const scrollingUp = deltaY < 0;
       const scrollingDown = deltaY > 0;
 
