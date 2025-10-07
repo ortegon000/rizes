@@ -85,7 +85,7 @@ export function createFinalTimeline(): gsap.core.Timeline {
     scrollTrigger: {
       trigger: finalSpacer,
       start: "top center", // Comienza cuando el spacer llega al top del viewport (Team ya salió)
-      end: "bottom bottom", // Termina cuando el bottom del spacer llega al bottom del viewport (100% progreso)
+      end: "80% bottom", // Termina cuando el bottom del spacer llega al bottom del viewport (100% progreso)
       scrub: 1,
     },
   });
