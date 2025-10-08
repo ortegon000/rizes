@@ -47,8 +47,8 @@ function setupScrollAnimation(
   canvasManager: CanvasSequenceOptions['canvasManager'],
   element: HTMLElement,
   scrub: CanvasSequenceOptions['scrub'],
-  fadeIn: CanvasSequenceOptions['fadeIn'],
-  fadeOut: CanvasSequenceOptions['fadeOut']
+  fadeIn?: CanvasSequenceOptions['fadeIn'],
+  fadeOut?: CanvasSequenceOptions['fadeOut']
 ): void {
   const frameObj = canvasManager.getFrameObject();
   const totalFrames = canvasManager.getTotalFrames();
@@ -80,8 +80,8 @@ function setupScrollAnimation(
  */
 function setupFadeEffects(
   element: HTMLElement,
-  fadeIn: CanvasSequenceOptions['fadeIn'],
-  fadeOut: CanvasSequenceOptions['fadeOut']
+  fadeIn?: CanvasSequenceOptions['fadeIn'],
+  fadeOut?: CanvasSequenceOptions['fadeOut']
 ): void {
   let inProgress = 0;
   let outProgress = 0;
@@ -102,33 +102,45 @@ function setupFadeEffects(
     }
   };
 
-  // Fade In con curva personalizada para transición más suave
-  ScrollTrigger.create({
-    trigger: fadeIn.trigger,
-    start: fadeIn.start || "top center",
-    end: fadeIn.end || "bottom center",
-    scrub: 0.5,
-    invalidateOnRefresh: true,
-    onUpdate: (st) => {
-      // Curva ease-in para fade in más suave
-      inProgress = gsap.parseEase("power2.in")(st.progress);
-      applyVisibility();
-    },
-  });
+  // Solo crear fade in si está definido
+  if (fadeIn) {
+    // Fade In con curva personalizada para transición más suave
+    ScrollTrigger.create({
+      trigger: fadeIn.trigger,
+      start: fadeIn.start || "top center",
+      end: fadeIn.end || "bottom center",
+      scrub: 0.5,
+      invalidateOnRefresh: true,
+      onUpdate: (st) => {
+        // Curva ease-in para fade in más suave
+        inProgress = gsap.parseEase("power2.in")(st.progress);
+        applyVisibility();
+      },
+    });
+  } else {
+    // Si no hay fadeIn, mantener siempre visible (inProgress = 1)
+    inProgress = 1;
+  }
 
-  // Fade Out con curva personalizada
-  ScrollTrigger.create({
-    trigger: fadeOut.trigger,
-    start: fadeOut.start || "top center",
-    end: fadeOut.end || "bottom center",
-    scrub: 0.5,
-    invalidateOnRefresh: true,
-    onUpdate: (st) => {
-      // Curva ease-out para fade out más suave
-      outProgress = gsap.parseEase("power2.out")(st.progress);
-      applyVisibility();
-    },
-  });
+  // Solo crear fade out si está definido
+  if (fadeOut) {
+    // Fade Out con curva personalizada
+    ScrollTrigger.create({
+      trigger: fadeOut.trigger,
+      start: fadeOut.start || "top center",
+      end: fadeOut.end || "bottom center",
+      scrub: 0.5,
+      invalidateOnRefresh: true,
+      onUpdate: (st) => {
+        // Curva ease-out para fade out más suave
+        outProgress = gsap.parseEase("power2.out")(st.progress);
+        applyVisibility();
+      },
+    });
+  } else {
+    // Si no hay fadeOut, mantener siempre visible (outProgress = 0)
+    outProgress = 0;
+  }
 
   // Aplicar estado inicial
   applyVisibility();

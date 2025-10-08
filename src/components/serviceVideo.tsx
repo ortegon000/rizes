@@ -48,16 +48,7 @@ export default function ServiceVideo() {
             end: "bottom top",
             // No usar pin aquí para que sea un scroll normal
           },
-          fadeIn: {
-            trigger: canvasRef.current.parentElement!,
-            start: "top 120%",
-            end: "top 110%",
-          },
-          fadeOut: {
-            trigger: canvasRef.current.parentElement!,
-            start: "bottom top",
-            end: "bottom -10%",
-          },
+          // Sin fadeIn ni fadeOut - visible todo el tiempo
         });
       } catch (error) {
         console.error("Error initializing service video:", error);

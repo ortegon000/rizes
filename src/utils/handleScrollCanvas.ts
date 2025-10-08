@@ -23,8 +23,8 @@ export function handleScrollCanvasSequence({
   target: string | Element;
   preload?: "all" | number;
   scrub: { trigger: string | Element; start?: string; end?: string; pin?: boolean };
-  fadeIn: { trigger: string | Element; start?: string; end?: string };
-  fadeOut:{ trigger: string | Element; start?: string; end?: string };
+    fadeIn?: { trigger: string | Element; start?: string; end?: string };
+    fadeOut?: { trigger: string | Element; start?: string; end?: string };
 }) {
   const el = typeof target === "string" ? document.querySelector(target)! : target;
   if (!el) return;
@@ -86,14 +86,29 @@ export function handleScrollCanvasSequence({
     },
   });
 
-  ScrollTrigger.create({
-    trigger: fadeIn.trigger, start: fadeIn.start || "top center",
-    end: fadeIn.end || "bottom center", scrub: true, invalidateOnRefresh: true,
-    onUpdate: (st)=>{ inP = st.progress; applyFx(); },
-  });
-  ScrollTrigger.create({
-    trigger: fadeOut.trigger, start: fadeOut.start || "top center",
-    end: fadeOut.end || "bottom center", scrub: true, invalidateOnRefresh: true,
-    onUpdate: (st)=>{ outP = st.progress; applyFx(); },
-  });
+  // Solo crear fadeIn si está definido
+  if (fadeIn) {
+    ScrollTrigger.create({
+      trigger: fadeIn.trigger, start: fadeIn.start || "top center",
+      end: fadeIn.end || "bottom center", scrub: true, invalidateOnRefresh: true,
+      onUpdate: (st) => { inP = st.progress; applyFx(); },
+    });
+  } else {
+    // Si no hay fadeIn, mantener siempre visible
+    inP = 1;
+    applyFx();
+  }
+
+  // Solo crear fadeOut si está definido
+  if (fadeOut) {
+    ScrollTrigger.create({
+      trigger: fadeOut.trigger, start: fadeOut.start || "top center",
+      end: fadeOut.end || "bottom center", scrub: true, invalidateOnRefresh: true,
+      onUpdate: (st) => { outP = st.progress; applyFx(); },
+    });
+  } else {
+    // Si no hay fadeOut, mantener siempre visible
+    outP = 0;
+    applyFx();
+  }
 }

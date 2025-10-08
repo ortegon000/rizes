@@ -33,8 +33,8 @@ export type CanvasSequenceOptions = {
   manifest: SeqManifest;
   target: string | Element;
   scrub: ScrollTriggerConfig;
-  fadeIn: FadeConfig;
-  fadeOut: FadeConfig;
+  fadeIn?: FadeConfig;
+  fadeOut?: FadeConfig;
 };
 
 // Re-export para compatibilidad
