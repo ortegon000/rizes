@@ -36,6 +36,8 @@ export default function ServiceVideo() {
         // Inicializar el canvas manager
         const manager = new MultiSequenceCanvas(canvasRef.current);
 
+        console.log("ServiceVideo: Iniciando con manifest:", serviceVideoManifest);
+
         // Configurar la animación del canvas
         // Sin pin ni fixed, solo scroll normal con la imagen
         handleScrollCanvasSequence({
@@ -50,6 +52,8 @@ export default function ServiceVideo() {
           },
           // Sin fadeIn ni fadeOut - visible todo el tiempo
         });
+        
+        console.log("ServiceVideo: Configuración completada");
       } catch (error) {
         console.error("Error initializing service video:", error);
       }
@@ -66,6 +70,7 @@ export default function ServiceVideo() {
     <canvas 
       ref={canvasRef} 
       className="w-full h-full object-cover"
+      style={{ opacity: 1, visibility: 'visible', display: 'block' }}
     />
   );
 }

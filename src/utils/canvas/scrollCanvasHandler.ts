@@ -83,8 +83,9 @@ function setupFadeEffects(
   fadeIn?: CanvasSequenceOptions['fadeIn'],
   fadeOut?: CanvasSequenceOptions['fadeOut']
 ): void {
-  let inProgress = 0;
-  let outProgress = 0;
+  // Inicializar con valores que hacen el elemento visible por defecto
+  let inProgress = fadeIn ? 0 : 1;
+  let outProgress = fadeOut ? 0 : 0;
 
   const applyVisibility = () => {
     const alpha = Math.max(0, Math.min(1, inProgress * (1 - outProgress)));
@@ -117,9 +118,6 @@ function setupFadeEffects(
         applyVisibility();
       },
     });
-  } else {
-    // Si no hay fadeIn, mantener siempre visible (inProgress = 1)
-    inProgress = 1;
   }
 
   // Solo crear fade out si está definido
@@ -137,9 +135,6 @@ function setupFadeEffects(
         applyVisibility();
       },
     });
-  } else {
-    // Si no hay fadeOut, mantener siempre visible (outProgress = 0)
-    outProgress = 0;
   }
 
   // Aplicar estado inicial
