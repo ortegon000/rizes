@@ -207,11 +207,11 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
       {/* Botón de cerrar */}
       <button 
         onClick={handleClose}
-        className={`fixed top-8 left-8 bg-orange-800 backdrop-blur-md text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-900 transition-opacity duration-300 text-2xl flex gap-4 items-center cursor-pointer ${isVisible ? 'opacity-100' : 'opacity-0'
+        className={`fixed top-8 left-8 bg-orange-800 backdrop-blur-md text-white px-6 py-3 rounded-full hover:bg-orange-900 transition-all duration-300 text-lg flex gap-2 items-center cursor-pointer ${isVisible ? 'opacity-100' : 'opacity-0'
           }`}
         style={{ zIndex: 1010 }}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
         </svg>
 
@@ -248,20 +248,25 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
       >
         <div 
           className="relative bg-[#baa6f4]"
-          style={{ height: `${5 * 150}vh` }}
+          style={{
+            height: `${5 * 150}vh`,
+            backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%), url(${ServiceBG.src})`,
+            backgroundSize: '100dvw 100dvh',
+            backgroundAttachment: 'fixed',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
         >
+
           <div className="sticky top-0 h-screen w-auto flex items-center">
             <div ref={sliderRef} className="relative flex will-change-transform">
 
-                {/* Services loop */}
+              {/* Services loop */}
 
               <div className="service-1 relative w-[1000px] sm:w-[1200px] md:w-[1600px] h-dvh">
 
-                <Image id="service-1-bg" fill src={ServiceBG.src} alt="" className="w-full h-full absolute inset-0 object-cover" />
-                <div className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110 bg-black/40"></div>
-
                 <div className={`absolute inset-0 z-10 flex gap-4 md:gap-8 items-center justify-center p-4 md:p-8 transition-all delay-75 ${isVisible ? 'translate-x-0' : 'translate-x-full'}`}>
-                  <Image src={Service1Image} alt="" width={500} className="w-auto max-w-[300px] md:max-w-[500px] aspect-[5/3] object-cover border-4 md:border-8 border-white hover:-rotate-1 hover:scale-110 transition-all" />
+                  <Image src={Service1Image} alt="" width={500} className="w-auto max-w-[300px] md:max-w-[500px] aspect-[5/3] object-cover border-8 border-white hover:-rotate-1 hover:scale-110 transition-all" />
 
                   <div className="text-white px-4 whitespace-normal">
                     <h3 className="text-3xl md:text-6xl font-black whitespace-nowrap">Nuestros <br /> servicios</h3>
@@ -275,33 +280,29 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
 
               <div className="service-2 relative w-[1000px] sm:w-[1200px] md:w-[1600px] h-dvh">
 
-                <Image id="service-1-bg" fill src={ServiceBG.src} alt="" className="w-full h-full absolute inset-0 object-cover" />
-                <div className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110 bg-black/40"
-                ></div>
-
                 <div className="absolute inset-0 z-20 flex gap-4 md:gap-8 items-center justify-center px-4 md:px-8">
-                  <div className="relative w-full h-[350px] max-w-[300px] lg:max-w-lg">
-                    <Image src={Service2Image} alt="" fill className="object-cover border-4 md:border-8 border-white" />
+                  <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
+                    <Image src={Service2Image} alt="" fill className="gallery-image object-cover" />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Eventos</p>
                     </div>
 
-                  <div className="relative w-full h-[350px] max-w-[300px] lg:max-w-lg">
-                    <Image src={Service3Image} alt="" fill className="object-cover border-4 md:border-8 border-white" />
+                  <div className="gallery-container relative w-full h-[600px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
+                    <Image src={Service3Image} alt="" fill className="gallery-image object-cover" />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Viajes de incentivos</p>
                     </div>
 
 
-                  <div className="relative w-full h-[350px] max-w-[300px] lg:max-w-lg">
-                    <Image src={Service4Image} alt="" fill className="object-cover border-4 md:border-8 border-white" />
+                  <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
+                    <Image src={Service4Image} alt="" fill className="gallery-image object-cover" />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Experiencias personalizadas</p>
                     </div>
                 </div>
               </div>
 
-              <div className="service-3 relative w-[1000px] sm:w-[1200px] md:w-[1600px]"
+              {/* <div className="service-3 relative w-[1000px] sm:w-[1200px] md:w-[1600px]"
                   style={{
                     backgroundColor: '#baa6f4',
                   }}
@@ -345,36 +346,33 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                     </div>
 
                   </div>
-              </div>
+              </div> */}
 
               <div className="service-4 relative w-[1000px] sm:w-[1200px] md:w-[1600px]">
-                <Image id="service-1-bg" fill src={ServiceBG.src} alt="" className="w-full h-full absolute inset-0 object-cover" />
-                <div className="absolute inset-0 z-0 transition-transform duration-500 group-hover:scale-110 bg-black/40"
-                ></div>
 
                 <div className="absolute inset-0 z-20 flex gap-4 md:gap-8 items-center justify-center px-4 md:px-8">
-                  <div className="relative w-full h-[350px] max-w-[300px] lg:max-w-lg">
-                    <Image src={Service5Image} alt="" fill className="object-cover border-4 md:border-8 border-white" />
+                  <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
+                    <Image src={Service5Image} alt="" fill className="gallery-image object-cover" />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Eventos virtuales e híbridos</p>
                     </div>
 
-                  <div className="relative w-full h-[350px] max-w-[300px] lg:max-w-lg">
-                    <Image src={Service6Image} alt="" fill className="object-cover border-4 md:border-8 border-white" />
+                  <div className="gallery-container relative w-full h-[600px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
+                    <Image src={Service6Image} alt="" fill className="gallery-image object-cover" />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Congresos y convenciones</p>
                     </div>
 
 
-                  <div className="relative w-full h-[350px] max-w-[300px] lg:max-w-lg">
-                    <Image src={Service7Image} alt="" fill className="object-cover border-4 md:border-8 border-white" />
+                  <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
+                    <Image src={Service7Image} alt="" fill className="gallery-image object-cover" />
                       <span className="block absolute inset-0 bg-black/50"></span>
                       <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Producción y creatividad</p>
                     </div>
                 </div>
               </div>
 
-              <div className="service-5 relative w-[1000px] sm:w-[1200px] md:w-[1600px]">
+              {/* <div className="service-5 relative w-[1000px] sm:w-[1200px] md:w-[1600px]">
                   <div className={`absolute inset-0 z-20 flex gap-8 md:gap-20 items-center justify-center px-4 md:px-8`}>
 
                   <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm">
@@ -406,7 +404,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                     </div>
 
                   </div>
-              </div>
+              </div> */}
 
               {/* End Services loop  */}
 
