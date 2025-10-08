@@ -348,7 +348,7 @@ export default function Home() {
         <Footer />
 
         <div id="keep-scrolling" className="fixed bottom-6 right-0 left-0 mx-auto text-center text-white text-shadow-md tracking-wider text-sm text-shadow-black/40 z-[2000]">
-          Sige Bajando
+          Sigue Bajando
           <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-red-500" />
         </div>
 
