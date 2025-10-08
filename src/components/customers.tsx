@@ -26,17 +26,17 @@ export default function Customers() {
             <section id="customers" className="fixed inset-0 h-dvh w-full bg-black opacity-0 p-4 md:p-12 flex items-center justify-center flex-col z-[800]">
                 <div className="w-full">
 
-                    <p id="customers-title" className="text-2xl md:text-4xl text-center font-black max-w-screen-md mx-auto text-white tracking-wide leading-tight md:leading-14">
+                    <p id="customers-title" className="text-xl md:text-4xl text-center font-black max-w-screen-md mx-auto text-white tracking-wide leading-tight md:leading-14">
                         Ellos ya son testigos de nuestra magia...
                     </p>
 
-                    <div id="customers-icons" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-16 max-w-screen-lg mx-auto mt-12 md:mt-20">
+                    <div id="customers-icons" className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8 lg:gap-12 max-w-screen-lg mx-auto mt-6 md:mt-12">
                         <Image
                             alt=""
                             src={Customer1Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -44,7 +44,7 @@ export default function Customers() {
                             src={Customer2Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -52,7 +52,7 @@ export default function Customers() {
                             src={Customer3Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -60,7 +60,7 @@ export default function Customers() {
                             src={Customer4Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -68,7 +68,7 @@ export default function Customers() {
                             src={Customer5Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -76,7 +76,7 @@ export default function Customers() {
                             src={Customer6Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -84,7 +84,7 @@ export default function Customers() {
                             src={Customer7Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -92,7 +92,7 @@ export default function Customers() {
                             src={Customer8Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -100,7 +100,7 @@ export default function Customers() {
                             src={Customer9Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -108,7 +108,7 @@ export default function Customers() {
                             src={Customer10Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -116,7 +116,7 @@ export default function Customers() {
                             src={Customer11Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -124,7 +124,7 @@ export default function Customers() {
                             src={Customer12Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -132,7 +132,7 @@ export default function Customers() {
                             src={Customer13Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -140,7 +140,7 @@ export default function Customers() {
                             src={Customer14Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -148,7 +148,7 @@ export default function Customers() {
                             src={Customer15Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -156,7 +156,7 @@ export default function Customers() {
                             src={Customer16Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -164,7 +164,7 @@ export default function Customers() {
                             src={Customer17Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -172,7 +172,7 @@ export default function Customers() {
                             src={Customer18Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
                         <Image
@@ -180,7 +180,7 @@ export default function Customers() {
                             src={Customer19Image}
                             width={200}
                             height={100}
-                            className="w-auto h-10 md:h-12 m-auto object-contain"
+                            className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
                     </div>
                 </div>
