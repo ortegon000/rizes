@@ -1,5 +1,5 @@
 "use client";
-import { useRef, useEffect, useState, FC } from "react";
+import { useRef, useEffect, useState, FC, ReactNode } from "react";
 import gsap from "gsap";
 import ServiceBG from '@images/services/bg.webp';
 import Service1Image from '@images/services/1.jpg';
@@ -11,7 +11,7 @@ import Service5Image from '@images/services/5.webp';
 import Service6Image from '@images/services/6.webp';
 import Service7Image from '@images/services/7.webp';
 
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 
 interface HorizontalScrollViewProps {
   onClose: () => void;
@@ -24,6 +24,40 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
   const sliderRef = useRef<HTMLDivElement | null>(null);
   const progressBarRef = useRef<HTMLDivElement | null>(null);
   
+  // Estado para el modal de imagen en pantalla completa
+  const [fullscreenImage, setFullscreenImage] = useState<{
+    src: StaticImageData;
+    rect: DOMRect;
+    title: string;
+    description: ReactNode;
+  } | null>(null);
+
+  // Estado para controlar la animación de cierre
+  const [isClosing, setIsClosing] = useState(false);
+
+  // Función para abrir imagen en pantalla completa
+  const handleImageClick = (
+    event: React.MouseEvent<HTMLImageElement>,
+    imageSrc: StaticImageData,
+    title: string,
+    description: ReactNode,
+  ) => {
+    const target = event.currentTarget;
+    const rect = target.getBoundingClientRect();
+    setFullscreenImage({ src: imageSrc, rect, title, description });
+    setIsClosing(false);
+  };
+
+  // Función para cerrar la imagen en pantalla completa
+  const closeFullscreenImage = () => {
+    setIsClosing(true);
+    // Esperar a que termine la animación antes de limpiar el estado
+    setTimeout(() => {
+      setFullscreenImage(null);
+      setIsClosing(false);
+    }, 400); // Duración de la animación
+  };
+
   // Manejar scroll horizontal con interpolación suave
   useEffect(() => {
     const container = containerRef.current;
@@ -204,6 +238,59 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
       className={`fixed inset-0 transition-opacity duration-500 ease-out z-[5000] ${isVisible ? 'opacity-100' : 'opacity-0'}`}
     >
 
+      {/* Modal de imagen en pantalla completa */}
+      {fullscreenImage && (
+        <div
+          className={`fixed inset-0 z-[6000] flex items-center justify-center bg-black/95 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'animate-fadeIn'
+            }`}
+          onClick={closeFullscreenImage}
+        >
+          {/* Botón de cerrar */}
+          <button
+            onClick={closeFullscreenImage}
+            className="absolute top-8 right-8 w-14 h-14 rounded-full bg-red-700 cursor-pointer backdrop-blur-md hover:bg-red-900 flex items-center justify-center transition-all duration-300 group"
+            aria-label="Cerrar imagen"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              stroke="currentColor"
+              className="w-6 h-6 text-white group-hover:scale-110 transition-transform"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Imagen en pantalla completa */}
+          <div
+            className={`relative w-[90vw] h-[90vh] transition-all duration-400 ${isClosing ? 'animate-zoomOut' : 'animate-zoomIn'
+              }`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={fullscreenImage.src}
+              alt=""
+              fill
+              className="object-contain cursor-zoom-out"
+              priority
+              onClick={closeFullscreenImage}
+            />
+
+            {/* Overlay de texto */}
+            <div className="absolute inset-0 flex flex-col justify-end p-8 md:p-12 bg-gradient-to-t from-black/80 via-black/40 to-transparent pointer-events-none">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-2xl">
+                {fullscreenImage.title}
+              </h2>
+              <div className="md:text-xl lg:text-2xl text-white/90 max-w-4xl drop-shadow-xl">
+                {fullscreenImage.description}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Botón de cerrar */}
       <button 
         onClick={handleClose}
@@ -249,7 +336,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
         <div 
           className="relative bg-[#baa6f4]"
           style={{
-            height: `${5 * 150}vh`,
+            height: `${3 * 150}vh`,
             backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%), url(${ServiceBG.src})`,
             backgroundSize: '100dvw 100dvh',
             backgroundAttachment: 'fixed',
@@ -282,129 +369,150 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
 
                 <div className="absolute inset-0 z-20 flex gap-4 md:gap-8 items-center justify-center px-4 md:px-8">
                   <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
-                    <Image src={Service2Image} alt="" fill className="gallery-image object-cover" />
-                      <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Eventos</p>
+                    <Image
+                      src={Service2Image}
+                      alt=""
+                      fill
+                      className="gallery-image object-cover cursor-zoom-in"
+                      onClick={(e) => handleImageClick(
+                        e,
+                        Service2Image,
+                        "Los Mejores Eventos",
+                        <>
+                          <p>Te acompañamos con asesoría 360° para realizar cualquier tipo de reunión como;</p>
+                          <ul className="list-disc list-inside mt-2">
+                            <li>Lanzamientos</li>
+                            <li>Convenciones</li>
+                            <li>Juntas de trabajo</li>
+                            <li>Viajes de incentivo</li>
+                            <li>Y mucho más</li>
+                          </ul>
+                          <p className="mt-2">Trabajando de la mano para el logro de los objetivos.</p>
+                        </>
+                      )}
+                    />
+                    <span className="block absolute inset-0 bg-black/50 pointer-events-none"></span>
+                    <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4 pointer-events-none">Eventos</p>
                     </div>
 
                   <div className="gallery-container relative w-full h-[600px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
-                    <Image src={Service3Image} alt="" fill className="gallery-image object-cover" />
-                      <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Viajes de incentivos</p>
-                    </div>
+                    <Image
+                      src={Service3Image}
+                      alt=""
+                      fill
+                      className="gallery-image object-cover cursor-zoom-in"
+                      onClick={(e) => handleImageClick(
+                        e,
+                        Service3Image,
+                        "Congresos y Convenciones",
+                        <>
+                          <p>Resolvemos de manera integral;</p>
+                          <ul className="list-disc list-inside mt-2">
+                            <li>Sede</li>
+                            <li>Hoteles</li>
+                            <li>Centro de convenciones</li>
+                            <li>Área comercial</li>
+                            <li>Registro</li>
+                            <li>Producción</li>
+                            <li>Vuelos</li>
+                            <li>Transportación</li>
+                            <li>Entrenamiento</li>
+                          </ul>
+                        </>
+                      )}
+                    />
+                    <span className="block absolute inset-0 bg-black/50 pointer-events-none"></span>
+                    <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4 pointer-events-none">Congresos y convenciones</p>
+                  </div>
 
 
                   <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
-                    <Image src={Service4Image} alt="" fill className="gallery-image object-cover" />
-                      <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Experiencias personalizadas</p>
-                    </div>
+                    <Image
+                      src={Service4Image}
+                      alt=""
+                      fill
+                      className="gallery-image object-cover cursor-zoom-in"
+                      onClick={(e) => handleImageClick(
+                        e,
+                        Service4Image,
+                        "Producción y Creatividad",
+                        <>
+                          <p>Desarrollamos conceptos con tendencia e ideas innovadoras con equipo de la mas alta tecnología para grandes escenarios.</p>
+                        </>
+                      )}
+                    />
+                    <span className="block absolute inset-0 bg-black/50 pointer-events-none"></span>
+                    <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4 pointer-events-none">Experiencias personalizadas</p>
+                  </div>
                 </div>
               </div>
-
-              {/* <div className="service-3 relative w-[1000px] sm:w-[1200px] md:w-[1600px]"
-                  style={{
-                    backgroundColor: '#baa6f4',
-                  }}
-                >
-                  <div className={`absolute inset-0 z-20 flex gap-8 md:gap-20 items-center justify-center px-4 md:px-8`}>
-
-                  <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm">
-                      <p>Los Mejores Eventos <br /> Te acompañamos con asesoría 360° para realizar cualquier tipo de reunión como;</p>
-                      <ul className="list-disc list-inside mt-3 md:mt-6 space-y-1 md:space-y-2">
-                        <li>Lanzamientos</li>
-                        <li>Convenciones</li>
-                        <li>Juntas de trabajo</li>
-                        <li>Viajes de incentivo</li>
-                        <li>Y mucho más</li>
-                      </ul>
-                      <p className="mt-3 md:mt-6">Trabajando de la mano para el logro de los objetivos.</p>
-                    </div>
-
-                  <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm">
-                      <h4 className="font-bold">Congresos y Convenciones</h4>
-
-                      <p>Resolvemos de manera integral;</p>
-
-                      <ul className="list-disc list-inside mt-3 md:mt-6 space-y-1 md:space-y-2">
-                        <li>Sede</li>
-                        <li>Hoteles</li>
-                        <li>Centro de convenciones</li>
-                        <li>Área comercial</li>
-                        <li>Registro</li>
-                        <li>Producción</li>
-                        <li>Vuelos</li>
-                        <li>Transportación</li>
-                        <li>Entrenamiento</li>
-                      </ul>
-                    </div>
-
-                  <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm">
-                      <h4 className="font-bold">Producción y Creatividad</h4>
-
-                      <p>Desarrollamos conceptos con tendencia e ideas innovadoras con equipo de la mas alta tecnología para grandes escenarios.</p>
-                    </div>
-
-                  </div>
-              </div> */}
 
               <div className="service-4 relative w-[1000px] sm:w-[1200px] md:w-[1600px]">
 
                 <div className="absolute inset-0 z-20 flex gap-4 md:gap-8 items-center justify-center px-4 md:px-8">
                   <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
-                    <Image src={Service5Image} alt="" fill className="gallery-image object-cover" />
-                      <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Eventos virtuales e híbridos</p>
+                    <Image
+                      src={Service5Image}
+                      alt=""
+                      fill
+                      className="gallery-image object-cover cursor-zoom-in"
+                      onClick={(e) => handleImageClick(
+                        e,
+                        Service5Image,
+                        "Eventos Virtuales e Híbridos",
+                        "Nos reinventamos transformando los eventos presenciales en online, garantizando la misma experiencia vivencial con soluciones hechas a la medida, permitiéndonos abrir nuevas formas de comunicación."
+                      )}
+                    />
+                    <span className="block absolute inset-0 bg-black/50 pointer-events-none"></span>
+                    <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4 pointer-events-none">Eventos virtuales e híbridos</p>
                     </div>
 
                   <div className="gallery-container relative w-full h-[600px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
-                    <Image src={Service6Image} alt="" fill className="gallery-image object-cover" />
-                      <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Congresos y convenciones</p>
+                    <Image
+                      src={Service6Image}
+                      alt=""
+                      fill
+                      className="gallery-image object-cover cursor-zoom-in"
+                      onClick={(e) => handleImageClick(
+                        e,
+                        Service6Image,
+                        "Viajes de incentivos",
+                        "Deja de preocuparte por la logística de tu viaje individual o grupal. Nosotros nos encargaremos de todo según tus necesidades y planes."
+                      )}
+                    />
+                    <span className="block absolute inset-0 bg-black/50 pointer-events-none"></span>
+                    <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4 pointer-events-none">Viajes de incentivos</p>
                     </div>
 
 
                   <div className="gallery-container relative w-full h-[350px] max-w-[300px] lg:max-w-lg border border-transparent hover:border-8 hover:border-white transition-all duration-500">
-                    <Image src={Service7Image} alt="" fill className="gallery-image object-cover" />
-                      <span className="block absolute inset-0 bg-black/50"></span>
-                      <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4">Producción y creatividad</p>
-                    </div>
+                    <Image
+                      src={Service7Image}
+                      alt=""
+                      fill
+                      className="gallery-image object-cover cursor-zoom-in"
+                      onClick={(e) => handleImageClick(
+                        e,
+                        Service7Image,
+                        "Y Muchas Experiencias Más",
+                        <>
+                          <li>Catering</li>
+                          <li>PR</li>
+                          <li>Speakers</li>
+                          <li>Fiestas Temáticas</li>
+                          <li>BTL</li>
+                          <li>Shows</li>
+                          <li>Actividades de integración</li>
+                          <li>Telemarketing</li>
+                          <li>Y más...</li>
+                        </>
+                      )}
+                    />
+                    <span className="block absolute inset-0 bg-black/50 pointer-events-none"></span>
+                    <p className="absolute inset-0 flex items-center justify-center mx-auto max-w-sm text-center text-lg md:text-3xl font-black text-white px-4 pointer-events-none">Producción y creatividad</p>
+                  </div>
                 </div>
               </div>
-
-              {/* <div className="service-5 relative w-[1000px] sm:w-[1200px] md:w-[1600px]">
-                  <div className={`absolute inset-0 z-20 flex gap-8 md:gap-20 items-center justify-center px-4 md:px-8`}>
-
-                  <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm">
-                      <h4 className="font-bold">Eventos Virtuales e Híbridos</h4>
-
-                      <p>Nos reinventamos transformando los eventos presenciales en online, garantizando la misma experiencia vivencial con soluciones hechas a la medida, permitiéndonos abrir nuevas formas de comunicación.</p>
-                    </div>
-
-                  <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm">
-                      <h4 className="font-bold">Viajes de incentivos</h4>
-
-                      <p>Deja de preocuparte por la logística de tu viaje individual o grupal. Nosotros nos encargaremos de todo según tus necesidades y planes.</p>
-                    </div>
-
-                  <div className="text-sm md:text-xl w-full max-w-xs md:max-w-sm">
-                      <h4 className="font-bold">Y Muchas Experiencias Más</h4>
-
-                      <ul className="list-disc list-inside mt-3 md:mt-6 space-y-1 md:space-y-2">
-                        <li>Catering</li>
-                        <li>PR</li>
-                        <li>Speakers</li>
-                        <li>Fiestas Temáticas</li>
-                        <li>BTL</li>
-                        <li>Shows</li>
-                        <li>Actividades de integración</li>
-                        <li>Telemarketing</li>
-                        <li>Y más...</li>
-                      </ul>
-                    </div>
-
-                  </div>
-              </div> */}
 
               {/* End Services loop  */}
 
