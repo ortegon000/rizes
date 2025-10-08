@@ -1,8 +1,7 @@
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
 import HorizontalScrollView from "@components/horizontalScroll";
-import ServicesDetailsImage from "@images/services-details.jpg";
+import ServiceVideo from "@components/serviceVideo";
 import { lockScrollLenis, unlockScrollLenis } from "@utils/lenisLock";
 
 export default function ServiceDetails() {
@@ -33,12 +32,7 @@ export default function ServiceDetails() {
                         onClick={handleOpen}
                         className="cursor-pointer w-full h-full block relative"
                     >
-                        <Image
-                            alt=""
-                            src={ServicesDetailsImage}
-                            fill
-                            className="w-full h-full object-cover"
-                        />
+                        <ServiceVideo />
 
                         <span className="absolute py-2 px-6 rounded-full bottom-8 left-1/2 -translate-x-1/2 bg-white text-black text-base md:text-lg tracking-wider group-hover:bg-blue-200 transition-colors duration-500">
                             Conócelos

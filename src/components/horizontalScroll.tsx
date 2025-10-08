@@ -215,7 +215,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
           <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
         </svg>
 
-        Atras
+        Atrás
 
       </button>
 
@@ -266,7 +266,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                   <div className="text-white px-4 whitespace-normal">
                     <h3 className="text-3xl md:text-6xl font-black whitespace-nowrap">Nuestros <br /> servicios</h3>
 
-                    <p className="mt-6 md:mt-16 md:ml-12 font-semibold text-base md:text-3xl max-w-sm">Nuestro principal objetivo, integrar todos y cada uno de los servicios que nuestros clientes requieren dentro de la organización de  eventos, estrategis y presupuestos. <br />
+                    <p className="mt-6 md:mt-16 md:ml-12 font-semibold text-base md:text-3xl max-w-sm">Nuestro principal objetivo, integrar todos y cada uno de los servicios que nuestros clientes requieren dentro de la organización de  eventos, estrategias y presupuestos. <br />
                       Te acompañamos con asesoría integral para:
                     </p>
                   </div>

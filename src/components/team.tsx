@@ -12,7 +12,7 @@ export default function Team() {
                         alt=""
                         src={TeamImage}
                         fill
-                        className="w-full h-auto object-cover"
+                        className="w-full h-auto object-cover  border border-transparent hover:border-white hover:border-8 transition-all"
                         priority
                         sizes="(max-width: 1024px) 100vw, 50vw"
                     />

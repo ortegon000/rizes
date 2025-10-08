@@ -53,6 +53,15 @@
       "pad": 5,
       "width": 1920,
       "height": 1080
+    },
+    {
+      "id": "servicesVideo",
+      "baseUrl": "/videos/servicesvideo/frame_",
+      "ext": ".jpg",
+      "count": 105,
+      "pad": 5,
+      "width": 1920,
+      "height": 1080
     }
   ]
 }
