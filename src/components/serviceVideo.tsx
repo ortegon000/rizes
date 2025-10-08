@@ -14,20 +14,27 @@ export default function ServiceVideo() {
 
       try {
         // Cargar el manifest de videos
+        console.log("ServiceVideo: Cargando manifest desde /videos/manifest.json");
         const res = await fetch("/videos/manifest.json", { cache: "force-cache" });
         
+        console.log("ServiceVideo: Respuesta fetch status:", res.status);
+
         if (!res.ok) {
           throw new Error(`Failed to load manifest: ${res.status}`);
         }
 
         const data = await res.json();
+        console.log("ServiceVideo: Manifest cargado:", data);
         const videos = data.videos as SeqManifest[];
         
+        console.log("ServiceVideo: Videos disponibles:", videos.map(v => v.id));
+
         // Buscar el video de servicesVideo
         const serviceVideoManifest = videos.find((v) => v.id === "servicesVideo");
 
         if (!serviceVideoManifest) {
-          console.warn("Service video manifest not found");
+          console.error("Service video manifest not found. Buscando ID: 'servicesVideo'");
+          console.error("IDs disponibles:", videos.map(v => v.id));
           return;
         }
 
@@ -45,9 +52,9 @@ export default function ServiceVideo() {
           manifest: serviceVideoManifest,
           target: canvasRef.current.parentElement!,
           scrub: {
-            trigger: canvasRef.current.parentElement!,
-            start: "top bottom",
-            end: "bottom top",
+            trigger: "#services-details",
+            start: "top center",
+            end: "center top",
             // No usar pin aquí para que sea un scroll normal
           },
           // Sin fadeIn ni fadeOut - visible todo el tiempo
