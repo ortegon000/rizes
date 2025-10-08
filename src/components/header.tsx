@@ -16,10 +16,20 @@ export default function Header({ onMenuChange }: HeaderProps) {
         });
     };
 
+    const scrollToSection = (id: string) => {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        // Cerrar el menú después de hacer click
+        setMenuOpen(false);
+        onMenuChange?.(false);
+    };
+
     return (
         <>
             {/* Header fijo - solo la barra superior */}
-            <div className="fixed top-0 left-0 right-0 z-[3010] pointer-events-none">
+            <div id="header" className="fixed top-0 left-0 right-0 z-[3010] pointer-events-none">
                 <header className="flex justify-between w-full px-4 md:px-20 py-4 md:py-16">
                     <Logo className="size-12 md:size-20 text-white hover:text-yellow-100 transition-colors duration-500 pointer-events-auto" />
 
@@ -62,19 +72,19 @@ export default function Header({ onMenuChange }: HeaderProps) {
                     }`}
             >
                 <li className="text-2xl md:text-5xl font-semibold uppercase">
-                    <a href="#" className="hover:text-red-300 transition-colors">Home</a>
+                    <button onClick={() => scrollToSection('main-content')} className="hover:text-red-300 transition-colors text-left">Home</button>
                 </li>
                 <li className="text-2xl md:text-5xl font-semibold uppercase">
-                    <a href="#" className="hover:text-red-300 transition-colors">¿Quiénes Somos?</a>
+                    <button onClick={() => scrollToSection('text-images-1')} className="hover:text-red-300 transition-colors text-left">¿Quiénes Somos?</button>
                 </li>
                 <li className="text-2xl md:text-5xl font-semibold uppercase">
-                    <a href="#" className="hover:text-red-300 transition-colors">¿Qué hacemos?</a>
+                    <button onClick={() => scrollToSection('services')} className="hover:text-red-300 transition-colors text-left">¿Qué hacemos?</button>
                 </li>
                 <li className="text-2xl md:text-5xl font-semibold uppercase">
-                    <a href="#" className="hover:text-red-300 transition-colors">Clientes</a>
+                    <button onClick={() => scrollToSection('final-scroll-space')} className="hover:text-red-300 transition-colors text-left">Clientes</button>
                 </li>
                 <li className="text-2xl md:text-5xl font-semibold uppercase">
-                    <a href="#" className="hover:text-red-300 transition-colors">Contacto</a>
+                    <button onClick={() => scrollToSection('footer-anchor')} className="hover:text-red-300 transition-colors text-left">Contacto</button>
                 </li>
             </ul>
         </>

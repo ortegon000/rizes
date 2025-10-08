@@ -91,7 +91,7 @@ export default function Home() {
     <>
       <Header onMenuChange={handleMenuChange} />
 
-      <div className="relative w-full" ref={container}>
+      <div id="main-content" className="relative w-full" ref={container}>
 
         {/* Hero Container - Fixed solo durante hero-scroll-space */}
         <div id="hero-container" className="fixed inset-0 w-full h-screen">
@@ -351,6 +351,8 @@ export default function Home() {
           Sige Bajando
           <KeepScrolling className="w-12 h-12 mx-auto drop-shadow drop-shadow-black/40 animate-bounce-pulse text-red-500" />
         </div>
+
+        <div id="footer-anchor"></div>
       </div>
     </>
   );
