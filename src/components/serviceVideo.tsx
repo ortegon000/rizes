@@ -53,8 +53,8 @@ export default function ServiceVideo() {
           target: canvasRef.current.parentElement!,
           scrub: {
             trigger: "#services-details",
-            start: "top center",
-            end: "center top",
+            start: "center bottom",
+            end: "bottom top",
             // No usar pin aquí para que sea un scroll normal
           },
           // Sin fadeIn ni fadeOut - visible todo el tiempo
