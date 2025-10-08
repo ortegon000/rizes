@@ -14,20 +14,15 @@ export default function ServiceVideo() {
 
       try {
         // Cargar el manifest de videos
-        console.log("ServiceVideo: Cargando manifest desde /videos/manifest.json");
+
         const res = await fetch("/videos/manifest.json", { cache: "force-cache" });
-        
-        console.log("ServiceVideo: Respuesta fetch status:", res.status);
 
         if (!res.ok) {
           throw new Error(`Failed to load manifest: ${res.status}`);
         }
 
         const data = await res.json();
-        console.log("ServiceVideo: Manifest cargado:", data);
         const videos = data.videos as SeqManifest[];
-        
-        console.log("ServiceVideo: Videos disponibles:", videos.map(v => v.id));
 
         // Buscar el video de servicesVideo
         const serviceVideoManifest = videos.find((v) => v.id === "servicesVideo");
@@ -43,8 +38,6 @@ export default function ServiceVideo() {
         // Inicializar el canvas manager
         const manager = new MultiSequenceCanvas(canvasRef.current);
 
-        console.log("ServiceVideo: Iniciando con manifest:", serviceVideoManifest);
-
         // Configurar la animación del canvas
         // Sin pin ni fixed, solo scroll normal con la imagen
         handleScrollCanvasSequence({
@@ -59,8 +52,7 @@ export default function ServiceVideo() {
           },
           // Sin fadeIn ni fadeOut - visible todo el tiempo
         });
-        
-        console.log("ServiceVideo: Configuración completada");
+
       } catch (error) {
         console.error("Error initializing service video:", error);
       }
