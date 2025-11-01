@@ -24,10 +24,10 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
                         id="hero-key"
                         className="relative h-full w-full block scale-150 sm:scale-125 overflow-hidden"
                     >
-                        <Logo
+                        {/* <Logo
                             id="hero-key-logo"
                             className="absolute inset-0 m-auto w-32 sm:w-60 md:w-80 h-auto text-white z-10"
-                        />
+                        /> */}
                         <Image
                             alt=""
                             id="hero-key-background"

@@ -20,7 +20,7 @@ import gsap from "gsap";
 function addHeroKeyAnimation(timeline: gsap.core.Timeline): void {
   timeline
     .to("#hero-key", { scale: 1 }, 0)
-    .to("#hero-key-logo", { opacity: 0, scale: 0.5 }, "<")
+    // .to("#hero-key-logo", { opacity: 0, scale: 0.5 }, "<")
     .to("#hero-key-logo-mask", { maskSize: "200px", ease: "power4.out", duration: 1 }, "<")
     .to("#hero-key-background", { display: "none" }, ">-0.2")
     .to("#hero-key-logo-mask", { opacity: 0 }, ">-0.5");
