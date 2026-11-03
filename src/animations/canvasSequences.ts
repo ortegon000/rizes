@@ -1,17 +1,19 @@
 /**
  * Configuraciones para las secuencias de canvas de video
- * 
- * ✅ Actualizado: Ahora usa canvas spacers y valores relativos
  */
 
 import type { RefObject } from "react";
-import { MultiSequenceCanvas, handleScrollCanvasSequence } from "@utils/canvas";
-import type { SeqManifest, ScrollTriggerConfig, FadeConfig } from "@utils/types/canvas.types";
-// import { EndCalculator } from "@utils/animations"; // ✅ Disponible para ajustes futuros
+import {
+  MultiSequenceCanvas,
+  handleScrollCanvasSequence,
+  type CanvasSequenceHandle,
+} from "@utils/canvas";
+import type {
+  SeqManifest,
+  ScrollTriggerConfig,
+  FadeConfig,
+} from "@utils/types/canvas.types";
 
-/**
- * Estructura de referencias de canvas
- */
 export interface CanvasRefs {
   canvas1: RefObject<HTMLCanvasElement | null>;
   canvas2: RefObject<HTMLCanvasElement | null>;
@@ -21,9 +23,8 @@ export interface CanvasRefs {
   square: RefObject<HTMLCanvasElement | null>;
 }
 
-/**
- * Configuración de un video individual
- */
+export type CanvasSequencesTeardown = () => void;
+
 interface VideoConfig {
   id: string;
   canvasKey: keyof CanvasRefs;
@@ -32,11 +33,6 @@ interface VideoConfig {
   fadeOut?: FadeConfig;
 }
 
-/**
- * Configuraciones para todos los videos
- * 
- * ✅ Actualizado: Ahora usa canvas spacers en lugar de triggers negativos
- */
 const VIDEO_CONFIGS: VideoConfig[] = [
   {
     id: "video1",
@@ -48,37 +44,36 @@ const VIDEO_CONFIGS: VideoConfig[] = [
   {
     id: "video2",
     canvasKey: "canvas2",
-      scrub: { trigger: "#canvas-2-spacer", start: "-20% top", end: "bottom top" },
-      fadeIn: { trigger: "#text-images-1", start: "40% top", end: "60% top" },
-      fadeOut: { trigger: "#text-images-2", start: "top bottom", end: "20% top" },
+    scrub: { trigger: "#canvas-2-spacer", start: "-20% top", end: "bottom top" },
+    fadeIn: { trigger: "#text-images-1", start: "40% top", end: "60% top" },
+    fadeOut: { trigger: "#text-images-2", start: "top bottom", end: "20% top" },
   },
   {
     id: "video3",
     canvasKey: "canvas3",
-      scrub: { trigger: "#canvas-3-spacer", start: "-20% top", end: "bottom top" },
-      fadeIn: { trigger: "#text-images-2", start: "40% top", end: "60% top" },
-      fadeOut: { trigger: "#text-images-3", start: "top bottom", end: "20% top" },
+    scrub: { trigger: "#canvas-3-spacer", start: "-20% top", end: "bottom top" },
+    fadeIn: { trigger: "#text-images-2", start: "40% top", end: "60% top" },
+    fadeOut: { trigger: "#text-images-3", start: "top bottom", end: "20% top" },
   },
   {
     id: "video4",
     canvasKey: "canvas4",
-      scrub: { trigger: "#canvas-4-spacer", start: "-20% top", end: "bottom top" },
-      fadeIn: { trigger: "#text-images-3", start: "40% top", end: "60% top" },
-      fadeOut: { trigger: "#text-images-4", start: "top bottom", end: "20% top" },
+    scrub: { trigger: "#canvas-4-spacer", start: "-20% top", end: "bottom top" },
+    fadeIn: { trigger: "#text-images-3", start: "40% top", end: "60% top" },
+    fadeOut: { trigger: "#text-images-4", start: "top bottom", end: "20% top" },
   },
   {
     id: "video5",
     canvasKey: "canvas5",
-      scrub: { trigger: "#canvas-5-spacer", start: "-20% top", end: "bottom top" },
-      fadeIn: { trigger: "#text-images-4", start: "40% top", end: "60% top" },
-      fadeOut: { trigger: "#services", start: "top bottom", end: "20% top" },
+    scrub: { trigger: "#canvas-5-spacer", start: "-20% top", end: "bottom top" },
+    fadeIn: { trigger: "#text-images-4", start: "40% top", end: "60% top" },
+    fadeOut: { trigger: "#services", start: "top bottom", end: "20% top" },
   },
 ];
 
 /**
- * Configuración especial para el square video.
- * pinSpacing: true para que, al soltar el pin, el canvas siga el scroll hacia arriba
- * (con false “salta” fuera de vista). Sin fadeOut: no debe ocultarse al terminar el pin.
+ * pinSpacing: true para que al soltar el pin el canvas siga el scroll.
+ * Sin fadeOut para no ocultarlo al terminar el pin.
  */
 const SQUARE_VIDEO_CONFIG: VideoConfig = {
   id: "squareVideo",
@@ -97,13 +92,13 @@ const SQUARE_VIDEO_CONFIG: VideoConfig = {
   },
 };
 
-/**
- * Carga el manifest de videos desde el servidor
- */
-async function loadManifest(): Promise<SeqManifest[]> {
+async function loadManifest(signal?: AbortSignal): Promise<SeqManifest[]> {
   try {
-    const res = await fetch("/videos/manifest.json", { cache: "force-cache" });
-    
+    const res = await fetch("/videos/manifest.json", {
+      cache: "force-cache",
+      signal,
+    });
+
     if (!res.ok) {
       throw new Error(`Failed to load manifest: ${res.status}`);
     }
@@ -111,16 +106,16 @@ async function loadManifest(): Promise<SeqManifest[]> {
     const data = await res.json();
     return data.videos as SeqManifest[];
   } catch (error) {
+    if (signal?.aborted) return [];
     console.error("Error loading video manifest:", error);
     return [];
   }
 }
 
-/**
- * Valida que todas las referencias de canvas estén disponibles
- */
 function validateCanvasRefs(canvasRefs: CanvasRefs): boolean {
-  const allRefsReady = Object.values(canvasRefs).every((ref) => ref.current !== null);
+  const allRefsReady = Object.values(canvasRefs).every(
+    (ref) => ref.current !== null
+  );
 
   if (!allRefsReady) {
     console.error("Canvas refs not ready");
@@ -130,14 +125,11 @@ function validateCanvasRefs(canvasRefs: CanvasRefs): boolean {
   return true;
 }
 
-/**
- * Inicializa una secuencia de video individual (frames se cargan por proximidad)
- */
 function initializeVideoSequence(
   canvas: HTMLCanvasElement,
   manifest: SeqManifest,
   config: VideoConfig
-) {
+): CanvasSequenceHandle {
   const manager = new MultiSequenceCanvas(canvas);
 
   return handleScrollCanvasSequence({
@@ -151,58 +143,64 @@ function initializeVideoSequence(
 }
 
 /**
- * Inicializa todas las secuencias de video estándar
- */
-function initializeStandardVideos(
-  canvasRefs: CanvasRefs,
-  videos: SeqManifest[]
-) {
-  return VIDEO_CONFIGS.flatMap((config) => {
-    const canvas = canvasRefs[config.canvasKey].current;
-    const video = videos.find((v) => v.id === config.id);
-
-    if (video && canvas) {
-      return [initializeVideoSequence(canvas, video, config)];
-    }
-
-    console.warn(`Video ${config.id} or canvas not found`);
-    return [];
-  });
-}
-
-/**
- * Inicializa el square video (con configuración especial)
- */
-function initializeSquareVideo(canvasRefs: CanvasRefs, videos: SeqManifest[]) {
-  const canvas = canvasRefs.square.current;
-  const video = videos.find((v) => v.id === SQUARE_VIDEO_CONFIG.id);
-
-  if (video && canvas) {
-    return initializeVideoSequence(canvas, video, SQUARE_VIDEO_CONFIG);
-  }
-
-  console.warn("Square video or canvas not found");
-  return null;
-}
-
-/**
- * Función principal para registrar secuencias de canvas.
- * Solo descarga el manifesto; los frames JPG se cargan al acercarse al spacer.
+ * Registra secuencias de canvas. Devuelve teardown que destruye managers + triggers.
+ * Los frames JPG siguen cargándose por proximidad.
  */
 export async function initializeCanvasSequences(
-  canvasRefs: CanvasRefs
-): Promise<void> {
-  if (!validateCanvasRefs(canvasRefs)) {
-    return;
+  canvasRefs: CanvasRefs,
+  signal?: AbortSignal
+): Promise<CanvasSequencesTeardown> {
+  const handles: CanvasSequenceHandle[] = [];
+  const teardown = () => {
+    handles.forEach((h) => h.kill());
+    handles.length = 0;
+  };
+
+  if (!validateCanvasRefs(canvasRefs) || signal?.aborted) {
+    return teardown;
   }
 
-  const videos = await loadManifest();
+  const videos = await loadManifest(signal);
 
-  if (videos.length === 0) {
-    console.error("No videos found in manifest");
-    return;
+  if (signal?.aborted || videos.length === 0) {
+    if (videos.length === 0 && !signal?.aborted) {
+      console.error("No videos found in manifest");
+    }
+    return teardown;
   }
 
-  initializeStandardVideos(canvasRefs, videos);
-  initializeSquareVideo(canvasRefs, videos);
+  for (const config of VIDEO_CONFIGS) {
+    if (signal?.aborted) {
+      teardown();
+      return teardown;
+    }
+    const canvas = canvasRefs[config.canvasKey].current;
+    const video = videos.find((v) => v.id === config.id);
+    if (video && canvas) {
+      handles.push(initializeVideoSequence(canvas, video, config));
+    } else {
+      console.warn(`Video ${config.id} or canvas not found`);
+    }
+  }
+
+  if (signal?.aborted) {
+    teardown();
+    return teardown;
+  }
+
+  const squareCanvas = canvasRefs.square.current;
+  const squareVideo = videos.find((v) => v.id === SQUARE_VIDEO_CONFIG.id);
+  if (squareVideo && squareCanvas) {
+    handles.push(
+      initializeVideoSequence(squareCanvas, squareVideo, SQUARE_VIDEO_CONFIG)
+    );
+  } else {
+    console.warn("Square video or canvas not found");
+  }
+
+  if (signal?.aborted) {
+    teardown();
+  }
+
+  return teardown;
 }

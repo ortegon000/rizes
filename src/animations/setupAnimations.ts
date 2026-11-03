@@ -1,44 +1,80 @@
 /**
- * Orchestrador principal de todas las animaciones de la página
- * Coordina hero, canvas sequences, parallax, team y final animations
+ * Orchestrador principal de todas las animaciones de la página.
+ * Devuelve un teardown para liberar canvas managers, timelines y matchMedia.
  */
 
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { createHeroTimeline } from "./heroTimeline";
 import { createFinalTimeline } from "./finalTimeline";
-import { initializeCanvasSequences, type CanvasRefs } from "./canvasSequences";
+import {
+  initializeCanvasSequences,
+  type CanvasRefs,
+} from "./canvasSequences";
 import { createParallaxAnimations } from "./parallaxAnimations";
 import { createTeamTimeline } from "./teamTimeline";
 
+export type AnimationTeardown = () => void;
+
 /**
- * Configura todas las animaciones de la página
+ * Configura todas las animaciones. Si `signal` se aborta a mitad (remount/refresh),
+ * no deja managers huérfanos y el teardown es no-op o limpia lo creado.
  */
 export async function setupAnimations(
-  canvasRefs: CanvasRefs
-): Promise<void> {
-  // const startTime = performance.now();
+  canvasRefs: CanvasRefs,
+  signal?: AbortSignal
+): Promise<AnimationTeardown> {
+  const cleanups: AnimationTeardown[] = [];
+  let settled = false;
 
-    // 1. Hero timeline
-    createHeroTimeline();
+  const teardown: AnimationTeardown = () => {
+    while (cleanups.length) {
+      const fn = cleanups.pop();
+      try {
+        fn?.();
+      } catch (error) {
+        console.error("Error during animation teardown:", error);
+      }
+    }
+  };
 
-  // 2. Canvas sequences (async) - ⏳ Esto precarga TODAS las imágenes
-  // const canvasStartTime = performance.now();
-    await initializeCanvasSequences(canvasRefs);
-  // const canvasEndTime = performance.now();
-  // 
+  if (signal?.aborted) {
+    return teardown;
+  }
 
-    // 3. Parallax animations
-    createParallaxAnimations();
+  const heroTimeline = createHeroTimeline();
+  cleanups.push(() => {
+    heroTimeline.scrollTrigger?.kill();
+    heroTimeline.kill();
+  });
 
-    // 4. Team timeline
-    createTeamTimeline();
+  const canvasTeardown = await initializeCanvasSequences(canvasRefs, signal);
+  cleanups.push(canvasTeardown);
 
-    // 5. Final timeline (Customers → LastLogo → Footer)
-  createFinalTimeline();
+  if (signal?.aborted) {
+    teardown();
+    return () => undefined;
+  }
 
-    // 6. Refresh ScrollTrigger para asegurar cálculos correctos
-    ScrollTrigger.refresh();
+  cleanups.push(createParallaxAnimations());
 
-  // const endTime = performance.now();
-  // console.log(`🎉 Setup completo en ${((endTime - startTime) / 1000).toFixed(2)}s`);
+  createTeamTimeline();
+
+  const finalTimeline = createFinalTimeline();
+  cleanups.push(() => {
+    finalTimeline.scrollTrigger?.kill();
+    finalTimeline.kill();
+  });
+
+  ScrollTrigger.refresh();
+  settled = true;
+
+  if (signal?.aborted) {
+    teardown();
+    return () => undefined;
+  }
+
+  return () => {
+    if (!settled) return;
+    teardown();
+  };
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
@@ -47,7 +47,11 @@ import LastLogo from "@components/lastLogo";
 import Footer from "@components/footer";
 
 // Importar animaciones refactorizadas
-import { setupAnimations, type CanvasRefs } from "@animations";
+import {
+  setupAnimations,
+  type AnimationTeardown,
+  type CanvasRefs,
+} from "@animations";
 import { useScrollTriggerEvents } from "@hooks/useScrollTriggerEvents";
 
 gsap.registerPlugin(useGSAP);
@@ -55,6 +59,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function Home() {
   const container = useRef<HTMLDivElement>(null);
+  const teardownRef = useRef<AnimationTeardown | null>(null);
+  const setupGenerationRef = useRef(0);
 
   // Canvas independientes para cada video (evita encimado)
   const canvas1Ref = useRef<HTMLCanvasElement>(null);
@@ -63,29 +69,55 @@ export default function Home() {
   const canvas4Ref = useRef<HTMLCanvasElement>(null);
   const canvas5Ref = useRef<HTMLCanvasElement>(null);
   const squareRef = useRef<HTMLCanvasElement>(null);
-  const canvasRefs: CanvasRefs = {
-    canvas1: canvas1Ref,
-    canvas2: canvas2Ref,
-    canvas3: canvas3Ref,
-    canvas4: canvas4Ref,
-    canvas5: canvas5Ref,
-    square: squareRef,
-  };
+  const canvasRefs = useMemo<CanvasRefs>(
+    () => ({
+      canvas1: canvas1Ref,
+      canvas2: canvas2Ref,
+      canvas3: canvas3Ref,
+      canvas4: canvas4Ref,
+      canvas5: canvas5Ref,
+      square: squareRef,
+    }),
+    []
+  );
 
-  // Función de setup de animaciones (wrapeada para el hook)
-  const setupAllAnimations = () => {
-    setupAnimations(canvasRefs);
-  };
+  const runSetup = useCallback(
+    (signal: AbortSignal) => {
+      const generation = ++setupGenerationRef.current;
+      teardownRef.current?.();
+      teardownRef.current = null;
 
-  // Hook para manejar eventos de ScrollTrigger
-  useScrollTriggerEvents(setupAllAnimations);
+      void setupAnimations(canvasRefs, signal).then((teardown) => {
+        if (signal.aborted || generation !== setupGenerationRef.current) {
+          teardown();
+          return;
+        }
+        teardownRef.current = teardown;
+      });
+    },
+    [canvasRefs]
+  );
 
-  // Hook principal de GSAP
+  const refreshAnimations = useCallback(() => {
+    const controller = new AbortController();
+    runSetup(controller.signal);
+  }, [runSetup]);
+
+  useScrollTriggerEvents(refreshAnimations);
+
   useGSAP(
     () => {
-      setupAllAnimations();
+      const controller = new AbortController();
+      runSetup(controller.signal);
+
+      return () => {
+        controller.abort();
+        setupGenerationRef.current += 1;
+        teardownRef.current?.();
+        teardownRef.current = null;
+      };
     },
-    { scope: container }
+    { scope: container, dependencies: [runSetup] }
   );
 
   const handleMenuChange = (isOpen: boolean) => {

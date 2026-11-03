@@ -1,8 +1,5 @@
 /**
  * Configuración y creación de animaciones parallax con GSAP ScrollTrigger
- * 
- * ✅ Ya usa buenos valores relativos ("top bottom", "bottom top")
- * ✅ Añadido soporte responsive opcional
  */
 
 import gsap from "gsap";
@@ -11,24 +8,18 @@ interface ParallaxConfig {
   trigger: string;
   target: string;
   y: number;
-  yMobile?: number; // ✅ Opcional: valor diferente para mobile
+  yMobile?: number;
   start?: string;
   end?: string;
   scrub?: number;
 }
 
-/**
- * Configuraciones de parallax para diferentes secciones
- * 
- * ✅ Los valores ya son buenos (relativos al trigger)
- * ✅ Puedes añadir yMobile para ajuste responsive
- */
 const PARALLAX_CONFIGS: ParallaxConfig[] = [
   {
     trigger: "#text-images-1",
     target: "#text-images-1-right",
     y: -300,
-    yMobile: -150, // ✅ 50% en mobile para mejor rendimiento
+    yMobile: -150,
   },
   {
     trigger: "#text-images-2",
@@ -40,7 +31,7 @@ const PARALLAX_CONFIGS: ParallaxConfig[] = [
     trigger: "#text-images-3",
     target: "#text-images-3-left",
     y: -300,
-      yMobile: -150,
+    yMobile: -150,
   },
   {
     trigger: "#text-images-4",
@@ -57,59 +48,73 @@ const PARALLAX_CONFIGS: ParallaxConfig[] = [
   {
     trigger: "#text-images-5",
     target: "#text-images-5-right",
-    y: 600, // ✅ Movimiento opuesto (hacia abajo)
+    y: 600,
     yMobile: 300,
   },
 ];
 
+export type ParallaxTeardown = () => void;
+
 /**
- * Crea todas las animaciones parallax basadas en la configuración
- * 
- * ✅ Ahora con soporte responsive usando matchMedia
+ * Crea animaciones parallax y devuelve teardown (incluye matchMedia.revert).
  */
-export function createParallaxAnimations(): void {
+export function createParallaxAnimations(): ParallaxTeardown {
+  const matchMedias: gsap.MatchMedia[] = [];
+  const timelines: gsap.core.Timeline[] = [];
+
   PARALLAX_CONFIGS.forEach((config) => {
-      // ✅ Si tiene valor mobile, usar matchMedia para responsive
-      if (config.yMobile !== undefined) {
-          const mm = gsap.matchMedia();
+    if (config.yMobile !== undefined) {
+      const mm = gsap.matchMedia();
+      matchMedias.push(mm);
 
-          mm.add({
-              isDesktop: "(min-width: 768px)",
-              isMobile: "(max-width: 767px)",
-          }, (context) => {
-              const { isDesktop } = context.conditions as { isDesktop: boolean };
-              const yValue = isDesktop ? config.y : config.yMobile!;
+      mm.add(
+        {
+          isDesktop: "(min-width: 768px)",
+          isMobile: "(max-width: 767px)",
+        },
+        (context) => {
+          const { isDesktop } = context.conditions as { isDesktop: boolean };
+          const yValue = isDesktop ? config.y : config.yMobile!;
 
-              gsap
-                  .timeline({
-                      scrollTrigger: {
-                          trigger: config.trigger,
-                          start: config.start || "top bottom",
-                          end: config.end || "bottom top",
-                          scrub: config.scrub || 1,
-                      },
-                  })
-                  .to(config.target, { y: yValue }, 0);
-          });
-      } else {
-      // ✅ Valor único para todos los dispositivos
-        gsap
+          gsap
             .timeline({
-                scrollTrigger: {
-                    trigger: config.trigger,
-                    start: config.start || "top bottom",
-                    end: config.end || "bottom top",
-                    scrub: config.scrub || 1,
-                },
+              scrollTrigger: {
+                trigger: config.trigger,
+                start: config.start || "top bottom",
+                end: config.end || "bottom top",
+                scrub: config.scrub || 1,
+              },
             })
-            .to(config.target, { y: config.y }, 0);
+            .to(config.target, { y: yValue }, 0);
+        }
+      );
+    } else {
+      timelines.push(
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: config.trigger,
+              start: config.start || "top bottom",
+              end: config.end || "bottom top",
+              scrub: config.scrub || 1,
+            },
+          })
+          .to(config.target, { y: config.y }, 0)
+      );
     }
   });
+
+  return () => {
+    matchMedias.forEach((mm) => mm.revert());
+    timelines.forEach((tl) => {
+      tl.scrollTrigger?.kill();
+      tl.kill();
+    });
+  };
 }
 
 /**
  * Crea una animación parallax individual
- * Útil para casos personalizados fuera de la configuración estándar
  */
 export function createSingleParallax(config: ParallaxConfig): gsap.core.Timeline {
   return gsap
