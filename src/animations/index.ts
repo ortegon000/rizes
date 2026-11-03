@@ -9,6 +9,11 @@ export {
 export { createHeroTimeline } from "./heroTimeline";
 export { createFinalTimeline } from "./finalTimeline";
 export {
+  createAtmosphereTimeline,
+  applyStaticAtmosphere,
+  type AtmosphereTeardown,
+} from "./atmosphereTimeline";
+export {
   createParallaxAnimations,
   createSingleParallax,
   type ParallaxTeardown,

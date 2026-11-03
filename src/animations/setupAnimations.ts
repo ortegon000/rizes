@@ -16,6 +16,10 @@ import {
   type CanvasRefs,
 } from "./canvasSequences";
 import { createParallaxAnimations } from "./parallaxAnimations";
+import {
+  applyStaticAtmosphere,
+  createAtmosphereTimeline,
+} from "./atmosphereTimeline";
 
 export type AnimationTeardown = () => void;
 
@@ -48,6 +52,7 @@ export async function setupAnimations(
   // Skip heavy scroll-linked work when the user prefers reduced motion
   if (prefersReducedMotion()) {
     applyReducedMotionFallbacks();
+    applyStaticAtmosphere();
     settled = true;
     return () => {
       clearReducedMotionFallbacks();
@@ -55,6 +60,8 @@ export async function setupAnimations(
       teardown();
     };
   }
+
+  cleanups.push(createAtmosphereTimeline());
 
   const heroTimeline = createHeroTimeline();
   cleanups.push(() => {

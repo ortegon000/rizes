@@ -6,6 +6,7 @@ import ErrorBoundary from "@components/ErrorBoundary";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <ErrorBoundary>
+      <div id="page-atmosphere" aria-hidden="true" />
       <SmoothScroll>
         <Component {...pageProps} />
       </SmoothScroll>
