@@ -5,6 +5,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { getLenisInstance, setLenisInstance } from '@utils/lenisInstance';
 
+/** Default GSAP lagSmoothing (ms, etc.) — restored on teardown after we force 0 for Lenis. */
+const GSAP_LAG_SMOOTHING_DEFAULT = 500;
+
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
 
@@ -17,16 +20,22 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     lenisRef.current = lenis;
     setLenisInstance(lenis);
 
-    lenis.on('scroll', ScrollTrigger.update);
-    gsap.ticker.add((time) => {
+    // Same function reference for on/off — required for Lenis and gsap.ticker.remove
+    const onScroll = () => {
+      ScrollTrigger.update();
+    };
+    const onTick = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+
+    lenis.on('scroll', onScroll);
+    gsap.ticker.add(onTick);
     gsap.ticker.lagSmoothing(0);
 
     return () => {
-      gsap.ticker.remove((time) => {
-        lenis.raf(time * 1000);
-      });
+      gsap.ticker.remove(onTick);
+      gsap.ticker.lagSmoothing(GSAP_LAG_SMOOTHING_DEFAULT);
+      lenis.off('scroll', onScroll);
       lenis.destroy();
       if (getLenisInstance() === lenis) setLenisInstance(null);
       lenisRef.current = null;
