@@ -4,6 +4,7 @@
  */
 
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { prefersReducedMotion } from "@utils/motionPref";
 import { createHeroTimeline } from "./heroTimeline";
 import { createFinalTimeline } from "./finalTimeline";
 import {
@@ -11,7 +12,6 @@ import {
   type CanvasRefs,
 } from "./canvasSequences";
 import { createParallaxAnimations } from "./parallaxAnimations";
-import { createTeamTimeline } from "./teamTimeline";
 
 export type AnimationTeardown = () => void;
 
@@ -41,14 +41,27 @@ export async function setupAnimations(
     return teardown;
   }
 
+  // Skip heavy scroll-linked work when the user prefers reduced motion
+  if (prefersReducedMotion()) {
+    settled = true;
+    return () => {
+      if (!settled) return;
+      teardown();
+    };
+  }
+
   const heroTimeline = createHeroTimeline();
   cleanups.push(() => {
     heroTimeline.scrollTrigger?.kill();
     heroTimeline.kill();
   });
 
-  const canvasTeardown = await initializeCanvasSequences(canvasRefs, signal);
-  cleanups.push(canvasTeardown);
+  try {
+    const canvasTeardown = await initializeCanvasSequences(canvasRefs, signal);
+    cleanups.push(canvasTeardown);
+  } catch (error) {
+    console.error("Canvas sequences failed; continuing without them:", error);
+  }
 
   if (signal?.aborted) {
     teardown();
@@ -56,8 +69,6 @@ export async function setupAnimations(
   }
 
   cleanups.push(createParallaxAnimations());
-
-  createTeamTimeline();
 
   const finalTimeline = createFinalTimeline();
   cleanups.push(() => {

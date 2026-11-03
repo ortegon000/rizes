@@ -4,14 +4,20 @@ import Lenis from 'lenis';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { getLenisInstance, setLenisInstance } from '@utils/lenisInstance';
+import { prefersReducedMotion } from '@utils/motionPref';
 
-/** Default GSAP lagSmoothing (ms, etc.) — restored on teardown after we force 0 for Lenis. */
+/** Default GSAP lagSmoothing — restored on teardown after we force 0 for Lenis. */
 const GSAP_LAG_SMOOTHING_DEFAULT = 500;
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const lenisRef = useRef<Lenis | null>(null);
 
   useEffect(() => {
+    // Native scroll when the user prefers reduced motion
+    if (prefersReducedMotion()) {
+      return;
+    }
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -20,7 +26,6 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     lenisRef.current = lenis;
     setLenisInstance(lenis);
 
-    // Same function reference for on/off — required for Lenis and gsap.ticker.remove
     const onScroll = () => {
       ScrollTrigger.update();
     };

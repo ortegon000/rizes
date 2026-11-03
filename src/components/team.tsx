@@ -13,8 +13,7 @@ export default function Team() {
                         src={TeamImage}
                         fill
                         className="w-full h-auto object-cover  border border-transparent hover:border-white hover:border-8 transition-all"
-                        priority
-                        sizes="(max-width: 1024px) 100vw, 50vw"
+                        sizes="(max-width: 1024px) 100vw, 66vw"
                     />
                 </figure>
 
@@ -34,6 +33,7 @@ export default function Team() {
                         src={Team2Image}
                         width={500}
                         height={500}
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         className="w-full max-w-screen-md mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all order-1 lg:order-2"
                     />
                 </div>
