@@ -61,7 +61,7 @@ export function handleScrollCanvasSequence(
         trigger: scrub.trigger,
         start: scrub.start || "top bottom",
         end: scrub.end || "bottom top",
-        scrub: 0.5,
+        scrub: 1,
         pin: !!scrub.pin,
         pinSpacing: scrub.pinSpacing !== undefined ? scrub.pinSpacing : true,
         anticipatePin: scrub.pin ? 1 : 0,
@@ -143,7 +143,7 @@ function setupFadeEffects(
         trigger: fadeIn.trigger,
         start: fadeIn.start || "top center",
         end: fadeIn.end || "bottom center",
-        scrub: 0.5,
+        scrub: 1,
         invalidateOnRefresh: true,
         onUpdate: (st) => {
           inProgress = gsap.parseEase("power2.in")(st.progress);
@@ -159,7 +159,7 @@ function setupFadeEffects(
         trigger: fadeOut.trigger,
         start: fadeOut.start || "top center",
         end: fadeOut.end || "bottom center",
-        scrub: 0.5,
+        scrub: 1,
         invalidateOnRefresh: true,
         onUpdate: (st) => {
           outProgress = gsap.parseEase("power2.out")(st.progress);

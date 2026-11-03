@@ -29,6 +29,7 @@ export default function TextImages3({ id, title, subtitle, description, image1, 
                         src={image1}
                         width={500}
                         height={500}
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         className="w-full ml-0 mt-8 md:mt-12 mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
                 </div>
@@ -40,6 +41,7 @@ export default function TextImages3({ id, title, subtitle, description, image1, 
                         src={image2}
                         width={500}
                         height={500}
+                        sizes="(max-width: 1024px) 100vw, 50vw"
                         className="w-full ml-0 mr-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                     />
 
@@ -49,6 +51,7 @@ export default function TextImages3({ id, title, subtitle, description, image1, 
                             src={image3}
                             width={500}
                             height={500}
+                            sizes="(max-width: 1024px) 100vw, 28rem"
                             className="w-full mt-8 max-w-md h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
                     )}

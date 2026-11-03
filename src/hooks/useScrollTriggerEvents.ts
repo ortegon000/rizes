@@ -29,10 +29,21 @@ export function useScrollTriggerEvents(
       }, 50);
     };
 
+    const handleEnableScrollTriggers = () => {
+      window.setTimeout(() => {
+        ScrollTrigger.getAll().forEach((trigger) => trigger.enable());
+        ScrollTrigger.refresh();
+      }, 50);
+    };
+
     window.addEventListener("refreshScrollTrigger", handleRefreshScrollTrigger);
     window.addEventListener(
       "disableScrollTriggers",
       handleDisableScrollTriggers
+    );
+    window.addEventListener(
+      "enableScrollTriggers",
+      handleEnableScrollTriggers
     );
 
     return () => {
@@ -44,6 +55,10 @@ export function useScrollTriggerEvents(
         "disableScrollTriggers",
         handleDisableScrollTriggers
       );
+      window.removeEventListener(
+        "enableScrollTriggers",
+        handleEnableScrollTriggers
+      );
     };
   }, [onRefresh]);
 }
@@ -54,5 +69,8 @@ export const scrollTriggerEvents = {
   },
   disable: () => {
     window.dispatchEvent(new Event("disableScrollTriggers"));
+  },
+  enable: () => {
+    window.dispatchEvent(new Event("enableScrollTriggers"));
   },
 };

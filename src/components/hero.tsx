@@ -10,8 +10,12 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
   return (
     <>
       <Head>
-        {/* Preload mask so first paint does not flash unmasked */}
-        <link rel="preload" as="image" href="/images/logo-mask.svg" type="image/svg+xml" />
+        <link
+          rel="preload"
+          as="image"
+          href="/images/logo-mask.svg"
+          type="image/svg+xml"
+        />
       </Head>
       <section
         id="hero-key-container"
@@ -29,10 +33,11 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
             <Image
               alt=""
               id="hero-key-background"
-              src={HeroKeyBackground.src}
+              src={HeroKeyBackground}
               fill
               className="object-cover"
               priority
+              sizes="100vw"
             />
           </picture>
         </div>

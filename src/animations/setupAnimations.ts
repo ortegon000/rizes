@@ -4,6 +4,7 @@
  */
 
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
+import { prefersReducedMotion } from "@utils/motionPref";
 import { createHeroTimeline } from "./heroTimeline";
 import { createFinalTimeline } from "./finalTimeline";
 import {
@@ -39,6 +40,15 @@ export async function setupAnimations(
 
   if (signal?.aborted) {
     return teardown;
+  }
+
+  // Skip heavy scroll-linked work when the user prefers reduced motion
+  if (prefersReducedMotion()) {
+    settled = true;
+    return () => {
+      if (!settled) return;
+      teardown();
+    };
   }
 
   const heroTimeline = createHeroTimeline();

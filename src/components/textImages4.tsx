@@ -42,6 +42,7 @@ const TextImages4 = ({
                             src={image1}
                             width={500}
                             height={500}
+                            sizes="(max-width: 1024px) 100vw, 36rem"
                             className="w-full mt-12 md:mt-[200px] max-w-xl mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
@@ -61,6 +62,7 @@ const TextImages4 = ({
                             src={image2}
                             width={500}
                             height={500}
+                            sizes="(max-width: 1024px) 100vw, 32rem"
                             className="w-full relative z-20 mt-12 max-w-lg mx-auto lg:mr-0 lg:ml-auto object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
@@ -74,6 +76,7 @@ const TextImages4 = ({
                             src={image3}
                             width={500}
                             height={500}
+                            sizes="(max-width: 1024px) 100vw, 50vw"
                             className="w-full object-cover border border-transparent hover:border-white hover:border-8 transition-all"
                         />
 
@@ -87,6 +90,7 @@ const TextImages4 = ({
                                 src={image4}
                                 width={500}
                                 height={500}
+                                sizes="(max-width: 1024px) 100vw, 28rem"
                                 className="w-full max-w-md mt-12 md:mt-[100px] h-[400px] object-cover border border-transparent hover:border-white hover:border-8 transition-all mx-auto"
                             />
                         )}

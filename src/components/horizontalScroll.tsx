@@ -274,7 +274,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
               alt=""
               fill
               className="object-contain cursor-zoom-out"
-              priority
+              sizes="90vw"
               onClick={closeFullscreenImage}
             />
 
