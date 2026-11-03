@@ -1,4 +1,5 @@
-// utils/lenisLock.ts
+import { getLenisInstance } from "@utils/lenisInstance";
+
 let savedY = 0;
 let locked = false;
 let previousBodyOverflow = "";
@@ -29,7 +30,7 @@ const removeGuards = () => {
 
 export const lockScrollLenis = () => {
   if (locked) return;
-  const lenis = window.lenis;
+  const lenis = getLenisInstance();
   if (!lenis) {
     savedY = window.scrollY;
     previousBodyOverflow = document.body.style.overflow;
@@ -50,7 +51,7 @@ export const lockScrollLenis = () => {
 
 export const unlockScrollLenis = () => {
   if (!locked) return;
-  const lenis = window.lenis;
+  const lenis = getLenisInstance();
   if (!lenis) {
     removeGuards();
     document.body.style.overflow = previousBodyOverflow;

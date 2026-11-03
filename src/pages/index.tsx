@@ -57,13 +57,19 @@ export default function Home() {
   const container = useRef<HTMLDivElement>(null);
 
   // Canvas independientes para cada video (evita encimado)
+  const canvas1Ref = useRef<HTMLCanvasElement>(null);
+  const canvas2Ref = useRef<HTMLCanvasElement>(null);
+  const canvas3Ref = useRef<HTMLCanvasElement>(null);
+  const canvas4Ref = useRef<HTMLCanvasElement>(null);
+  const canvas5Ref = useRef<HTMLCanvasElement>(null);
+  const squareRef = useRef<HTMLCanvasElement>(null);
   const canvasRefs: CanvasRefs = {
-    canvas1: useRef<HTMLCanvasElement>(null),
-    canvas2: useRef<HTMLCanvasElement>(null),
-    canvas3: useRef<HTMLCanvasElement>(null),
-    canvas4: useRef<HTMLCanvasElement>(null),
-    canvas5: useRef<HTMLCanvasElement>(null),
-    square: useRef<HTMLCanvasElement>(null),
+    canvas1: canvas1Ref,
+    canvas2: canvas2Ref,
+    canvas3: canvas3Ref,
+    canvas4: canvas4Ref,
+    canvas5: canvas5Ref,
+    square: squareRef,
   };
 
   // Función de setup de animaciones (wrapeada para el hook)
@@ -119,23 +125,23 @@ export default function Home() {
 
         {/* Video 1 */}
         <div className="pointer-events-none fixed inset-0 z-[970]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas1} className="block w-full h-full" />
+          <canvas ref={canvas1Ref} className="block w-full h-full" />
         </div>
         {/* Video 2 */}
         <div className="pointer-events-none fixed inset-0" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas2} className="block w-full h-full" />
+          <canvas ref={canvas2Ref} className="block w-full h-full" />
         </div>
         {/* Video 3 */}
         <div className="pointer-events-none fixed inset-0" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas3} className="block w-full h-full" />
+          <canvas ref={canvas3Ref} className="block w-full h-full" />
         </div>
         {/* Video 4 */}
         <div className="pointer-events-none fixed inset-0 z-[940]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas4} className="block w-full h-full" />
+          <canvas ref={canvas4Ref} className="block w-full h-full" />
         </div>
         {/* Video 5 */}
         <div className="pointer-events-none fixed inset-0 z-[930]" aria-hidden="true">
-          <canvas ref={canvasRefs.canvas5} className="block w-full h-full" />
+          <canvas ref={canvas5Ref} className="block w-full h-full" />
         </div>
 
         <div id="normalScrolling" className="relative z-[1000]">
@@ -282,7 +288,7 @@ export default function Home() {
 
           <TextImages4
             id="text-images-5"
-              canvasRef={canvasRefs.square}
+              canvasRef={squareRef}
               title={
                 <>
                   <p className="text-4xl md:text-6xl w-full max-w-md mt-[100px] font-black bg-gradient-to-r from-red-400 to-blue-400 bg-clip-text text-transparent tracking-normal md:tracking-wide leading-normal md:leading-14">

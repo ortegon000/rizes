@@ -219,8 +219,8 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
 
   // Manejar animaciones de entrada y salida
   useEffect(() => {
-    // Entrada inmediata sin delay
-    setIsVisible(true);
+    const id = requestAnimationFrame(() => setIsVisible(true));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   const handleClose = () => {
