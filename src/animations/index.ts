@@ -13,9 +13,9 @@ export {
   createSingleParallax,
   type ParallaxTeardown,
 } from "./parallaxAnimations";
-export { createTeamTimeline } from "./teamTimeline";
 export {
   initializeCanvasSequences,
   type CanvasRefs,
   type CanvasSequencesTeardown,
 } from "./canvasSequences";
+export { CANVAS_SEQUENCE_FRAME_COUNT } from "@utils/types/canvas.types";

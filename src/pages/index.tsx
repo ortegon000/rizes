@@ -51,6 +51,7 @@ import {
   setupAnimations,
   type AnimationTeardown,
   type CanvasRefs,
+  CANVAS_SEQUENCE_FRAME_COUNT,
 } from "@animations";
 import { useScrollTriggerEvents } from "@hooks/useScrollTriggerEvents";
 
@@ -87,13 +88,17 @@ export default function Home() {
       teardownRef.current?.();
       teardownRef.current = null;
 
-      void setupAnimations(canvasRefs, signal).then((teardown) => {
-        if (signal.aborted || generation !== setupGenerationRef.current) {
-          teardown();
-          return;
-        }
-        teardownRef.current = teardown;
-      });
+      void setupAnimations(canvasRefs, signal)
+        .then((teardown) => {
+          if (signal.aborted || generation !== setupGenerationRef.current) {
+            teardown();
+            return;
+          }
+          teardownRef.current = teardown;
+        })
+        .catch((error) => {
+          console.error("Animation setup failed:", error);
+        });
     },
     [canvasRefs]
   );
@@ -150,7 +155,7 @@ export default function Home() {
         <div
           id="canvas-1-spacer"
           className="h-[100vh] md:h-[200vh]"
-          data-canvas-frames="120"
+          data-canvas-frames={CANVAS_SEQUENCE_FRAME_COUNT}
           data-scroll-speed="normal"
           aria-hidden="true"
         />
@@ -203,7 +208,7 @@ export default function Home() {
           <div
             id="canvas-2-spacer"
             className="h-[100vh] md:h-[200vh]"
-            data-canvas-frames="120"
+            data-canvas-frames={CANVAS_SEQUENCE_FRAME_COUNT}
             data-scroll-speed="normal"
             aria-hidden="true"
           />
@@ -234,7 +239,7 @@ export default function Home() {
           <div
             id="canvas-3-spacer"
             className="h-[100vh] md:h-[200vh]"
-            data-canvas-frames="120"
+            data-canvas-frames={CANVAS_SEQUENCE_FRAME_COUNT}
             data-scroll-speed="normal"
             aria-hidden="true"
           />
@@ -271,7 +276,7 @@ export default function Home() {
           <div
             id="canvas-4-spacer"
             className="h-[100vh] md:h-[200vh]"
-            data-canvas-frames="120"
+            data-canvas-frames={CANVAS_SEQUENCE_FRAME_COUNT}
             data-scroll-speed="normal"
             aria-hidden="true"
           />
@@ -307,7 +312,7 @@ export default function Home() {
           <div
             id="canvas-5-spacer"
             className="h-[100vh] md:h-[200vh]"
-            data-canvas-frames="120"
+            data-canvas-frames={CANVAS_SEQUENCE_FRAME_COUNT}
             data-scroll-speed="normal"
             aria-hidden="true"
           />

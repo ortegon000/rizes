@@ -12,7 +12,6 @@ import {
   type CanvasRefs,
 } from "./canvasSequences";
 import { createParallaxAnimations } from "./parallaxAnimations";
-import { createTeamTimeline } from "./teamTimeline";
 
 export type AnimationTeardown = () => void;
 
@@ -57,8 +56,12 @@ export async function setupAnimations(
     heroTimeline.kill();
   });
 
-  const canvasTeardown = await initializeCanvasSequences(canvasRefs, signal);
-  cleanups.push(canvasTeardown);
+  try {
+    const canvasTeardown = await initializeCanvasSequences(canvasRefs, signal);
+    cleanups.push(canvasTeardown);
+  } catch (error) {
+    console.error("Canvas sequences failed; continuing without them:", error);
+  }
 
   if (signal?.aborted) {
     teardown();
@@ -66,8 +69,6 @@ export async function setupAnimations(
   }
 
   cleanups.push(createParallaxAnimations());
-
-  createTeamTimeline();
 
   const finalTimeline = createFinalTimeline();
   cleanups.push(() => {

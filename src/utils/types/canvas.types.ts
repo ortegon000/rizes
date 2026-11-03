@@ -4,6 +4,9 @@
 
 import type { MultiSequenceCanvas } from '@utils/canvas/MultiSequenceCanvas';
 
+/** Must match `count` in public/videos/manifest.json (and spacer data attrs). */
+export const CANVAS_SEQUENCE_FRAME_COUNT = 105;
+
 export type SeqManifest = {
   id: string;
   baseUrl: string;
