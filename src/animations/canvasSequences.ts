@@ -28,8 +28,8 @@ interface VideoConfig {
   id: string;
   canvasKey: keyof CanvasRefs;
   scrub: ScrollTriggerConfig;
-  fadeIn: FadeConfig;
-  fadeOut: FadeConfig;
+  fadeIn?: FadeConfig;
+  fadeOut?: FadeConfig;
 }
 
 /**
@@ -76,7 +76,9 @@ const VIDEO_CONFIGS: VideoConfig[] = [
 ];
 
 /**
- * Configuración especial para el square video
+ * Configuración especial para el square video.
+ * pinSpacing: true para que, al soltar el pin, el canvas siga el scroll hacia arriba
+ * (con false “salta” fuera de vista). Sin fadeOut: no debe ocultarse al terminar el pin.
  */
 const SQUARE_VIDEO_CONFIG: VideoConfig = {
   id: "squareVideo",
@@ -86,10 +88,13 @@ const SQUARE_VIDEO_CONFIG: VideoConfig = {
     start: "top top",
     end: "bottom top",
     pin: true,
-    pinSpacing: false // ✅ Evita layout shifts al no crear spacing placeholder
+    pinSpacing: true,
   },
-  fadeIn: { trigger: "#text-images-5-canvas-container", start: "top 500%", end: "top top" },
-  fadeOut: { trigger: "#text-images-5-canvas-container", start: "bottom top", end: "bottom top+=100" },
+  fadeIn: {
+    trigger: "#text-images-5-canvas-container",
+    start: "top 500%",
+    end: "top top",
+  },
 };
 
 /**
@@ -126,16 +131,16 @@ function validateCanvasRefs(canvasRefs: CanvasRefs): boolean {
 }
 
 /**
- * Inicializa una secuencia de video individual
+ * Inicializa una secuencia de video individual (frames se cargan por proximidad)
  */
 function initializeVideoSequence(
   canvas: HTMLCanvasElement,
   manifest: SeqManifest,
   config: VideoConfig
-): void {
+) {
   const manager = new MultiSequenceCanvas(canvas);
 
-  handleScrollCanvasSequence({
+  return handleScrollCanvasSequence({
     canvasManager: manager,
     manifest,
     target: canvas.parentElement!,
@@ -148,53 +153,56 @@ function initializeVideoSequence(
 /**
  * Inicializa todas las secuencias de video estándar
  */
-function initializeStandardVideos(canvasRefs: CanvasRefs, videos: SeqManifest[]): void {
-  VIDEO_CONFIGS.forEach((config) => {
+function initializeStandardVideos(
+  canvasRefs: CanvasRefs,
+  videos: SeqManifest[]
+) {
+  return VIDEO_CONFIGS.flatMap((config) => {
     const canvas = canvasRefs[config.canvasKey].current;
     const video = videos.find((v) => v.id === config.id);
 
     if (video && canvas) {
-      initializeVideoSequence(canvas, video, config);
-    } else {
-      console.warn(`Video ${config.id} or canvas not found`);
+      return [initializeVideoSequence(canvas, video, config)];
     }
+
+    console.warn(`Video ${config.id} or canvas not found`);
+    return [];
   });
 }
 
 /**
  * Inicializa el square video (con configuración especial)
  */
-function initializeSquareVideo(canvasRefs: CanvasRefs, videos: SeqManifest[]): void {
+function initializeSquareVideo(canvasRefs: CanvasRefs, videos: SeqManifest[]) {
   const canvas = canvasRefs.square.current;
   const video = videos.find((v) => v.id === SQUARE_VIDEO_CONFIG.id);
 
   if (video && canvas) {
-    initializeVideoSequence(canvas, video, SQUARE_VIDEO_CONFIG);
-  } else {
-    console.warn("Square video or canvas not found");
+    return initializeVideoSequence(canvas, video, SQUARE_VIDEO_CONFIG);
   }
+
+  console.warn("Square video or canvas not found");
+  return null;
 }
 
 /**
- * Función principal para inicializar todas las secuencias de canvas
+ * Función principal para registrar secuencias de canvas.
+ * Solo descarga el manifesto; los frames JPG se cargan al acercarse al spacer.
  */
-export async function initializeCanvasSequences(canvasRefs: CanvasRefs): Promise<void> {
-  // Validar refs
+export async function initializeCanvasSequences(
+  canvasRefs: CanvasRefs
+): Promise<void> {
   if (!validateCanvasRefs(canvasRefs)) {
     return;
   }
 
-  // Cargar manifest
   const videos = await loadManifest();
-  
+
   if (videos.length === 0) {
     console.error("No videos found in manifest");
     return;
   }
 
-  // Inicializar videos estándar
   initializeStandardVideos(canvasRefs, videos);
-
-  // Inicializar square video
   initializeSquareVideo(canvasRefs, videos);
 }

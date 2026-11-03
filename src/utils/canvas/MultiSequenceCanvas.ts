@@ -3,25 +3,28 @@
  * Optimizado para animaciones suaves estilo Apple con soporte para object-fit: cover
  */
 
-import { getFrameUrl, calculateCoverDimensions } from './helpers';
-import type { SeqManifest } from '../types/canvas.types';
+import { getFrameUrl, calculateCoverDimensions } from "./helpers";
+import type { SeqManifest } from "../types/canvas.types";
 
 export class MultiSequenceCanvas {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
-  private images: HTMLImageElement[] = [];
-  private frameObj = { frame: 0 }; // Objeto para animar con GSAP
+  private images: (HTMLImageElement | null)[] = [];
+  private frameObj = { frame: 0 };
   private manifest: SeqManifest | null = null;
   private resizeHandler: () => void;
+  /** Incrementa en unload/destroy para invalidar cargas en vuelo */
+  private loadGeneration = 0;
+  private loaded = false;
+  private loadingPromise: Promise<void> | null = null;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
 
-    // Obtener contexto 2D con configuración optimizada
     const context = canvas.getContext("2d", {
       alpha: false,
       desynchronized: true,
-      willReadFrequently: false
+      willReadFrequently: false,
     });
 
     if (!context) {
@@ -30,20 +33,14 @@ export class MultiSequenceCanvas {
 
     this.ctx = context;
     this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = 'high';
+    this.ctx.imageSmoothingQuality = "high";
 
-    // Configurar tamaño inicial
     this.updateCanvasSize();
 
-    // Listener para resize (responsive)
     this.resizeHandler = () => this.updateCanvasSize();
-    window.addEventListener('resize', this.resizeHandler);
+    window.addEventListener("resize", this.resizeHandler);
   }
 
-  /**
-   * Actualiza el tamaño del canvas para ocupar todo su contenedor
-   * Soporta pantallas retina usando devicePixelRatio
-   */
   private updateCanvasSize(): void {
     const container = this.canvas.parentElement;
     if (!container) return;
@@ -52,97 +49,131 @@ export class MultiSequenceCanvas {
     const containerHeight = container.clientHeight;
     const dpr = window.devicePixelRatio || 1;
 
-    // Canvas ocupa todo el contenedor (pantalla completa)
     this.canvas.width = containerWidth * dpr;
     this.canvas.height = containerHeight * dpr;
-
-    // CSS size (tamaño visible) - pantalla completa
     this.canvas.style.width = `${containerWidth}px`;
     this.canvas.style.height = `${containerHeight}px`;
 
-    // Resetear transformaciones y escalar el contexto para dispositivos retina
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.scale(dpr, dpr);
 
-    // Re-renderizar si ya hay imágenes cargadas
-    if (this.images.length > 0) {
+    if (this.loaded) {
       this.render();
     }
   }
 
-  /**
-   * Precarga todas las imágenes de una secuencia
-   * @param manifest - Configuración de la secuencia a cargar
-   */
-  async loadSequence(manifest: SeqManifest): Promise<void> {
-    this.manifest = manifest;
+  isSequenceLoaded(): boolean {
+    return this.loaded;
+  }
 
-      // Crear array de promesas para cargar todas las imágenes
-      const imagePromises: Promise<void>[] = [];
-
-    // Crear array de imágenes
-    this.images = Array.from({ length: manifest.count }, (_, i) => {
-      const img = new Image();
-
-        // Crear promesa para cada imagen
-        const promise = new Promise<void>((resolve) => {
-            img.onload = () => resolve();
-            img.onerror = () => {
-                console.error(`Error cargando frame ${i} de ${manifest.id}`);
-                resolve(); // Resolver igual para no bloquear
-            };
-        });
-
-        imagePromises.push(promise);
-
-        // Asignar src DESPUÉS de configurar los handlers
-      img.src = getFrameUrl(manifest, i);
-
-      return img;
-    });
-
-      // Esperar a que TODAS las imágenes se carguen
-      await Promise.all(imagePromises);
-
-      // Renderizar el primer frame
-    this.render();
+  getManifestId(): string | null {
+    return this.manifest?.id ?? null;
   }
 
   /**
-   * Renderiza el frame actual con comportamiento object-fit: cover
-   * La imagen cubre todo el canvas sin deformarse, cortando los bordes si es necesario
+   * Precarga todas las imágenes de una secuencia.
+   * Idempotente si ya está cargada la misma secuencia; cancela si hubo unload.
    */
+  async loadSequence(manifest: SeqManifest): Promise<void> {
+    if (this.loaded && this.manifest?.id === manifest.id) {
+      return;
+    }
+
+    if (this.loadingPromise && this.manifest?.id === manifest.id) {
+      return this.loadingPromise;
+    }
+
+    this.unloadSequence({ keepManifest: false });
+    this.manifest = manifest;
+    const generation = ++this.loadGeneration;
+
+    this.loadingPromise = (async () => {
+      const imagePromises: Promise<void>[] = [];
+
+      this.images = Array.from({ length: manifest.count }, (_, i) => {
+        const img = new Image();
+        img.decoding = "async";
+
+        const promise = new Promise<void>((resolve) => {
+          img.onload = () => resolve();
+          img.onerror = () => {
+            console.error(`Error cargando frame ${i} de ${manifest.id}`);
+            resolve();
+          };
+        });
+
+        imagePromises.push(promise);
+        img.src = getFrameUrl(manifest, i);
+        return img;
+      });
+
+      await Promise.all(imagePromises);
+
+      if (generation !== this.loadGeneration) {
+        return;
+      }
+
+      this.loaded = true;
+      this.loadingPromise = null;
+      this.render();
+    })();
+
+    try {
+      await this.loadingPromise;
+    } finally {
+      if (generation === this.loadGeneration) {
+        this.loadingPromise = null;
+      }
+    }
+  }
+
+  /**
+   * Libera bitmaps decodificados para reducir presión de memoria.
+   * El scrub GSAP puede seguir vivo; render() no-op hasta volver a cargar.
+   */
+  unloadSequence(options?: { keepManifest?: boolean }): void {
+    this.loadGeneration += 1;
+    this.loadingPromise = null;
+    this.loaded = false;
+
+    for (const img of this.images) {
+      if (!img) continue;
+      img.onload = null;
+      img.onerror = null;
+      img.src = "";
+    }
+    this.images = [];
+
+    if (!options?.keepManifest) {
+      this.manifest = null;
+    }
+  }
+
   render(): void {
     if (!this.images.length) return;
 
     const frameIndex = Math.round(this.frameObj.frame);
     const img = this.images[frameIndex];
 
-      // Verificar que la imagen existe y está completamente cargada
-      if (!img || !img.complete || img.naturalWidth === 0) {
-          // Si la imagen no está lista, intentar usar la última imagen válida
-          for (let i = frameIndex - 1; i >= 0; i--) {
-              const fallbackImg = this.images[i];
-              if (fallbackImg?.complete && fallbackImg.naturalWidth > 0) {
-                  this.renderImage(fallbackImg);
-                  return;
-              }
-          }
-          return; // No hay imágenes válidas para renderizar
+    if (!img || !img.complete || img.naturalWidth === 0) {
+      for (let i = frameIndex - 1; i >= 0; i--) {
+        const fallbackImg = this.images[i];
+        if (fallbackImg?.complete && fallbackImg.naturalWidth > 0) {
+          this.renderImage(fallbackImg);
+          return;
+        }
       }
+      return;
+    }
 
-      this.renderImage(img);
+    this.renderImage(img);
   }
 
-    /**
-     * Renderiza una imagen específica en el canvas
-     */
-    private renderImage(img: HTMLImageElement): void {
+  private renderImage(img: HTMLImageElement): void {
     const dpr = window.devicePixelRatio || 1;
     const canvasWidth = this.canvas.width / dpr;
     const canvasHeight = this.canvas.height / dpr;
 
-    // Calcular dimensiones para object-fit: cover
     const { drawWidth, drawHeight, offsetX, offsetY } = calculateCoverDimensions(
       canvasWidth,
       canvasHeight,
@@ -150,35 +181,21 @@ export class MultiSequenceCanvas {
       img.height
     );
 
-    // Limpiar canvas
     this.ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-
-    // Dibujar imagen centrada con object-fit: cover
     this.ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
   }
 
-  /**
-   * Obtiene el objeto frame para animar con GSAP
-   */
   getFrameObject(): { frame: number } {
     return this.frameObj;
   }
 
-  /**
-   * Obtiene el número total de frames de la secuencia actual
-   */
   getTotalFrames(): number {
     return this.manifest ? this.manifest.count : 0;
   }
 
-  /**
-   * Limpia recursos y event listeners
-   */
   destroy(): void {
-    this.images.forEach(img => {
-      img.src = '';
-    });
-    this.images = [];
-    window.removeEventListener('resize', this.resizeHandler);
+    this.unloadSequence();
+    this.manifest = null;
+    window.removeEventListener("resize", this.resizeHandler);
   }
 }
