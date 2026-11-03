@@ -15,6 +15,10 @@ export type SeqManifest = {
   pad: number;
   width: number;
   height: number;
+  /** Optional lower-res sequence for narrow viewports. */
+  mobileBaseUrl?: string;
+  mobileWidth?: number;
+  mobileHeight?: number;
 };
 
 export type ScrollTriggerConfig = {

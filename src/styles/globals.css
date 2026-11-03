@@ -147,3 +147,78 @@ body {
 #service-4-bg {
   mask-image: linear-gradient(to right, transparent 10%, black 80%, transparent);
 }
+
+/*
+  Reduced-motion: content stays readable without scroll timelines.
+  Hero becomes a normal first screen; end sections leave fixed/opacity-0 traps.
+*/
+html.reduce-motion #hero-container {
+  position: relative;
+  inset: auto;
+  height: auto;
+  min-height: 100dvh;
+}
+
+html.reduce-motion #hero-key-container {
+  position: relative;
+  inset: auto;
+  height: 70dvh;
+  min-height: 320px;
+}
+
+html.reduce-motion #hero-key-logo-mask {
+  --hero-mask-size: 220px;
+  opacity: 1;
+}
+
+html.reduce-motion #hero-intro,
+html.reduce-motion #hero-description {
+  position: relative;
+  inset: auto;
+  height: auto;
+  min-height: 40dvh;
+  opacity: 1;
+  visibility: visible;
+}
+
+html.reduce-motion #hero-intro-entrance,
+html.reduce-motion #hero-intro-exit,
+html.reduce-motion #hero-description-entrance {
+  display: none;
+}
+
+html.reduce-motion #hero-scroll-space,
+html.reduce-motion [id^="canvas-"][id$="-spacer"],
+html.reduce-motion #final-scroll-space {
+  display: none;
+}
+
+html.reduce-motion #main-content > .pointer-events-none.fixed {
+  display: none;
+}
+
+html.reduce-motion #customers,
+html.reduce-motion #last-logo,
+html.reduce-motion #footer {
+  position: relative;
+  inset: auto;
+  opacity: 1;
+  visibility: visible;
+  height: auto;
+  min-height: 70dvh;
+  z-index: auto;
+}
+
+html.reduce-motion #lastLogoImage {
+  transform: none;
+}
+
+html.reduce-motion #keep-scrolling {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .services-horizontal-bg {
+    background-attachment: scroll !important;
+  }
+}

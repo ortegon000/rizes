@@ -5,6 +5,10 @@
 
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { prefersReducedMotion } from "@utils/motionPref";
+import {
+  applyReducedMotionFallbacks,
+  clearReducedMotionFallbacks,
+} from "@utils/reducedMotionFallbacks";
 import { createHeroTimeline } from "./heroTimeline";
 import { createFinalTimeline } from "./finalTimeline";
 import {
@@ -43,8 +47,10 @@ export async function setupAnimations(
 
   // Skip heavy scroll-linked work when the user prefers reduced motion
   if (prefersReducedMotion()) {
+    applyReducedMotionFallbacks();
     settled = true;
     return () => {
+      clearReducedMotionFallbacks();
       if (!settled) return;
       teardown();
     };
