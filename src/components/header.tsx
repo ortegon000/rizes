@@ -26,15 +26,20 @@ export default function Header({ onMenuChange }: HeaderProps) {
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
-    if (element) {
+    // Unlock first: while Lenis is stopped, scrollTo is ignored, and unlock
+    // restores the pre-menu Y — so navigate only after the menu has closed.
+    setMenu(false);
+
+    if (!element) return;
+
+    window.setTimeout(() => {
       const lenis = getLenisInstance();
       if (lenis) {
-        lenis.scrollTo(element, { offset: 0, immediate: false });
+        lenis.scrollTo(element, { offset: 0 });
       } else {
         element.scrollIntoView({ behavior: "smooth", block: "start" });
       }
-    }
-    setMenu(false);
+    }, 50);
   };
 
   return (
@@ -81,7 +86,9 @@ export default function Header({ onMenuChange }: HeaderProps) {
 
       <div
         className={`fixed h-full w-full md:w-1/2 top-0 right-0 z-[3000] transform transition-all duration-500 flex flex-col gap-8 bg-[#111] p-8 md:p-16 pr-10 md:pr-20 pt-28 md:pt-[200px] text-white ${
-          menuOpen ? "translate-x-0" : "translate-x-full"
+          menuOpen
+            ? "translate-x-0 pointer-events-auto"
+            : "translate-x-full pointer-events-none"
         }`}
       >
         <ul className="space-y-6">
