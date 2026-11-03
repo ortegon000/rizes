@@ -6,6 +6,14 @@
 import { getFrameUrl, calculateCoverDimensions } from "./helpers";
 import type { SeqManifest } from "../types/canvas.types";
 
+/** Evita buffers enormes en pantallas 3x (ahorro GPU ~4/9 vs dpr sin tope). */
+const MAX_DEVICE_PIXEL_RATIO = 2;
+const RESIZE_DEBOUNCE_MS = 150;
+
+function cappedDevicePixelRatio(): number {
+  return Math.min(window.devicePixelRatio || 1, MAX_DEVICE_PIXEL_RATIO);
+}
+
 export class MultiSequenceCanvas {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -13,10 +21,14 @@ export class MultiSequenceCanvas {
   private frameObj = { frame: 0 };
   private manifest: SeqManifest | null = null;
   private resizeHandler: () => void;
-  /** Incrementa en unload/destroy para invalidar cargas en vuelo */
+  private resizeTimer: ReturnType<typeof setTimeout> | null = null;
   private loadGeneration = 0;
   private loaded = false;
   private loadingPromise: Promise<void> | null = null;
+  private lastDrawnFrame = -1;
+  private cssWidth = 0;
+  private cssHeight = 0;
+  private dpr = 1;
 
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
@@ -32,34 +44,70 @@ export class MultiSequenceCanvas {
     }
 
     this.ctx = context;
+    // "medium" es suficiente para scrub de frames y más barato que "high"
     this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = "high";
+    this.ctx.imageSmoothingQuality = "medium";
 
     this.updateCanvasSize();
 
-    this.resizeHandler = () => this.updateCanvasSize();
+    this.resizeHandler = () => {
+      if (this.resizeTimer) clearTimeout(this.resizeTimer);
+      this.resizeTimer = setTimeout(() => {
+        this.resizeTimer = null;
+        this.updateCanvasSize();
+      }, RESIZE_DEBOUNCE_MS);
+    };
     window.addEventListener("resize", this.resizeHandler);
   }
 
   private updateCanvasSize(): void {
+    if (!this.loaded) {
+      // Sin secuencia activa no hace falta buffer GPU a resolución completa
+      return;
+    }
+
     const container = this.canvas.parentElement;
     if (!container) return;
 
     const containerWidth = container.clientWidth;
     const containerHeight = container.clientHeight;
-    const dpr = window.devicePixelRatio || 1;
+    if (containerWidth <= 0 || containerHeight <= 0) return;
 
-    this.canvas.width = containerWidth * dpr;
-    this.canvas.height = containerHeight * dpr;
+    const dpr = cappedDevicePixelRatio();
+    if (
+      containerWidth === this.cssWidth &&
+      containerHeight === this.cssHeight &&
+      dpr === this.dpr
+    ) {
+      return;
+    }
+
+    this.cssWidth = containerWidth;
+    this.cssHeight = containerHeight;
+    this.dpr = dpr;
+
+    this.canvas.width = Math.round(containerWidth * dpr);
+    this.canvas.height = Math.round(containerHeight * dpr);
     this.canvas.style.width = `${containerWidth}px`;
     this.canvas.style.height = `${containerHeight}px`;
 
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.scale(dpr, dpr);
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = "medium";
 
-    if (this.loaded) {
-      this.render();
-    }
+    this.lastDrawnFrame = -1;
+    this.render();
+  }
+
+  /** Libera el backing store GPU del canvas (0×0) mientras no hay frames. */
+  private releaseBackingStore(): void {
+    this.cssWidth = 0;
+    this.cssHeight = 0;
+    this.dpr = 1;
+    this.lastDrawnFrame = -1;
+    this.canvas.width = 0;
+    this.canvas.height = 0;
   }
 
   isSequenceLoaded(): boolean {
@@ -70,10 +118,6 @@ export class MultiSequenceCanvas {
     return this.manifest?.id ?? null;
   }
 
-  /**
-   * Precarga todas las imágenes de una secuencia.
-   * Idempotente si ya está cargada la misma secuencia; cancela si hubo unload.
-   */
   async loadSequence(manifest: SeqManifest): Promise<void> {
     if (this.loaded && this.manifest?.id === manifest.id) {
       return;
@@ -115,6 +159,7 @@ export class MultiSequenceCanvas {
 
       this.loaded = true;
       this.loadingPromise = null;
+      this.updateCanvasSize();
       this.render();
     })();
 
@@ -127,10 +172,6 @@ export class MultiSequenceCanvas {
     }
   }
 
-  /**
-   * Libera bitmaps decodificados para reducir presión de memoria.
-   * El scrub GSAP puede seguir vivo; render() no-op hasta volver a cargar.
-   */
   unloadSequence(options?: { keepManifest?: boolean }): void {
     this.loadGeneration += 1;
     this.loadingPromise = null;
@@ -143,6 +184,7 @@ export class MultiSequenceCanvas {
       img.src = "";
     }
     this.images = [];
+    this.releaseBackingStore();
 
     if (!options?.keepManifest) {
       this.manifest = null;
@@ -150,9 +192,15 @@ export class MultiSequenceCanvas {
   }
 
   render(): void {
-    if (!this.images.length) return;
+    if (!this.loaded || !this.images.length) return;
+    if (this.cssWidth <= 0 || this.cssHeight <= 0) {
+      this.updateCanvasSize();
+      if (this.cssWidth <= 0) return;
+    }
 
     const frameIndex = Math.round(this.frameObj.frame);
+    if (frameIndex === this.lastDrawnFrame) return;
+
     const img = this.images[frameIndex];
 
     if (!img || !img.complete || img.naturalWidth === 0) {
@@ -160,6 +208,7 @@ export class MultiSequenceCanvas {
         const fallbackImg = this.images[i];
         if (fallbackImg?.complete && fallbackImg.naturalWidth > 0) {
           this.renderImage(fallbackImg);
+          this.lastDrawnFrame = frameIndex;
           return;
         }
       }
@@ -167,12 +216,12 @@ export class MultiSequenceCanvas {
     }
 
     this.renderImage(img);
+    this.lastDrawnFrame = frameIndex;
   }
 
   private renderImage(img: HTMLImageElement): void {
-    const dpr = window.devicePixelRatio || 1;
-    const canvasWidth = this.canvas.width / dpr;
-    const canvasHeight = this.canvas.height / dpr;
+    const canvasWidth = this.cssWidth;
+    const canvasHeight = this.cssHeight;
 
     const { drawWidth, drawHeight, offsetX, offsetY } = calculateCoverDimensions(
       canvasWidth,
@@ -194,6 +243,10 @@ export class MultiSequenceCanvas {
   }
 
   destroy(): void {
+    if (this.resizeTimer) {
+      clearTimeout(this.resizeTimer);
+      this.resizeTimer = null;
+    }
     this.unloadSequence();
     this.manifest = null;
     window.removeEventListener("resize", this.resizeHandler);
