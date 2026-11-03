@@ -104,18 +104,36 @@ body {
 }
 
 #hero-key-container {
+  /* Soft vignette; keep -webkit for Chromium/Safari stability */
+  -webkit-mask-image: radial-gradient(
+    circle at 50% 50%,
+    #000 50%,
+    transparent 100%
+  );
   mask-image: radial-gradient(
     circle at 50% 50%,
-    black 50%,
+    #000 50%,
     transparent 100%
   );
 }
 
+/*
+  Hero logo reveal: photo clipped by a white-on-transparent SVG (alpha mask).
+  Animate --hero-mask-size so -webkit-mask-size and mask-size stay in sync.
+  Avoid multi-thousand-vw sizes — they intermittently fail on Chrome GPU.
+*/
 #hero-key-logo-mask {
-  mask-image: url("/images/logo-stack.svg");
+  --hero-mask-size: 18000px;
+  -webkit-mask-image: url("/images/logo-mask.svg");
+  mask-image: url("/images/logo-mask.svg");
+  -webkit-mask-position: 50% 15%;
   mask-position: 50% 15%;
+  -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  mask-size: clamp(2000vw, 5000vh, 5000vw);
+  -webkit-mask-size: var(--hero-mask-size);
+  mask-size: var(--hero-mask-size);
+  -webkit-mask-source-type: alpha;
+  mask-mode: alpha;
 }
 
 #banner-1 {
