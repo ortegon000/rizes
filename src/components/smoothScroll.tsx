@@ -5,6 +5,10 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/dist/ScrollTrigger';
 import { getLenisInstance, setLenisInstance } from '@utils/lenisInstance';
 import { prefersReducedMotion } from '@utils/motionPref';
+import {
+  applyReducedMotionFallbacks,
+  clearReducedMotionFallbacks,
+} from '@utils/reducedMotionFallbacks';
 
 /** Default GSAP lagSmoothing — restored on teardown after we force 0 for Lenis. */
 const GSAP_LAG_SMOOTHING_DEFAULT = 500;
@@ -15,7 +19,8 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Native scroll when the user prefers reduced motion
     if (prefersReducedMotion()) {
-      return;
+      applyReducedMotionFallbacks();
+      return () => clearReducedMotionFallbacks();
     }
 
     const lenis = new Lenis({

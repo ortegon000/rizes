@@ -10,11 +10,13 @@ export default function Hero({ zIndex = 20 }: HeroProps) {
   return (
     <>
       <Head>
+        {/* crossOrigin must match CSS mask-image fetch mode or Chrome ignores the preload */}
         <link
           rel="preload"
           as="image"
           href="/images/logo-mask.svg"
           type="image/svg+xml"
+          crossOrigin="anonymous"
         />
       </Head>
       <section

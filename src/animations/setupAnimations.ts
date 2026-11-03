@@ -5,6 +5,10 @@
 
 import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 import { prefersReducedMotion } from "@utils/motionPref";
+import {
+  applyReducedMotionFallbacks,
+  clearReducedMotionFallbacks,
+} from "@utils/reducedMotionFallbacks";
 import { createHeroTimeline } from "./heroTimeline";
 import { createFinalTimeline } from "./finalTimeline";
 import {
@@ -12,6 +16,10 @@ import {
   type CanvasRefs,
 } from "./canvasSequences";
 import { createParallaxAnimations } from "./parallaxAnimations";
+import {
+  applyStaticAtmosphere,
+  createAtmosphereTimeline,
+} from "./atmosphereTimeline";
 
 export type AnimationTeardown = () => void;
 
@@ -43,12 +51,17 @@ export async function setupAnimations(
 
   // Skip heavy scroll-linked work when the user prefers reduced motion
   if (prefersReducedMotion()) {
+    applyReducedMotionFallbacks();
+    applyStaticAtmosphere();
     settled = true;
     return () => {
+      clearReducedMotionFallbacks();
       if (!settled) return;
       teardown();
     };
   }
+
+  cleanups.push(createAtmosphereTimeline());
 
   const heroTimeline = createHeroTimeline();
   cleanups.push(() => {

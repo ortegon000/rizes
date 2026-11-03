@@ -36,6 +36,7 @@ export default function Customers() {
                             src={Customer1Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -44,6 +45,7 @@ export default function Customers() {
                             src={Customer2Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -52,6 +54,7 @@ export default function Customers() {
                             src={Customer3Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -60,6 +63,7 @@ export default function Customers() {
                             src={Customer4Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -68,6 +72,7 @@ export default function Customers() {
                             src={Customer5Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -76,6 +81,7 @@ export default function Customers() {
                             src={Customer6Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -84,6 +90,7 @@ export default function Customers() {
                             src={Customer7Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -92,6 +99,7 @@ export default function Customers() {
                             src={Customer8Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -100,6 +108,7 @@ export default function Customers() {
                             src={Customer9Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -108,6 +117,7 @@ export default function Customers() {
                             src={Customer10Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -116,6 +126,7 @@ export default function Customers() {
                             src={Customer11Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -124,6 +135,7 @@ export default function Customers() {
                             src={Customer12Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -132,6 +144,7 @@ export default function Customers() {
                             src={Customer13Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -140,6 +153,7 @@ export default function Customers() {
                             src={Customer14Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -148,6 +162,7 @@ export default function Customers() {
                             src={Customer15Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -156,6 +171,7 @@ export default function Customers() {
                             src={Customer16Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -164,6 +180,7 @@ export default function Customers() {
                             src={Customer17Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -172,6 +189,7 @@ export default function Customers() {
                             src={Customer18Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
 
@@ -180,6 +198,7 @@ export default function Customers() {
                             src={Customer19Image}
                             width={200}
                             height={100}
+                            sizes="(max-width: 640px) 30vw, (max-width: 1024px) 20vw, 160px"
                             className="w-auto h-8 md:h-12 m-auto object-contain"
                         />
                     </div>

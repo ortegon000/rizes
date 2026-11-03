@@ -3,56 +3,74 @@
     {
       "id": "video1",
       "baseUrl": "/videos/video1/frame_",
+      "mobileBaseUrl": "/videos/video1-sm/frame_",
       "ext": ".jpg",
       "count": 105,
       "pad": 5,
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "mobileWidth": 960,
+      "mobileHeight": 540
     },
     {
       "id": "video2",
       "baseUrl": "/videos/video2/frame_",
+      "mobileBaseUrl": "/videos/video2-sm/frame_",
       "ext": ".jpg",
       "count": 105,
       "pad": 5,
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "mobileWidth": 960,
+      "mobileHeight": 540
     },
     {
       "id": "video3",
       "baseUrl": "/videos/video3/frame_",
+      "mobileBaseUrl": "/videos/video3-sm/frame_",
       "ext": ".jpg",
       "count": 105,
       "pad": 5,
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "mobileWidth": 960,
+      "mobileHeight": 540
     },
     {
       "id": "video4",
       "baseUrl": "/videos/video4/frame_",
+      "mobileBaseUrl": "/videos/video4-sm/frame_",
       "ext": ".jpg",
       "count": 105,
       "pad": 5,
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "mobileWidth": 960,
+      "mobileHeight": 540
     },
     {
       "id": "video5",
       "baseUrl": "/videos/video5/frame_",
+      "mobileBaseUrl": "/videos/video5-sm/frame_",
       "ext": ".jpg",
       "count": 105,
       "pad": 5,
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "mobileWidth": 960,
+      "mobileHeight": 540
     },
     {
       "id": "squareVideo",
       "baseUrl": "/videos/squarevideo/frame_",
+      "mobileBaseUrl": "/videos/squarevideo-sm/frame_",
       "ext": ".jpg",
       "count": 105,
       "pad": 5,
       "width": 1920,
-      "height": 1080
+      "height": 1080,
+      "mobileWidth": 960,
+      "mobileHeight": 540
     },
     {
       "id": "servicesVideo",

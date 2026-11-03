@@ -334,7 +334,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
         }}
       >
         <div 
-          className="relative bg-[#baa6f4]"
+          className="services-horizontal-bg relative bg-[#baa6f4]"
           style={{
             height: `${3 * 150}vh`,
             backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 100%), url(${ServiceBG.src})`,
@@ -373,6 +373,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                       src={Service2Image}
                       alt=""
                       fill
+                      sizes="(max-width: 1024px) 300px, 512px"
                       className="gallery-image object-cover cursor-zoom-in"
                       onClick={(e) => handleImageClick(
                         e,
@@ -400,6 +401,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                       src={Service3Image}
                       alt=""
                       fill
+                      sizes="(max-width: 1024px) 300px, 512px"
                       className="gallery-image object-cover cursor-zoom-in"
                       onClick={(e) => handleImageClick(
                         e,
@@ -431,6 +433,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                       src={Service4Image}
                       alt=""
                       fill
+                      sizes="(max-width: 1024px) 300px, 512px"
                       className="gallery-image object-cover cursor-zoom-in"
                       onClick={(e) => handleImageClick(
                         e,
@@ -455,6 +458,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                       src={Service5Image}
                       alt=""
                       fill
+                      sizes="(max-width: 1024px) 300px, 512px"
                       className="gallery-image object-cover cursor-zoom-in"
                       onClick={(e) => handleImageClick(
                         e,
@@ -472,6 +476,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                       src={Service6Image}
                       alt=""
                       fill
+                      sizes="(max-width: 1024px) 300px, 512px"
                       className="gallery-image object-cover cursor-zoom-in"
                       onClick={(e) => handleImageClick(
                         e,
@@ -490,6 +495,7 @@ const HorizontalScrollView: FC<HorizontalScrollViewProps> = ({
                       src={Service7Image}
                       alt=""
                       fill
+                      sizes="(max-width: 1024px) 300px, 512px"
                       className="gallery-image object-cover cursor-zoom-in"
                       onClick={(e) => handleImageClick(
                         e,
