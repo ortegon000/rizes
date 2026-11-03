@@ -53,6 +53,9 @@ export class MultiSequenceCanvas {
   private cssHeight = 0;
   private dpr = 1;
   private inFlight = new Map<number, Promise<void>>();
+  /** Image elements still downloading (not yet in `images`). */
+  private loadingImages = new Map<number, HTMLImageElement>();
+  private loadResolvers = new Map<number, () => void>();
   private activeLoads = 0;
   private pendingLoads: number[] = [];
 
@@ -180,7 +183,31 @@ export class MultiSequenceCanvas {
     }
   }
 
+  private abortLoadingFrame(index: number): void {
+    const img = this.loadingImages.get(index);
+    if (!img && !this.inFlight.has(index)) return;
+
+    if (img) {
+      img.onload = null;
+      img.onerror = null;
+      img.src = "";
+      this.loadingImages.delete(index);
+    }
+
+    if (this.inFlight.has(index)) {
+      this.inFlight.delete(index);
+      this.activeLoads = Math.max(0, this.activeLoads - 1);
+    }
+
+    const resolve = this.loadResolvers.get(index);
+    if (resolve) {
+      this.loadResolvers.delete(index);
+      resolve();
+    }
+  }
+
   private releaseFrame(index: number): void {
+    this.abortLoadingFrame(index);
     const img = this.images[index];
     if (!img) return;
     img.onload = null;
@@ -224,30 +251,45 @@ export class MultiSequenceCanvas {
 
     this.activeLoads += 1;
     const promise = new Promise<void>((resolve) => {
+      this.loadResolvers.set(index, resolve);
+
       const img = new Image();
       img.decoding = "async";
+      this.loadingImages.set(index, img);
 
       const finish = () => {
+        if (!this.loadResolvers.has(index)) return;
+        this.loadResolvers.delete(index);
         this.activeLoads = Math.max(0, this.activeLoads - 1);
         this.inFlight.delete(index);
+        if (this.loadingImages.get(index) === img) {
+          this.loadingImages.delete(index);
+        }
         this.drainQueue(generation);
         resolve();
       };
 
       img.onload = () => {
         if (generation !== this.loadGeneration) {
+          img.onload = null;
+          img.onerror = null;
           img.src = "";
           finish();
           return;
         }
         this.images[index] = img;
+        finish();
         if (Math.round(this.frameObj.frame) === index) {
           this.lastDrawnFrame = -1;
           this.render();
         }
-        finish();
       };
       img.onerror = () => {
+        // Evict/unload aborts with src=""; ignore those
+        if (generation !== this.loadGeneration || !this.loadingImages.has(index)) {
+          finish();
+          return;
+        }
         console.error(`Error cargando frame ${index} de ${this.manifest?.id}`);
         finish();
       };
@@ -296,9 +338,18 @@ export class MultiSequenceCanvas {
     this.loadGeneration += 1;
     this.loadingPromise = null;
     this.loaded = false;
-    this.inFlight.clear();
     this.pendingLoads = [];
     this.activeLoads = 0;
+
+    for (const index of [...this.loadingImages.keys()]) {
+      this.abortLoadingFrame(index);
+    }
+    for (const index of [...this.inFlight.keys()]) {
+      this.abortLoadingFrame(index);
+    }
+    this.inFlight.clear();
+    this.loadingImages.clear();
+    this.loadResolvers.clear();
 
     for (let i = 0; i < this.images.length; i++) {
       this.releaseFrame(i);
